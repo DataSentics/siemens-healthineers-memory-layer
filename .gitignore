@@ -1,0 +1,23 @@
+# Secrets and local settings: never commit. `.env.example` (the template) is ignored too, so it is only ever added
+# on purpose: git add -f .env.example
+.env
+.env.*
+.streamlit/secrets.toml
+
+# Data: the BGL log, local SQLite databases, Mem0's vector store (1.7 GB)
+data/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+
+# Databricks CLI sync state
+.databricks/
+
+# Raw output of scripts/eval_capture.py (the summary, evals/last_run.md, is kept)
+evals/last_run.json

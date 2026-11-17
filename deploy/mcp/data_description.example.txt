@@ -1,0 +1,19 @@
+Example of a DATA_DESCRIPTION_FILE: the tables the assistant answers from, in plain text. The memory extractor
+writes each saved definition's SQL filter over these columns, so name the tables and describe every column a user
+might mean. Replace this with AskFST's tables.
+
+Table service_cases, one row per field service case. Columns:
+- case_id (STRING): case number
+- opened_at (TIMESTAMP): when the case was opened
+- closed_at (TIMESTAMP): when it was closed, NULL while open
+- site_id (STRING): customer site, joins sites.site_id
+- system_type (STRING): installed system, e.g. 'CT', 'MR', 'AX'
+- software (STRING): software platform and version, e.g. 'SOMARIS/10 VA40'
+- error_code (STRING): first error code reported
+- severity (STRING): 'critical', 'major', 'minor'
+- status (STRING): 'open', 'closed', 'cancelled'
+
+Table sites, one row per customer site. Columns:
+- site_id (STRING): site id
+- country (STRING): ISO country code
+- region (STRING): sales region, e.g. 'EMEA', 'APAC'

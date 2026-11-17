@@ -1,0 +1,42 @@
+email,name,department,team,manager_email,is_manager,joined
+jana.kral@shs-demo.example,Jana Kral,R&D,R&D / A,jana.kral@shs-demo.example,true,2004-03-01
+eva.horak@shs-demo.example,Eva Horak,R&D,R&D / A,jana.kral@shs-demo.example,false,2004-09-01
+tomas.vrba@shs-demo.example,Tomas Vrba,R&D,R&D / A,jana.kral@shs-demo.example,false,2005-01-10
+petra.lind@shs-demo.example,Petra Lind,R&D,R&D / A,jana.kral@shs-demo.example,false,2005-02-14
+lukas.brandt@shs-demo.example,Lukas Brandt,R&D,R&D / A,jana.kral@shs-demo.example,false,2005-12-15
+anna.novak@shs-demo.example,Anna Novak,R&D,R&D / B,anna.novak@shs-demo.example,true,2003-06-01
+ben.weber@shs-demo.example,Ben Weber,R&D,R&D / B,anna.novak@shs-demo.example,false,2005-03-01
+clara.svoboda@shs-demo.example,Clara Svoboda,R&D,R&D / B,anna.novak@shs-demo.example,false,2005-03-01
+david.meyer@shs-demo.example,David Meyer,R&D,R&D / B,anna.novak@shs-demo.example,false,2005-03-01
+elena.dvorak@shs-demo.example,Elena Dvorak,R&D,R&D / C,elena.dvorak@shs-demo.example,true,2003-06-01
+felix.fischer@shs-demo.example,Felix Fischer,R&D,R&D / C,elena.dvorak@shs-demo.example,false,2006-01-03
+greta.cerny@shs-demo.example,Greta Cerny,R&D,R&D / C,elena.dvorak@shs-demo.example,false,2006-01-03
+hugo.wagner@shs-demo.example,Hugo Wagner,R&D,R&D / C,elena.dvorak@shs-demo.example,false,2006-01-03
+ines.prochazka@shs-demo.example,Ines Prochazka,Customer Support,Customer Support / A,ines.prochazka@shs-demo.example,true,2003-06-01
+jonas.schulz@shs-demo.example,Jonas Schulz,Customer Support,Customer Support / A,ines.prochazka@shs-demo.example,false,2005-03-01
+karin.kucera@shs-demo.example,Karin Kucera,Customer Support,Customer Support / A,ines.prochazka@shs-demo.example,false,2005-03-01
+leo.becker@shs-demo.example,Leo Becker,Customer Support,Customer Support / A,ines.prochazka@shs-demo.example,false,2005-03-01
+marta.vesely@shs-demo.example,Marta Vesely,Customer Support,Customer Support / B,marta.vesely@shs-demo.example,true,2003-06-01
+mei.chen@shs-demo.example,Mei Chen,Customer Support,Customer Support / B,marta.vesely@shs-demo.example,false,2005-05-01
+nils.hoffmann@shs-demo.example,Nils Hoffmann,Customer Support,Customer Support / B,marta.vesely@shs-demo.example,false,2005-03-01
+olga.horak@shs-demo.example,Olga Horak,Customer Support,Customer Support / B,marta.vesely@shs-demo.example,false,2005-03-01
+pavel.koch@shs-demo.example,Pavel Koch,Customer Support,Customer Support / C,pavel.koch@shs-demo.example,true,2003-06-01
+quinn.nemec@shs-demo.example,Quinn Nemec,Customer Support,Customer Support / C,pavel.koch@shs-demo.example,false,2005-03-01
+rosa.richter@shs-demo.example,Rosa Richter,Customer Support,Customer Support / C,pavel.koch@shs-demo.example,false,2005-03-01
+simon.pokorny@shs-demo.example,Simon Pokorny,Customer Support,Customer Support / C,pavel.koch@shs-demo.example,false,2005-03-01
+tereza.klein@shs-demo.example,Tereza Klein,Service,Service / A,tereza.klein@shs-demo.example,true,2003-06-01
+uwe.marek@shs-demo.example,Uwe Marek,Service,Service / A,tereza.klein@shs-demo.example,false,2005-03-01
+vera.wolf@shs-demo.example,Vera Wolf,Service,Service / A,tereza.klein@shs-demo.example,false,2005-03-01
+wen.pospisil@shs-demo.example,Wen Pospisil,Service,Service / A,tereza.klein@shs-demo.example,false,2005-03-01
+xaver.neumann@shs-demo.example,Xaver Neumann,Service,Service / B,xaver.neumann@shs-demo.example,true,2003-06-01
+yara.hajek@shs-demo.example,Yara Hajek,Service,Service / B,xaver.neumann@shs-demo.example,false,2005-03-01
+zdenek.schwarz@shs-demo.example,Zdenek Schwarz,Service,Service / B,xaver.neumann@shs-demo.example,false,2005-03-01
+alma.jelinek@shs-demo.example,Alma Jelinek,Service,Service / B,xaver.neumann@shs-demo.example,false,2005-03-01
+bruno.zimmer@shs-demo.example,Bruno Zimmer,Service,Service / C,bruno.zimmer@shs-demo.example,true,2003-06-01
+cora.ruzicka@shs-demo.example,Cora Ruzicka,Service,Service / C,bruno.zimmer@shs-demo.example,false,2005-03-01
+dan.braun@shs-demo.example,Dan Braun,Service,Service / C,bruno.zimmer@shs-demo.example,false,2005-03-01
+emil.benes@shs-demo.example,Emil Benes,Service,Service / C,bruno.zimmer@shs-demo.example,false,2005-03-01
+fiona.krueger@shs-demo.example,Fiona Krueger,Marketing,Marketing,fiona.krueger@shs-demo.example,true,2003-06-01
+gustav.fiala@shs-demo.example,Gustav Fiala,Marketing,Marketing,fiona.krueger@shs-demo.example,false,2005-03-01
+hana.hartmann@shs-demo.example,Hana Hartmann,Marketing,Marketing,fiona.krueger@shs-demo.example,false,2005-03-01
+ivo.sedlacek@shs-demo.example,Ivo Sedlacek,Marketing,Marketing,fiona.krueger@shs-demo.example,false,2005-03-01

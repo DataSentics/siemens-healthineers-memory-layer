@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shs-memory"
+version = "0.1.0"
+description = "Shared memory layer for data assistants (AskFST): LangChain middleware and tools that use the memory over MCP"
+readme = "INTEGRATION.md"
+requires-python = ">=3.11"
+# The client: what an agent app needs to use the memory MCP server (memory_demo.remote).
+dependencies = [
+    "langchain>=1.4,<2",
+    "mcp>=1.30,<2",
+    "httpx>=0.27",
+    "databricks-sdk>=0.160",
+]
+
+[project.optional-dependencies]
+# The memory service itself (memory_demo.mcp_server, or MemoryMiddleware in-process). Run it from the source folder:
+# it reads seed/ (org chart, official glossary) next to the package.
+server = [
+    "langchain-community>=0.4,<0.5",
+    "langchain-openai>=1.7,<2",
+    "databricks-langchain>=0.22",
+    "databricks-sql-connector>=4.8,<5",
+    "databricks-sqlalchemy>=2",
+    "mem0ai>=1,<2",
+    "sqlglot>=25,<30",
+    "python-dotenv",
+    "uvicorn",
+]
+demo = ["streamlit>=1.66,<2", "pandas", "pyarrow"]
+
+[tool.setuptools]
+packages = ["memory_demo"]

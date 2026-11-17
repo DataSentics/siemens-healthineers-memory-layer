@@ -1,0 +1,30 @@
+[theme]
+base = "light"
+primaryColor = "#009999"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f3f8f8"
+textColor = "#000000"
+linkColor = "#007a7a"
+font = "sans-serif"
+baseRadius = "small"
+borderColor = "#d8e4e4"
+showWidgetBorder = true
+# :blue[...] in the app is petrol, :orange[...] the accent, :red[...] berry
+blueColor = "#009999"
+blueTextColor = "#007a7a"
+blueBackgroundColor = "#e0f2f2"
+greenColor = "#009999"
+greenTextColor = "#007a7a"
+greenBackgroundColor = "#e0f2f2"
+orangeColor = "#EC6602"
+orangeTextColor = "#b34e02"
+orangeBackgroundColor = "#fdeee3"
+redColor = "#B21C5A"
+redTextColor = "#B21C5A"
+redBackgroundColor = "#f7e4ec"
+
+[client]
+toolbarMode = "minimal"
+
+[browser]
+gatherUsageStats = false

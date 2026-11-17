@@ -1,0 +1,39 @@
+# Databricks App definition of the memory MCP server (app name must start with "mcp-", e.g. mcp-shs-memory).
+# Deploy this folder's parent with this file as its app.yaml (see INTEGRATION.md). Resources: the SQL warehouse under
+# the key `sql-warehouse` (Can use) and the model endpoint (Can query).
+command: ["python", "-m", "memory_demo.mcp_server"]
+env:
+  - name: BACKEND
+    value: databricks
+  - name: DATABRICKS_WAREHOUSE_ID
+    valueFrom: sql-warehouse
+  # Where the pilot's memory tables live: AskFST's catalog (decided 17 Nov), never the demo's schema, which a demo
+  # reset wipes. Fill in the catalog; the server refuses to start while it is empty.
+  # Create the tables and grants with: scripts/setup_databricks.py --only-memory --catalog <catalog> --schema shs_memory
+  - name: MEMORY_CATALOG
+    value: ""
+  - name: MEMORY_SCHEMA
+    value: shs_memory
+  # No DEMO_TODAY: the server works with the real date.
+  # The server only reads the org directory: the HR / Entra sync fills it; nothing here seeds or wipes it.
+  - name: ORG_SEED
+    value: "0"
+  - name: MEMORY_DB_CONNECTIONS
+    value: "4"
+  - name: LLM_PROVIDER
+    value: databricks
+  - name: DATABRICKS_LLM_ENDPOINT
+    value: databricks-claude-sonnet-5-5
+  - name: PERSONAL_MEMORY
+    value: store
+  - name: DATABRICKS_EMBEDDING_ENDPOINT
+    value: databricks-gte-large-en
+  - name: EMBEDDING_DIMS
+    value: "1024"
+  # Service principals (application ids) of agent apps that call for their users, comma-separated. Call the `health`
+  # tool as that app to see the ids the platform reports for it.
+  - name: MEMORY_TRUSTED_CALLERS
+    value: ""
+  # AskFST's tables, for the SQL filters of saved definitions. Unset: the demo's BGL table.
+  # - name: DATA_DESCRIPTION_FILE
+  #   value: deploy/mcp/data_description.txt

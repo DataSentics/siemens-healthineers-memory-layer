@@ -1,0 +1,16 @@
+langchain>=1.4,<2
+langchain-community>=0.4,<0.5
+langchain-openai>=1.7,<2
+databricks-langchain>=0.22
+databricks-sdk>=0.160
+databricks-sql-connector>=4.8,<5
+databricks-sqlalchemy>=2
+streamlit>=1.66,<2
+pandas
+pyarrow
+python-dotenv
+mem0ai>=1,<2
+sqlglot>=25,<30
+pytest
+mcp>=1.30,<2
+uvicorn

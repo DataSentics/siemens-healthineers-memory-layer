@@ -1,0 +1,3734 @@
+{
+ "alert_labels": {
+  "APPALLOC": {
+   "component": "APP",
+   "events": 144,
+   "examples": [
+    "ciod: Error creating node map from file /p/gb<N>/draeger/benchmark/dat<N>k_<N>/map<N>k_bipartyz: Cannot allocate memory",
+    "ciod: Error creating node map from file /home/fgygi/qb/test/h<N>o/h<N>o<N>/txyz<N>.map: Cannot allocate memory"
+   ]
+  },
+  "APPBUSY": {
+   "component": "APP",
+   "events": 512,
+   "examples": [
+    "ciod: Error creating node map from file /p/gb<N>/pakin<N>/sweep<N>d-<N>x<N>x<N>-<N>mk-<N>mmi-<N>pes-sweep/sweep.map: Device or resource busy"
+   ]
+  },
+  "APPCHILD": {
+   "component": "APP",
+   "events": 320,
+   "examples": [
+    "ciod: Error creating node map from file /p/gb<N>/cabot/miranda/newmaps/<N>k_<N>x<N>x<N>_<N>x<N>x<N>.map: No child processes",
+    "ciod: Error creating node map from file map.dat: No child processes"
+   ]
+  },
+  "APPOUT": {
+   "component": "APP",
+   "events": 816,
+   "examples": [
+    "ciod: LOGIN chdir(/p/gb<N>/stella/RAPTOR/<N>) failed: Input/output error"
+   ]
+  },
+  "APPREAD": {
+   "component": "APP",
+   "events": 5983,
+   "examples": [
+    "ciod: failed to read message prefix on control stream (CioStream socket to <N>.<N>.<N>.<N>:<N>"
+   ]
+  },
+  "APPRES": {
+   "component": "APP",
+   "events": 2370,
+   "examples": [
+    "ciod: Error reading message prefix on CioStream socket to <N>.<N>.<N>.<N>:<N>, Connection reset by peer",
+    "ciod: Error reading message prefix after LOAD_MESSAGE on CioStream socket to <N>.<N>.<N>.<N>:<N>: Connection reset by peer"
+   ]
+  },
+  "APPSEV": {
+   "component": "APP",
+   "events": 49651,
+   "examples": [
+    "ciod: Error reading message prefix on CioStream socket to <N>.<N>.<N>.<N>:<N>, Link has been severed",
+    "ciod: Error reading message prefix after LOAD_MESSAGE on CioStream socket to <N>.<N>.<N>.<N>:<N>: Link has been severed"
+   ]
+  },
+  "APPTO": {
+   "component": "APP",
+   "events": 1991,
+   "examples": [
+    "ciod: Error reading message prefix on CioStream socket to <N>.<N>.<N>.<N>:<N>, Connection timed out"
+   ]
+  },
+  "APPTORUS": {
+   "component": "APP",
+   "events": 10,
+   "examples": [
+    "external input interrupt (unit=<N> bit=<N>): uncorrectable torus error"
+   ]
+  },
+  "APPUNAV": {
+   "component": "APP",
+   "events": 2048,
+   "examples": [
+    "ciod: Error creating node map from file /home/auselton/bgl/mapfiles/bgl.<N>mps.f<N>.map: Resource temporarily unavailable",
+    "ciod: Error creating node map from file /home/auselton/bgl/<N>mps.sequential.mapfile: Resource temporarily unavailable"
+   ]
+  },
+  "KERNBIT": {
+   "component": "KERNEL",
+   "events": 1,
+   "examples": [
+    "ddr: redundant bit steering failed, sequencer timeout"
+   ]
+  },
+  "KERNCON": {
+   "component": "KERNEL",
+   "events": 16,
+   "examples": [
+    "MailboxMonitor::serviceMailboxes() lib_ido_error: -<N> BGLERR_IDO_PKT_TIMEOUT connection lost to node/link/service card",
+    "idoproxy communication failure: BGLERR_IDO_PKT_TIMEOUT connection lost to node/link/service card"
+   ]
+  },
+  "KERNDTLB": {
+   "component": "KERNEL",
+   "events": 152734,
+   "examples": [
+    "data TLB error interrupt"
+   ]
+  },
+  "KERNEXT": {
+   "component": "KERNEL",
+   "events": 1,
+   "examples": [
+    "external input interrupt (unit=<N> bit=<N>): tree header with no target waiting"
+   ]
+  },
+  "KERNFLOAT": {
+   "component": "KERNEL",
+   "events": 3,
+   "examples": [
+    "floating point unavailable interrupt"
+   ]
+  },
+  "KERNMC": {
+   "component": "KERNEL",
+   "events": 342,
+   "examples": [
+    "machine check interrupt",
+    "machine check interrupt (bit=<N>): L<N> major internal error"
+   ]
+  },
+  "KERNMICRO": {
+   "component": "KERNEL",
+   "events": 1503,
+   "examples": [
+    "Microloader Assertion"
+   ]
+  },
+  "KERNMNT": {
+   "component": "KERNEL",
+   "events": 720,
+   "examples": [
+    "Error: unable to mount filesystem"
+   ]
+  },
+  "KERNMNTF": {
+   "component": "KERNEL",
+   "events": 31531,
+   "examples": [
+    "Lustre mount FAILED : bglio<N> : point /p/gb<N>",
+    "Lustre mount FAILED : bglio<N> : block_id : location"
+   ]
+  },
+  "KERNNOETH": {
+   "component": "KERNEL",
+   "events": 14,
+   "examples": [
+    "no ethernet link"
+   ]
+  },
+  "KERNPAN": {
+   "component": "KERNEL",
+   "events": 18,
+   "examples": [
+    "kernel panic"
+   ]
+  },
+  "KERNPOW": {
+   "component": "KERNEL",
+   "events": 192,
+   "examples": [
+    "Power deactivated: R<N>-M<N>-N<N>",
+    "Power deactivated: R<N>-M<N>-NF"
+   ]
+  },
+  "KERNPROG": {
+   "component": "KERNEL",
+   "events": 5,
+   "examples": [
+    "program interrupt"
+   ]
+  },
+  "KERNREC": {
+   "component": "KERNEL",
+   "events": 6145,
+   "examples": [
+    "Error receiving packet on tree network, expecting type <N> instead of type <N> (softheader=<N>d<N> <N>bfa<N> <N> <N>) PSR<N>=<N>f<N> PSR<N>=<N> PRXF=<N> PIXF=<N>",
+    "Error receiving packet on tree network, expecting type <N> instead of type <N> (softheader=<N>e <N>aff<N> <N> <N>) PSR<N>=<N>f<N> PSR<N>=<N> PRXF=<N> PIXF=<N>"
+   ]
+  },
+  "KERNRTSA": {
+   "component": "KERNEL",
+   "events": 3,
+   "examples": [
+    "rts assertion failed: `personality->version == BGLPERSONALITY_VERSION' in `void start()' at start.cc:<N>",
+    "rts assertion failed: `vaddr % PAGE_SIZE_<N>M == <N>' in `int initializeAppMemory(int, TLBEntry&, unsigned int, unsigned int)' at mmu.cc:<N>"
+   ]
+  },
+  "KERNRTSP": {
+   "component": "KERNEL",
+   "events": 3983,
+   "examples": [
+    "rts panic! - stopping execution"
+   ]
+  },
+  "KERNSERV": {
+   "component": "KERNEL",
+   "events": 94,
+   "examples": [
+    "Power Good signal deactivated: R<N>-M<N>-N<N>. A service action may be required.",
+    "Power Good signal deactivated: R<N>-M<N>-NF. A service action may be required."
+   ]
+  },
+  "KERNSOCK": {
+   "component": "KERNEL",
+   "events": 209,
+   "examples": [
+    "MailboxMonitor::serviceMailboxes() lib_ido_error: -<N> socket closed",
+    "idoproxy communication failure: socket closed"
+   ]
+  },
+  "KERNSTOR": {
+   "component": "KERNEL",
+   "events": 63491,
+   "examples": [
+    "data storage interrupt"
+   ]
+  },
+  "KERNTERM": {
+   "component": "KERNEL",
+   "events": 23338,
+   "examples": [
+    "rts: kernel terminated for reason <N>",
+    "rts: kernel terminated for reason <N>rts: bad message header: invalid cpu, type=<N>, cpu=<N>, index=<N>, total=<N>"
+   ]
+  },
+  "KERNTLBE": {
+   "component": "KERNEL",
+   "events": 1,
+   "examples": [
+    "instruction TLB error interrupt"
+   ]
+  },
+  "LINKBLL": {
+   "component": "LINKCARD",
+   "events": 2,
+   "examples": [
+    "MidplaneSwitchController::clearPort() bll_clear_port failed: R<N>-M<N>-L<N>-U<N>-A"
+   ]
+  },
+  "LINKDISC": {
+   "component": "LINKCARD",
+   "events": 24,
+   "examples": [
+    "MidplaneSwitchController::sendTrain() port disconnected: R<N>-M<N>-L<N>-U<N>-E"
+   ]
+  },
+  "LINKIAP": {
+   "component": "LINKCARD",
+   "events": 166,
+   "examples": [
+    "MidplaneSwitchController::receiveTrain() iap failed: R<N>-M<N>-L<N>-U<N>-A, status=ffbffbff ec<N>",
+    "MidplaneSwitchController::receiveTrain() iap failed: R<N>-M<N>-L<N>-U<N>-A, status=beeaabff ec<N>"
+   ]
+  },
+  "LINKPAP": {
+   "component": "LINKCARD",
+   "events": 14,
+   "examples": [
+    "MidplaneSwitchController::parityAlignment() pap failed: R<N>-M<N>-L<N>-U<N>-C, status=ffffffff ffffff<N>",
+    "MidplaneSwitchController::parityAlignment() pap failed: R<N>-M<N>-L<N>-U<N>-D, status=<N>a<N> <N>a<N>"
+   ]
+  },
+  "MASABNORM": {
+   "component": "BGLMASTER",
+   "events": 37,
+   "examples": [
+    "ciodb exited abnormally due to signal: Aborted",
+    "mmcs_server exited abnormally due to signal: Aborted"
+   ]
+  },
+  "MASNORM": {
+   "component": "BGLMASTER",
+   "events": 10,
+   "examples": [
+    "mmcs_server exited normally with exit code <N>",
+    "ciodb exited normally with exit code <N>"
+   ]
+  },
+  "MMCS": {
+   "component": "MMCS",
+   "events": 3,
+   "examples": [
+    "L<N> major internal error"
+   ]
+  },
+  "MONILL": {
+   "component": "MONITOR",
+   "events": 1,
+   "examples": [
+    "monitor caught java.lang.IllegalStateException: while executing CONTROL Operation caught java.io.EOFException and is stopping"
+   ]
+  },
+  "MONNULL": {
+   "component": "MONITOR",
+   "events": 2,
+   "examples": [
+    "While inserting monitor info into DB caught java.lang.NullPointerException"
+   ]
+  },
+  "MONPOW": {
+   "component": "MONITOR",
+   "events": 12,
+   "examples": [
+    "No power module U<N> found found on link card",
+    "power module status fault detected on node card. status registers are: <N>/<N>/<N>/<N>"
+   ]
+  }
+ },
+ "card_types": {
+  "COMPUTE": 4152034,
+  "IO": 400923,
+  "LINK": 3909,
+  "NODE_CARD": 73545,
+  "OTHER": 117552
+ },
+ "components": {
+  "0": {
+   "alert_labels": {},
+   "events": 4
+  },
+  "APP": {
+   "alert_labels": {
+    "APPALLOC": 144,
+    "APPBUSY": 512,
+    "APPCHILD": 320,
+    "APPOUT": 816,
+    "APPREAD": 5983,
+    "APPRES": 2370,
+    "APPSEV": 49651,
+    "APPTO": 1991,
+    "APPTORUS": 10,
+    "APPUNAV": 2048
+   },
+   "events": 228536
+  },
+  "BGLMASTER": {
+   "alert_labels": {
+    "MASABNORM": 37,
+    "MASNORM": 10
+   },
+   "events": 145
+  },
+  "CMCS": {
+   "alert_labels": {},
+   "events": 211
+  },
+  "DISCOVERY": {
+   "alert_labels": {},
+   "events": 97172
+  },
+  "FATAL": {
+   "alert_labels": {},
+   "events": 306
+  },
+  "HARDWARE": {
+   "alert_labels": {},
+   "events": 5148
+  },
+  "KERNEL": {
+   "alert_labels": {
+    "KERNBIT": 1,
+    "KERNCON": 16,
+    "KERNDTLB": 152734,
+    "KERNEXT": 1,
+    "KERNFLOAT": 3,
+    "KERNMC": 342,
+    "KERNMICRO": 1503,
+    "KERNMNT": 720,
+    "KERNMNTF": 31531,
+    "KERNNOETH": 14,
+    "KERNPAN": 18,
+    "KERNPOW": 192,
+    "KERNPROG": 5,
+    "KERNREC": 6145,
+    "KERNRTSA": 3,
+    "KERNRTSP": 3983,
+    "KERNSERV": 94,
+    "KERNSOCK": 209,
+    "KERNSTOR": 63491,
+    "KERNTERM": 23338,
+    "KERNTLBE": 1
+   },
+   "events": 4324651
+  },
+  "LINKCARD": {
+   "alert_labels": {
+    "LINKBLL": 2,
+    "LINKDISC": 24,
+    "LINKIAP": 166,
+    "LINKPAP": 14
+   },
+   "events": 1170
+  },
+  "MMCS": {
+   "alert_labels": {
+    "MMCS": 3
+   },
+   "events": 88930
+  },
+  "MONITOR": {
+   "alert_labels": {
+    "MONILL": 1,
+    "MONNULL": 2,
+    "MONPOW": 12
+   },
+   "events": 1681
+  },
+  "SERV_NET": {
+   "alert_labels": {},
+   "events": 3
+  },
+  "a": {
+   "alert_labels": {},
+   "events": 4
+  },
+  "iar": {
+   "alert_labels": {},
+   "events": 2
+  }
+ },
+ "racks": {
+  "R00": {
+   "events": 87694,
+   "midplanes": {
+    "R00-M0": {
+     "events": 43461,
+     "node_cards": {
+      "R00-M0-N0": 3038,
+      "R00-M0-N1": 2495,
+      "R00-M0-N2": 2479,
+      "R00-M0-N3": 2173,
+      "R00-M0-N4": 3481,
+      "R00-M0-N5": 2606,
+      "R00-M0-N6": 3035,
+      "R00-M0-N7": 2638,
+      "R00-M0-N8": 3194,
+      "R00-M0-N9": 2103,
+      "R00-M0-NA": 2238,
+      "R00-M0-NB": 2327,
+      "R00-M0-NC": 3191,
+      "R00-M0-ND": 3164,
+      "R00-M0-NE": 2457,
+      "R00-M0-NF": 2826
+     }
+    },
+    "R00-M1": {
+     "events": 44233,
+     "node_cards": {
+      "R00-M1-N0": 2831,
+      "R00-M1-N1": 2285,
+      "R00-M1-N2": 2582,
+      "R00-M1-N3": 2660,
+      "R00-M1-N4": 3341,
+      "R00-M1-N5": 2583,
+      "R00-M1-N6": 2211,
+      "R00-M1-N7": 2618,
+      "R00-M1-N8": 2944,
+      "R00-M1-N9": 2588,
+      "R00-M1-NA": 2338,
+      "R00-M1-NB": 3172,
+      "R00-M1-NC": 2807,
+      "R00-M1-ND": 2370,
+      "R00-M1-NE": 2852,
+      "R00-M1-NF": 4042
+     }
+    }
+   }
+  },
+  "R01": {
+   "events": 79572,
+   "midplanes": {
+    "R01-M0": {
+     "events": 37509,
+     "node_cards": {
+      "R01-M0-N0": 3073,
+      "R01-M0-N1": 2375,
+      "R01-M0-N2": 1850,
+      "R01-M0-N3": 2239,
+      "R01-M0-N4": 2623,
+      "R01-M0-N5": 2066,
+      "R01-M0-N6": 2008,
+      "R01-M0-N7": 1983,
+      "R01-M0-N8": 5011,
+      "R01-M0-N9": 2192,
+      "R01-M0-NA": 1982,
+      "R01-M0-NB": 1961,
+      "R01-M0-NC": 2539,
+      "R01-M0-ND": 2101,
+      "R01-M0-NE": 1724,
+      "R01-M0-NF": 1766
+     }
+    },
+    "R01-M1": {
+     "events": 42063,
+     "node_cards": {
+      "R01-M1-N0": 3000,
+      "R01-M1-N1": 3100,
+      "R01-M1-N2": 1928,
+      "R01-M1-N3": 1943,
+      "R01-M1-N4": 3202,
+      "R01-M1-N5": 2216,
+      "R01-M1-N6": 2094,
+      "R01-M1-N7": 1955,
+      "R01-M1-N8": 3189,
+      "R01-M1-N9": 2308,
+      "R01-M1-NA": 1922,
+      "R01-M1-NB": 2341,
+      "R01-M1-NC": 2613,
+      "R01-M1-ND": 5693,
+      "R01-M1-NE": 1846,
+      "R01-M1-NF": 2694
+     }
+    }
+   }
+  },
+  "R02": {
+   "events": 142019,
+   "midplanes": {
+    "R02-M0": {
+     "events": 40179,
+     "node_cards": {
+      "R02-M0-N0": 1853,
+      "R02-M0-N1": 1205,
+      "R02-M0-N2": 1429,
+      "R02-M0-N3": 1292,
+      "R02-M0-N4": 16077,
+      "R02-M0-N5": 1772,
+      "R02-M0-N6": 1669,
+      "R02-M0-N7": 1421,
+      "R02-M0-N8": 1952,
+      "R02-M0-N9": 1286,
+      "R02-M0-NA": 2210,
+      "R02-M0-NB": 1177,
+      "R02-M0-NC": 2342,
+      "R02-M0-ND": 1754,
+      "R02-M0-NE": 1343,
+      "R02-M0-NF": 1379
+     }
+    },
+    "R02-M1": {
+     "events": 101840,
+     "node_cards": {
+      "R02-M1-N0": 67285,
+      "R02-M1-N1": 2240,
+      "R02-M1-N2": 1948,
+      "R02-M1-N3": 2080,
+      "R02-M1-N4": 3175,
+      "R02-M1-N5": 2331,
+      "R02-M1-N6": 2014,
+      "R02-M1-N7": 2364,
+      "R02-M1-N8": 2819,
+      "R02-M1-N9": 1835,
+      "R02-M1-NA": 1834,
+      "R02-M1-NB": 3415,
+      "R02-M1-NC": 2525,
+      "R02-M1-ND": 1830,
+      "R02-M1-NE": 2093,
+      "R02-M1-NF": 2042
+     }
+    }
+   }
+  },
+  "R03": {
+   "events": 58153,
+   "midplanes": {
+    "R03-M0": {
+     "events": 28239,
+     "node_cards": {
+      "R03-M0-N0": 1861,
+      "R03-M0-N1": 1106,
+      "R03-M0-N2": 1161,
+      "R03-M0-N3": 2206,
+      "R03-M0-N4": 1759,
+      "R03-M0-N5": 1140,
+      "R03-M0-N6": 1447,
+      "R03-M0-N7": 1625,
+      "R03-M0-N8": 2142,
+      "R03-M0-N9": 1483,
+      "R03-M0-NA": 1303,
+      "R03-M0-NB": 5348,
+      "R03-M0-NC": 1900,
+      "R03-M0-ND": 1063,
+      "R03-M0-NE": 1449,
+      "R03-M0-NF": 1212
+     }
+    },
+    "R03-M1": {
+     "events": 29914,
+     "node_cards": {
+      "R03-M1-N0": 2277,
+      "R03-M1-N1": 1140,
+      "R03-M1-N2": 2383,
+      "R03-M1-N3": 1592,
+      "R03-M1-N4": 1845,
+      "R03-M1-N5": 1360,
+      "R03-M1-N6": 2149,
+      "R03-M1-N7": 2160,
+      "R03-M1-N8": 1921,
+      "R03-M1-N9": 2488,
+      "R03-M1-NA": 1293,
+      "R03-M1-NB": 1347,
+      "R03-M1-NC": 2146,
+      "R03-M1-ND": 1346,
+      "R03-M1-NE": 1700,
+      "R03-M1-NF": 2730
+     }
+    }
+   }
+  },
+  "R04": {
+   "events": 74150,
+   "midplanes": {
+    "R04-M0": {
+     "events": 36168,
+     "node_cards": {
+      "R04-M0-N0": 2918,
+      "R04-M0-N1": 2352,
+      "R04-M0-N2": 1945,
+      "R04-M0-N3": 2173,
+      "R04-M0-N4": 2772,
+      "R04-M0-N5": 2300,
+      "R04-M0-N6": 1908,
+      "R04-M0-N7": 2320,
+      "R04-M0-N8": 2544,
+      "R04-M0-N9": 1819,
+      "R04-M0-NA": 2154,
+      "R04-M0-NB": 1921,
+      "R04-M0-NC": 2970,
+      "R04-M0-ND": 2017,
+      "R04-M0-NE": 1967,
+      "R04-M0-NF": 2078
+     }
+    },
+    "R04-M1": {
+     "events": 37982,
+     "node_cards": {
+      "R04-M1-N0": 2765,
+      "R04-M1-N1": 2028,
+      "R04-M1-N2": 2216,
+      "R04-M1-N3": 2364,
+      "R04-M1-N4": 2833,
+      "R04-M1-N5": 1898,
+      "R04-M1-N6": 1848,
+      "R04-M1-N7": 2018,
+      "R04-M1-N8": 3194,
+      "R04-M1-N9": 2648,
+      "R04-M1-NA": 2034,
+      "R04-M1-NB": 2214,
+      "R04-M1-NC": 2831,
+      "R04-M1-ND": 2103,
+      "R04-M1-NE": 2015,
+      "R04-M1-NF": 2961
+     }
+    }
+   }
+  },
+  "R05": {
+   "events": 75599,
+   "midplanes": {
+    "R05-M0": {
+     "events": 35906,
+     "node_cards": {
+      "R05-M0-N0": 2882,
+      "R05-M0-N1": 2366,
+      "R05-M0-N2": 1858,
+      "R05-M0-N3": 1949,
+      "R05-M0-N4": 2648,
+      "R05-M0-N5": 1911,
+      "R05-M0-N6": 2268,
+      "R05-M0-N7": 2330,
+      "R05-M0-N8": 2732,
+      "R05-M0-N9": 2083,
+      "R05-M0-NA": 2049,
+      "R05-M0-NB": 1837,
+      "R05-M0-NC": 2552,
+      "R05-M0-ND": 2070,
+      "R05-M0-NE": 2205,
+      "R05-M0-NF": 2157
+     }
+    },
+    "R05-M1": {
+     "events": 39693,
+     "node_cards": {
+      "R05-M1-N0": 2698,
+      "R05-M1-N1": 2496,
+      "R05-M1-N2": 2329,
+      "R05-M1-N3": 2298,
+      "R05-M1-N4": 2939,
+      "R05-M1-N5": 1874,
+      "R05-M1-N6": 2012,
+      "R05-M1-N7": 1995,
+      "R05-M1-N8": 3702,
+      "R05-M1-N9": 2236,
+      "R05-M1-NA": 2223,
+      "R05-M1-NB": 2285,
+      "R05-M1-NC": 3021,
+      "R05-M1-ND": 2393,
+      "R05-M1-NE": 2253,
+      "R05-M1-NF": 2927
+     }
+    }
+   }
+  },
+  "R06": {
+   "events": 73836,
+   "midplanes": {
+    "R06-M0": {
+     "events": 38319,
+     "node_cards": {
+      "R06-M0-N0": 2742,
+      "R06-M0-N1": 1710,
+      "R06-M0-N2": 1995,
+      "R06-M0-N3": 1937,
+      "R06-M0-N4": 3204,
+      "R06-M0-N5": 1931,
+      "R06-M0-N6": 2964,
+      "R06-M0-N7": 1777,
+      "R06-M0-N8": 2721,
+      "R06-M0-N9": 3562,
+      "R06-M0-NA": 1910,
+      "R06-M0-NB": 3497,
+      "R06-M0-NC": 2537,
+      "R06-M0-ND": 1956,
+      "R06-M0-NE": 1984,
+      "R06-M0-NF": 1876
+     }
+    },
+    "R06-M1": {
+     "events": 35517,
+     "node_cards": {
+      "R06-M1-N0": 2081,
+      "R06-M1-N1": 1280,
+      "R06-M1-N2": 1455,
+      "R06-M1-N3": 1572,
+      "R06-M1-N4": 2577,
+      "R06-M1-N5": 1764,
+      "R06-M1-N6": 6581,
+      "R06-M1-N7": 1655,
+      "R06-M1-N8": 2685,
+      "R06-M1-N9": 1549,
+      "R06-M1-NA": 2556,
+      "R06-M1-NB": 1950,
+      "R06-M1-NC": 2411,
+      "R06-M1-ND": 1990,
+      "R06-M1-NE": 1432,
+      "R06-M1-NF": 1965
+     }
+    }
+   }
+  },
+  "R07": {
+   "events": 57948,
+   "midplanes": {
+    "R07-M0": {
+     "events": 30205,
+     "node_cards": {
+      "R07-M0-N0": 2324,
+      "R07-M0-N1": 1675,
+      "R07-M0-N2": 1711,
+      "R07-M0-N3": 1353,
+      "R07-M0-N4": 2152,
+      "R07-M0-N5": 1483,
+      "R07-M0-N6": 2534,
+      "R07-M0-N7": 1257,
+      "R07-M0-N8": 3811,
+      "R07-M0-N9": 1636,
+      "R07-M0-NA": 1437,
+      "R07-M0-NB": 1524,
+      "R07-M0-NC": 2388,
+      "R07-M0-ND": 1824,
+      "R07-M0-NE": 1634,
+      "R07-M0-NF": 1440
+     }
+    },
+    "R07-M1": {
+     "events": 27743,
+     "node_cards": {
+      "R07-M1-N0": 2706,
+      "R07-M1-N1": 1444,
+      "R07-M1-N2": 1628,
+      "R07-M1-N3": 1449,
+      "R07-M1-N4": 2145,
+      "R07-M1-N5": 1463,
+      "R07-M1-N6": 2067,
+      "R07-M1-N7": 1478,
+      "R07-M1-N8": 2115,
+      "R07-M1-N9": 1608,
+      "R07-M1-NA": 1608,
+      "R07-M1-NB": 1440,
+      "R07-M1-NC": 2036,
+      "R07-M1-ND": 1500,
+      "R07-M1-NE": 1518,
+      "R07-M1-NF": 1486
+     }
+    }
+   }
+  },
+  "R10": {
+   "events": 86110,
+   "midplanes": {
+    "R10-M0": {
+     "events": 45199,
+     "node_cards": {
+      "R10-M0-N0": 3052,
+      "R10-M0-N1": 2430,
+      "R10-M0-N2": 2481,
+      "R10-M0-N3": 3074,
+      "R10-M0-N4": 2799,
+      "R10-M0-N5": 2781,
+      "R10-M0-N6": 2328,
+      "R10-M0-N7": 4931,
+      "R10-M0-N8": 3202,
+      "R10-M0-N9": 2455,
+      "R10-M0-NA": 2348,
+      "R10-M0-NB": 2401,
+      "R10-M0-NC": 2804,
+      "R10-M0-ND": 2420,
+      "R10-M0-NE": 3271,
+      "R10-M0-NF": 2397
+     }
+    },
+    "R10-M1": {
+     "events": 40911,
+     "node_cards": {
+      "R10-M1-N0": 2415,
+      "R10-M1-N1": 2164,
+      "R10-M1-N2": 2116,
+      "R10-M1-N3": 2130,
+      "R10-M1-N4": 3000,
+      "R10-M1-N5": 3980,
+      "R10-M1-N6": 2256,
+      "R10-M1-N7": 2809,
+      "R10-M1-N8": 2766,
+      "R10-M1-N9": 2270,
+      "R10-M1-NA": 2297,
+      "R10-M1-NB": 2439,
+      "R10-M1-NC": 2605,
+      "R10-M1-ND": 2313,
+      "R10-M1-NE": 2386,
+      "R10-M1-NF": 2948
+     }
+    }
+   }
+  },
+  "R11": {
+   "events": 68803,
+   "midplanes": {
+    "R11-M0": {
+     "events": 33298,
+     "node_cards": {
+      "R11-M0-N0": 2408,
+      "R11-M0-N1": 1922,
+      "R11-M0-N2": 1999,
+      "R11-M0-N3": 1834,
+      "R11-M0-N4": 2298,
+      "R11-M0-N5": 1988,
+      "R11-M0-N6": 2011,
+      "R11-M0-N7": 2179,
+      "R11-M0-N8": 2271,
+      "R11-M0-N9": 2471,
+      "R11-M0-NA": 1910,
+      "R11-M0-NB": 1966,
+      "R11-M0-NC": 2455,
+      "R11-M0-ND": 1970,
+      "R11-M0-NE": 1909,
+      "R11-M0-NF": 1693
+     }
+    },
+    "R11-M1": {
+     "events": 35505,
+     "node_cards": {
+      "R11-M1-N0": 2418,
+      "R11-M1-N1": 2464,
+      "R11-M1-N2": 1920,
+      "R11-M1-N3": 3211,
+      "R11-M1-N4": 2381,
+      "R11-M1-N5": 1688,
+      "R11-M1-N6": 1682,
+      "R11-M1-N7": 1826,
+      "R11-M1-N8": 2381,
+      "R11-M1-N9": 2174,
+      "R11-M1-NA": 2082,
+      "R11-M1-NB": 2083,
+      "R11-M1-NC": 2429,
+      "R11-M1-ND": 1878,
+      "R11-M1-NE": 3051,
+      "R11-M1-NF": 1820
+     }
+    }
+   }
+  },
+  "R12": {
+   "events": 77304,
+   "midplanes": {
+    "R12-M0": {
+     "events": 37240,
+     "node_cards": {
+      "R12-M0-N0": 4077,
+      "R12-M0-N1": 2092,
+      "R12-M0-N2": 2107,
+      "R12-M0-N3": 2101,
+      "R12-M0-N4": 2554,
+      "R12-M0-N5": 2180,
+      "R12-M0-N6": 2026,
+      "R12-M0-N7": 2106,
+      "R12-M0-N8": 2495,
+      "R12-M0-N9": 2392,
+      "R12-M0-NA": 2138,
+      "R12-M0-NB": 2104,
+      "R12-M0-NC": 2292,
+      "R12-M0-ND": 1825,
+      "R12-M0-NE": 2478,
+      "R12-M0-NF": 2252
+     }
+    },
+    "R12-M1": {
+     "events": 40064,
+     "node_cards": {
+      "R12-M1-N0": 2355,
+      "R12-M1-N1": 2036,
+      "R12-M1-N2": 2218,
+      "R12-M1-N3": 3223,
+      "R12-M1-N4": 2707,
+      "R12-M1-N5": 2367,
+      "R12-M1-N6": 2596,
+      "R12-M1-N7": 2621,
+      "R12-M1-N8": 2359,
+      "R12-M1-N9": 2076,
+      "R12-M1-NA": 3289,
+      "R12-M1-NB": 2040,
+      "R12-M1-NC": 2940,
+      "R12-M1-ND": 2230,
+      "R12-M1-NE": 2338,
+      "R12-M1-NF": 2655
+     }
+    }
+   }
+  },
+  "R13": {
+   "events": 71784,
+   "midplanes": {
+    "R13-M0": {
+     "events": 35286,
+     "node_cards": {
+      "R13-M0-N0": 2246,
+      "R13-M0-N1": 2134,
+      "R13-M0-N2": 2391,
+      "R13-M0-N3": 2248,
+      "R13-M0-N4": 2232,
+      "R13-M0-N5": 1952,
+      "R13-M0-N6": 1936,
+      "R13-M0-N7": 1988,
+      "R13-M0-N8": 2295,
+      "R13-M0-N9": 2060,
+      "R13-M0-NA": 3135,
+      "R13-M0-NB": 1871,
+      "R13-M0-NC": 2556,
+      "R13-M0-ND": 2010,
+      "R13-M0-NE": 2176,
+      "R13-M0-NF": 2022
+     }
+    },
+    "R13-M1": {
+     "events": 36498,
+     "node_cards": {
+      "R13-M1-N0": 2300,
+      "R13-M1-N1": 2531,
+      "R13-M1-N2": 2711,
+      "R13-M1-N3": 2603,
+      "R13-M1-N4": 2263,
+      "R13-M1-N5": 2059,
+      "R13-M1-N6": 2032,
+      "R13-M1-N7": 1947,
+      "R13-M1-N8": 3343,
+      "R13-M1-N9": 1985,
+      "R13-M1-NA": 2052,
+      "R13-M1-NB": 1932,
+      "R13-M1-NC": 2403,
+      "R13-M1-ND": 2109,
+      "R13-M1-NE": 2116,
+      "R13-M1-NF": 2078
+     }
+    }
+   }
+  },
+  "R14": {
+   "events": 74754,
+   "midplanes": {
+    "R14-M0": {
+     "events": 35545,
+     "node_cards": {
+      "R14-M0-N0": 2337,
+      "R14-M0-N1": 1907,
+      "R14-M0-N2": 1902,
+      "R14-M0-N3": 1899,
+      "R14-M0-N4": 2387,
+      "R14-M0-N5": 2093,
+      "R14-M0-N6": 2556,
+      "R14-M0-N7": 1890,
+      "R14-M0-N8": 2721,
+      "R14-M0-N9": 2016,
+      "R14-M0-NA": 2185,
+      "R14-M0-NB": 1976,
+      "R14-M0-NC": 2370,
+      "R14-M0-ND": 2585,
+      "R14-M0-NE": 2566,
+      "R14-M0-NF": 2141
+     }
+    },
+    "R14-M1": {
+     "events": 39209,
+     "node_cards": {
+      "R14-M1-N0": 3158,
+      "R14-M1-N1": 1960,
+      "R14-M1-N2": 2030,
+      "R14-M1-N3": 2048,
+      "R14-M1-N4": 2661,
+      "R14-M1-N5": 2703,
+      "R14-M1-N6": 2174,
+      "R14-M1-N7": 2573,
+      "R14-M1-N8": 2418,
+      "R14-M1-N9": 2090,
+      "R14-M1-NA": 3035,
+      "R14-M1-NB": 2008,
+      "R14-M1-NC": 2696,
+      "R14-M1-ND": 2177,
+      "R14-M1-NE": 2420,
+      "R14-M1-NF": 3042
+     }
+    }
+   }
+  },
+  "R15": {
+   "events": 74060,
+   "midplanes": {
+    "R15-M0": {
+     "events": 37277,
+     "node_cards": {
+      "R15-M0-N0": 3414,
+      "R15-M0-N1": 2114,
+      "R15-M0-N2": 1787,
+      "R15-M0-N3": 2570,
+      "R15-M0-N4": 2374,
+      "R15-M0-N5": 2227,
+      "R15-M0-N6": 2082,
+      "R15-M0-N7": 2003,
+      "R15-M0-N8": 2400,
+      "R15-M0-N9": 2120,
+      "R15-M0-NA": 2032,
+      "R15-M0-NB": 3027,
+      "R15-M0-NC": 2808,
+      "R15-M0-ND": 2158,
+      "R15-M0-NE": 2091,
+      "R15-M0-NF": 2023
+     }
+    },
+    "R15-M1": {
+     "events": 36783,
+     "node_cards": {
+      "R15-M1-N0": 2336,
+      "R15-M1-N1": 2118,
+      "R15-M1-N2": 2013,
+      "R15-M1-N3": 3169,
+      "R15-M1-N4": 2310,
+      "R15-M1-N5": 2071,
+      "R15-M1-N6": 3016,
+      "R15-M1-N7": 2106,
+      "R15-M1-N8": 2344,
+      "R15-M1-N9": 2029,
+      "R15-M1-NA": 2144,
+      "R15-M1-NB": 2221,
+      "R15-M1-NC": 2469,
+      "R15-M1-ND": 2098,
+      "R15-M1-NE": 2352,
+      "R15-M1-NF": 1974
+     }
+    }
+   }
+  },
+  "R16": {
+   "events": 91296,
+   "midplanes": {
+    "R16-M0": {
+     "events": 37528,
+     "node_cards": {
+      "R16-M0-N0": 2369,
+      "R16-M0-N1": 2583,
+      "R16-M0-N2": 2564,
+      "R16-M0-N3": 2273,
+      "R16-M0-N4": 2530,
+      "R16-M0-N5": 2132,
+      "R16-M0-N6": 2123,
+      "R16-M0-N7": 2138,
+      "R16-M0-N8": 2656,
+      "R16-M0-N9": 2213,
+      "R16-M0-NA": 1954,
+      "R16-M0-NB": 2257,
+      "R16-M0-NC": 2665,
+      "R16-M0-ND": 2202,
+      "R16-M0-NE": 2575,
+      "R16-M0-NF": 2279
+     }
+    },
+    "R16-M1": {
+     "events": 53768,
+     "node_cards": {
+      "R16-M1-N0": 2505,
+      "R16-M1-N1": 2489,
+      "R16-M1-N2": 20429,
+      "R16-M1-N3": 1890,
+      "R16-M1-N4": 2516,
+      "R16-M1-N5": 2037,
+      "R16-M1-N6": 2239,
+      "R16-M1-N7": 2225,
+      "R16-M1-N8": 2389,
+      "R16-M1-N9": 2040,
+      "R16-M1-NA": 2142,
+      "R16-M1-NB": 2180,
+      "R16-M1-NC": 2436,
+      "R16-M1-ND": 2041,
+      "R16-M1-NE": 2081,
+      "R16-M1-NF": 2116
+     }
+    }
+   }
+  },
+  "R17": {
+   "events": 74329,
+   "midplanes": {
+    "R17-M0": {
+     "events": 37634,
+     "node_cards": {
+      "R17-M0-N0": 3089,
+      "R17-M0-N1": 2194,
+      "R17-M0-N2": 2096,
+      "R17-M0-N3": 2066,
+      "R17-M0-N4": 2278,
+      "R17-M0-N5": 2085,
+      "R17-M0-N6": 2271,
+      "R17-M0-N7": 2094,
+      "R17-M0-N8": 2670,
+      "R17-M0-N9": 2604,
+      "R17-M0-NA": 2845,
+      "R17-M0-NB": 2002,
+      "R17-M0-NC": 2629,
+      "R17-M0-ND": 2124,
+      "R17-M0-NE": 2183,
+      "R17-M0-NF": 2374
+     }
+    },
+    "R17-M1": {
+     "events": 36695,
+     "node_cards": {
+      "R17-M1-N0": 2349,
+      "R17-M1-N1": 2107,
+      "R17-M1-N2": 2271,
+      "R17-M1-N3": 2156,
+      "R17-M1-N4": 2656,
+      "R17-M1-N5": 2221,
+      "R17-M1-N6": 2049,
+      "R17-M1-N7": 2487,
+      "R17-M1-N8": 2793,
+      "R17-M1-N9": 2879,
+      "R17-M1-NA": 2101,
+      "R17-M1-NB": 2038,
+      "R17-M1-NC": 2378,
+      "R17-M1-ND": 2142,
+      "R17-M1-NE": 1933,
+      "R17-M1-NF": 2104
+     }
+    }
+   }
+  },
+  "R20": {
+   "events": 168667,
+   "midplanes": {
+    "R20-M0": {
+     "events": 83035,
+     "node_cards": {
+      "R20-M0-N0": 4855,
+      "R20-M0-N1": 5250,
+      "R20-M0-N2": 5266,
+      "R20-M0-N3": 5242,
+      "R20-M0-N4": 4956,
+      "R20-M0-N5": 5125,
+      "R20-M0-N6": 5187,
+      "R20-M0-N7": 5206,
+      "R20-M0-N8": 4795,
+      "R20-M0-N9": 5240,
+      "R20-M0-NA": 5118,
+      "R20-M0-NB": 4879,
+      "R20-M0-NC": 6067,
+      "R20-M0-ND": 5274,
+      "R20-M0-NE": 5418,
+      "R20-M0-NF": 5153
+     }
+    },
+    "R20-M1": {
+     "events": 85632,
+     "node_cards": {
+      "R20-M1-N0": 4469,
+      "R20-M1-N1": 4852,
+      "R20-M1-N2": 5045,
+      "R20-M1-N3": 5110,
+      "R20-M1-N4": 4989,
+      "R20-M1-N5": 4944,
+      "R20-M1-N6": 5310,
+      "R20-M1-N7": 5088,
+      "R20-M1-N8": 4533,
+      "R20-M1-N9": 4889,
+      "R20-M1-NA": 5093,
+      "R20-M1-NB": 7729,
+      "R20-M1-NC": 4735,
+      "R20-M1-ND": 5155,
+      "R20-M1-NE": 5580,
+      "R20-M1-NF": 8104
+     }
+    }
+   }
+  },
+  "R21": {
+   "events": 157416,
+   "midplanes": {
+    "R21-M0": {
+     "events": 79363,
+     "node_cards": {
+      "R21-M0-N0": 4639,
+      "R21-M0-N1": 5198,
+      "R21-M0-N2": 5034,
+      "R21-M0-N3": 5017,
+      "R21-M0-N4": 4553,
+      "R21-M0-N5": 4498,
+      "R21-M0-N6": 4664,
+      "R21-M0-N7": 5582,
+      "R21-M0-N8": 4817,
+      "R21-M0-N9": 4777,
+      "R21-M0-NA": 4743,
+      "R21-M0-NB": 4949,
+      "R21-M0-NC": 4578,
+      "R21-M0-ND": 6174,
+      "R21-M0-NE": 5054,
+      "R21-M0-NF": 5080
+     }
+    },
+    "R21-M1": {
+     "events": 78053,
+     "node_cards": {
+      "R21-M1-N0": 4852,
+      "R21-M1-N1": 5129,
+      "R21-M1-N2": 4853,
+      "R21-M1-N3": 6172,
+      "R21-M1-N4": 4892,
+      "R21-M1-N5": 4231,
+      "R21-M1-N6": 4405,
+      "R21-M1-N7": 4802,
+      "R21-M1-N8": 4715,
+      "R21-M1-N9": 5050,
+      "R21-M1-NA": 4804,
+      "R21-M1-NB": 4804,
+      "R21-M1-NC": 4417,
+      "R21-M1-ND": 4912,
+      "R21-M1-NE": 4970,
+      "R21-M1-NF": 5033
+     }
+    }
+   }
+  },
+  "R22": {
+   "events": 135548,
+   "midplanes": {
+    "R22-M0": {
+     "events": 76504,
+     "node_cards": {
+      "R22-M0-N0": 4768,
+      "R22-M0-N1": 4687,
+      "R22-M0-N2": 4579,
+      "R22-M0-N3": 5495,
+      "R22-M0-N4": 5029,
+      "R22-M0-N5": 4520,
+      "R22-M0-N6": 4919,
+      "R22-M0-N7": 5203,
+      "R22-M0-N8": 4758,
+      "R22-M0-N9": 4395,
+      "R22-M0-NA": 4593,
+      "R22-M0-NB": 4754,
+      "R22-M0-NC": 4773,
+      "R22-M0-ND": 4654,
+      "R22-M0-NE": 5064,
+      "R22-M0-NF": 4292
+     }
+    },
+    "R22-M1": {
+     "events": 59044,
+     "node_cards": {
+      "R22-M1-N0": 3215,
+      "R22-M1-N1": 3733,
+      "R22-M1-N2": 3646,
+      "R22-M1-N3": 4581,
+      "R22-M1-N4": 3293,
+      "R22-M1-N5": 3706,
+      "R22-M1-N6": 3758,
+      "R22-M1-N7": 4292,
+      "R22-M1-N8": 3347,
+      "R22-M1-N9": 3630,
+      "R22-M1-NA": 3606,
+      "R22-M1-NB": 3570,
+      "R22-M1-NC": 3303,
+      "R22-M1-ND": 3885,
+      "R22-M1-NE": 3718,
+      "R22-M1-NF": 3746
+     }
+    }
+   }
+  },
+  "R23": {
+   "events": 110629,
+   "midplanes": {
+    "R23-M0": {
+     "events": 56793,
+     "node_cards": {
+      "R23-M0-N0": 4308,
+      "R23-M0-N1": 2897,
+      "R23-M0-N2": 2940,
+      "R23-M0-N3": 2984,
+      "R23-M0-N4": 3605,
+      "R23-M0-N5": 3509,
+      "R23-M0-N6": 3049,
+      "R23-M0-N7": 3348,
+      "R23-M0-N8": 7797,
+      "R23-M0-N9": 2935,
+      "R23-M0-NA": 3470,
+      "R23-M0-NB": 3107,
+      "R23-M0-NC": 3791,
+      "R23-M0-ND": 3092,
+      "R23-M0-NE": 3060,
+      "R23-M0-NF": 2865
+     }
+    },
+    "R23-M1": {
+     "events": 53836,
+     "node_cards": {
+      "R23-M1-N0": 4280,
+      "R23-M1-N1": 4047,
+      "R23-M1-N2": 3345,
+      "R23-M1-N3": 3314,
+      "R23-M1-N4": 3043,
+      "R23-M1-N5": 3522,
+      "R23-M1-N6": 3040,
+      "R23-M1-N7": 3830,
+      "R23-M1-N8": 3217,
+      "R23-M1-N9": 3226,
+      "R23-M1-NA": 3299,
+      "R23-M1-NB": 3367,
+      "R23-M1-NC": 3170,
+      "R23-M1-ND": 3227,
+      "R23-M1-NE": 2919,
+      "R23-M1-NF": 2956
+     }
+    }
+   }
+  },
+  "R24": {
+   "events": 159303,
+   "midplanes": {
+    "R24-M0": {
+     "events": 80841,
+     "node_cards": {
+      "R24-M0-N0": 4729,
+      "R24-M0-N1": 5209,
+      "R24-M0-N2": 5565,
+      "R24-M0-N3": 5189,
+      "R24-M0-N4": 4585,
+      "R24-M0-N5": 5059,
+      "R24-M0-N6": 4703,
+      "R24-M0-N7": 5565,
+      "R24-M0-N8": 5284,
+      "R24-M0-N9": 4648,
+      "R24-M0-NA": 4580,
+      "R24-M0-NB": 5229,
+      "R24-M0-NC": 4681,
+      "R24-M0-ND": 5066,
+      "R24-M0-NE": 5616,
+      "R24-M0-NF": 5128
+     }
+    },
+    "R24-M1": {
+     "events": 78462,
+     "node_cards": {
+      "R24-M1-N0": 4355,
+      "R24-M1-N1": 4717,
+      "R24-M1-N2": 4943,
+      "R24-M1-N3": 5202,
+      "R24-M1-N4": 4536,
+      "R24-M1-N5": 5129,
+      "R24-M1-N6": 4900,
+      "R24-M1-N7": 4658,
+      "R24-M1-N8": 4629,
+      "R24-M1-N9": 4389,
+      "R24-M1-NA": 5056,
+      "R24-M1-NB": 5359,
+      "R24-M1-NC": 4903,
+      "R24-M1-ND": 5116,
+      "R24-M1-NE": 5043,
+      "R24-M1-NF": 5475
+     }
+    }
+   }
+  },
+  "R25": {
+   "events": 153600,
+   "midplanes": {
+    "R25-M0": {
+     "events": 77411,
+     "node_cards": {
+      "R25-M0-N0": 4736,
+      "R25-M0-N1": 5182,
+      "R25-M0-N2": 5980,
+      "R25-M0-N3": 5132,
+      "R25-M0-N4": 4639,
+      "R25-M0-N5": 4715,
+      "R25-M0-N6": 4719,
+      "R25-M0-N7": 4842,
+      "R25-M0-N8": 4510,
+      "R25-M0-N9": 4652,
+      "R25-M0-NA": 4667,
+      "R25-M0-NB": 4703,
+      "R25-M0-NC": 4679,
+      "R25-M0-ND": 4726,
+      "R25-M0-NE": 4727,
+      "R25-M0-NF": 4791
+     }
+    },
+    "R25-M1": {
+     "events": 76189,
+     "node_cards": {
+      "R25-M1-N0": 4972,
+      "R25-M1-N1": 4956,
+      "R25-M1-N2": 4277,
+      "R25-M1-N3": 5462,
+      "R25-M1-N4": 4577,
+      "R25-M1-N5": 4613,
+      "R25-M1-N6": 4460,
+      "R25-M1-N7": 5632,
+      "R25-M1-N8": 5038,
+      "R25-M1-N9": 4987,
+      "R25-M1-NA": 4512,
+      "R25-M1-NB": 4411,
+      "R25-M1-NC": 4282,
+      "R25-M1-ND": 5082,
+      "R25-M1-NE": 4407,
+      "R25-M1-NF": 4380
+     }
+    }
+   }
+  },
+  "R26": {
+   "events": 175531,
+   "midplanes": {
+    "R26-M0": {
+     "events": 98569,
+     "node_cards": {
+      "R26-M0-N0": 19634,
+      "R26-M0-N1": 4905,
+      "R26-M0-N2": 5019,
+      "R26-M0-N3": 5057,
+      "R26-M0-N4": 4571,
+      "R26-M0-N5": 4970,
+      "R26-M0-N6": 4971,
+      "R26-M0-N7": 4882,
+      "R26-M0-N8": 5046,
+      "R26-M0-N9": 4915,
+      "R26-M0-NA": 5264,
+      "R26-M0-NB": 9725,
+      "R26-M0-NC": 4572,
+      "R26-M0-ND": 4966,
+      "R26-M0-NE": 5083,
+      "R26-M0-NF": 4985
+     }
+    },
+    "R26-M1": {
+     "events": 76962,
+     "node_cards": {
+      "R26-M1-N0": 4216,
+      "R26-M1-N1": 5109,
+      "R26-M1-N2": 5178,
+      "R26-M1-N3": 4932,
+      "R26-M1-N4": 4829,
+      "R26-M1-N5": 4962,
+      "R26-M1-N6": 4957,
+      "R26-M1-N7": 4891,
+      "R26-M1-N8": 4212,
+      "R26-M1-N9": 4779,
+      "R26-M1-NA": 4834,
+      "R26-M1-NB": 4698,
+      "R26-M1-NC": 4489,
+      "R26-M1-ND": 5011,
+      "R26-M1-NE": 4900,
+      "R26-M1-NF": 4877
+     }
+    }
+   }
+  },
+  "R27": {
+   "events": 158250,
+   "midplanes": {
+    "R27-M0": {
+     "events": 81638,
+     "node_cards": {
+      "R27-M0-N0": 4624,
+      "R27-M0-N1": 4980,
+      "R27-M0-N2": 5359,
+      "R27-M0-N3": 5105,
+      "R27-M0-N4": 4976,
+      "R27-M0-N5": 5397,
+      "R27-M0-N6": 5360,
+      "R27-M0-N7": 5151,
+      "R27-M0-N8": 4798,
+      "R27-M0-N9": 5192,
+      "R27-M0-NA": 5231,
+      "R27-M0-NB": 5238,
+      "R27-M0-NC": 4931,
+      "R27-M0-ND": 5227,
+      "R27-M0-NE": 5284,
+      "R27-M0-NF": 4767
+     }
+    },
+    "R27-M1": {
+     "events": 76612,
+     "node_cards": {
+      "R27-M1-N0": 4668,
+      "R27-M1-N1": 4993,
+      "R27-M1-N2": 4852,
+      "R27-M1-N3": 4918,
+      "R27-M1-N4": 4276,
+      "R27-M1-N5": 4796,
+      "R27-M1-N6": 4859,
+      "R27-M1-N7": 4672,
+      "R27-M1-N8": 5111,
+      "R27-M1-N9": 5051,
+      "R27-M1-NA": 4835,
+      "R27-M1-NB": 4809,
+      "R27-M1-NC": 4348,
+      "R27-M1-ND": 4560,
+      "R27-M1-NE": 4286,
+      "R27-M1-NF": 4900
+     }
+    }
+   }
+  },
+  "R30": {
+   "events": 259341,
+   "midplanes": {
+    "R30-M0": {
+     "events": 208025,
+     "node_cards": {
+      "R30-M0-N0": 2983,
+      "R30-M0-N1": 3711,
+      "R30-M0-N2": 3462,
+      "R30-M0-N3": 3408,
+      "R30-M0-N4": 2865,
+      "R30-M0-N5": 3139,
+      "R30-M0-N6": 3088,
+      "R30-M0-N7": 8080,
+      "R30-M0-N8": 3263,
+      "R30-M0-N9": 155360,
+      "R30-M0-NA": 2799,
+      "R30-M0-NB": 3386,
+      "R30-M0-NC": 2935,
+      "R30-M0-ND": 3441,
+      "R30-M0-NE": 3082,
+      "R30-M0-NF": 2989
+     }
+    },
+    "R30-M1": {
+     "events": 51316,
+     "node_cards": {
+      "R30-M1-N0": 3093,
+      "R30-M1-N1": 3134,
+      "R30-M1-N2": 3477,
+      "R30-M1-N3": 3091,
+      "R30-M1-N4": 2998,
+      "R30-M1-N5": 3131,
+      "R30-M1-N6": 3172,
+      "R30-M1-N7": 3141,
+      "R30-M1-N8": 3146,
+      "R30-M1-N9": 3327,
+      "R30-M1-NA": 3287,
+      "R30-M1-NB": 3202,
+      "R30-M1-NC": 3434,
+      "R30-M1-ND": 3109,
+      "R30-M1-NE": 3348,
+      "R30-M1-NF": 3203
+     }
+    }
+   }
+  },
+  "R31": {
+   "events": 105940,
+   "midplanes": {
+    "R31-M0": {
+     "events": 52185,
+     "node_cards": {
+      "R31-M0-N0": 3508,
+      "R31-M0-N1": 3561,
+      "R31-M0-N2": 3348,
+      "R31-M0-N3": 3332,
+      "R31-M0-N4": 2971,
+      "R31-M0-N5": 2932,
+      "R31-M0-N6": 2904,
+      "R31-M0-N7": 3378,
+      "R31-M0-N8": 3096,
+      "R31-M0-N9": 3508,
+      "R31-M0-NA": 3336,
+      "R31-M0-NB": 3410,
+      "R31-M0-NC": 2800,
+      "R31-M0-ND": 3302,
+      "R31-M0-NE": 3368,
+      "R31-M0-NF": 3400
+     }
+    },
+    "R31-M1": {
+     "events": 53755,
+     "node_cards": {
+      "R31-M1-N0": 3088,
+      "R31-M1-N1": 3454,
+      "R31-M1-N2": 3436,
+      "R31-M1-N3": 3082,
+      "R31-M1-N4": 3122,
+      "R31-M1-N5": 3486,
+      "R31-M1-N6": 3582,
+      "R31-M1-N7": 4037,
+      "R31-M1-N8": 3194,
+      "R31-M1-N9": 3500,
+      "R31-M1-NA": 3146,
+      "R31-M1-NB": 3180,
+      "R31-M1-NC": 2942,
+      "R31-M1-ND": 3053,
+      "R31-M1-NE": 3488,
+      "R31-M1-NF": 3940
+     }
+    }
+   }
+  },
+  "R32": {
+   "events": 102347,
+   "midplanes": {
+    "R32-M0": {
+     "events": 49656,
+     "node_cards": {
+      "R32-M0-N0": 2984,
+      "R32-M0-N1": 2798,
+      "R32-M0-N2": 2879,
+      "R32-M0-N3": 2998,
+      "R32-M0-N4": 3189,
+      "R32-M0-N5": 3064,
+      "R32-M0-N6": 3078,
+      "R32-M0-N7": 3179,
+      "R32-M0-N8": 2713,
+      "R32-M0-N9": 3437,
+      "R32-M0-NA": 2718,
+      "R32-M0-NB": 3824,
+      "R32-M0-NC": 2867,
+      "R32-M0-ND": 2858,
+      "R32-M0-NE": 3114,
+      "R32-M0-NF": 3940
+     }
+    },
+    "R32-M1": {
+     "events": 52691,
+     "node_cards": {
+      "R32-M1-N0": 3082,
+      "R32-M1-N1": 2974,
+      "R32-M1-N2": 3009,
+      "R32-M1-N3": 3115,
+      "R32-M1-N4": 2956,
+      "R32-M1-N5": 4115,
+      "R32-M1-N6": 3650,
+      "R32-M1-N7": 3673,
+      "R32-M1-N8": 3741,
+      "R32-M1-N9": 4046,
+      "R32-M1-NA": 2980,
+      "R32-M1-NB": 2866,
+      "R32-M1-NC": 3325,
+      "R32-M1-ND": 3084,
+      "R32-M1-NE": 2858,
+      "R32-M1-NF": 3197
+     }
+    }
+   }
+  },
+  "R33": {
+   "events": 108011,
+   "midplanes": {
+    "R33-M0": {
+     "events": 53523,
+     "node_cards": {
+      "R33-M0-N0": 3369,
+      "R33-M0-N1": 3297,
+      "R33-M0-N2": 3365,
+      "R33-M0-N3": 3376,
+      "R33-M0-N4": 2889,
+      "R33-M0-N5": 3444,
+      "R33-M0-N6": 3795,
+      "R33-M0-N7": 3396,
+      "R33-M0-N8": 3267,
+      "R33-M0-N9": 3562,
+      "R33-M0-NA": 3189,
+      "R33-M0-NB": 3312,
+      "R33-M0-NC": 2998,
+      "R33-M0-ND": 3733,
+      "R33-M0-NE": 3497,
+      "R33-M0-NF": 2994
+     }
+    },
+    "R33-M1": {
+     "events": 54488,
+     "node_cards": {
+      "R33-M1-N0": 3098,
+      "R33-M1-N1": 3612,
+      "R33-M1-N2": 3628,
+      "R33-M1-N3": 3717,
+      "R33-M1-N4": 2956,
+      "R33-M1-N5": 3488,
+      "R33-M1-N6": 3440,
+      "R33-M1-N7": 3511,
+      "R33-M1-N8": 2947,
+      "R33-M1-N9": 3479,
+      "R33-M1-NA": 3342,
+      "R33-M1-NB": 3517,
+      "R33-M1-NC": 3228,
+      "R33-M1-ND": 3579,
+      "R33-M1-NE": 3444,
+      "R33-M1-NF": 3212
+     }
+    }
+   }
+  },
+  "R34": {
+   "events": 107913,
+   "midplanes": {
+    "R34-M0": {
+     "events": 50828,
+     "node_cards": {
+      "R34-M0-N0": 2810,
+      "R34-M0-N1": 3277,
+      "R34-M0-N2": 3295,
+      "R34-M0-N3": 3301,
+      "R34-M0-N4": 3148,
+      "R34-M0-N5": 3403,
+      "R34-M0-N6": 3218,
+      "R34-M0-N7": 3434,
+      "R34-M0-N8": 2887,
+      "R34-M0-N9": 3417,
+      "R34-M0-NA": 3139,
+      "R34-M0-NB": 3130,
+      "R34-M0-NC": 2957,
+      "R34-M0-ND": 3000,
+      "R34-M0-NE": 3171,
+      "R34-M0-NF": 3220
+     }
+    },
+    "R34-M1": {
+     "events": 57085,
+     "node_cards": {
+      "R34-M1-N0": 3103,
+      "R34-M1-N1": 3156,
+      "R34-M1-N2": 3112,
+      "R34-M1-N3": 3949,
+      "R34-M1-N4": 3508,
+      "R34-M1-N5": 3368,
+      "R34-M1-N6": 4566,
+      "R34-M1-N7": 3239,
+      "R34-M1-N8": 4460,
+      "R34-M1-N9": 3237,
+      "R34-M1-NA": 3339,
+      "R34-M1-NB": 4424,
+      "R34-M1-NC": 3153,
+      "R34-M1-ND": 3174,
+      "R34-M1-NE": 3984,
+      "R34-M1-NF": 3295
+     }
+    }
+   }
+  },
+  "R35": {
+   "events": 103105,
+   "midplanes": {
+    "R35-M0": {
+     "events": 49977,
+     "node_cards": {
+      "R35-M0-N0": 6868,
+      "R35-M0-N1": 3089,
+      "R35-M0-N2": 2918,
+      "R35-M0-N3": 3066,
+      "R35-M0-N4": 2716,
+      "R35-M0-N5": 2716,
+      "R35-M0-N6": 2957,
+      "R35-M0-N7": 2803,
+      "R35-M0-N8": 2836,
+      "R35-M0-N9": 2893,
+      "R35-M0-NA": 3040,
+      "R35-M0-NB": 2864,
+      "R35-M0-NC": 2668,
+      "R35-M0-ND": 2651,
+      "R35-M0-NE": 3226,
+      "R35-M0-NF": 2644
+     }
+    },
+    "R35-M1": {
+     "events": 53128,
+     "node_cards": {
+      "R35-M1-N0": 3171,
+      "R35-M1-N1": 3174,
+      "R35-M1-N2": 3333,
+      "R35-M1-N3": 3271,
+      "R35-M1-N4": 3514,
+      "R35-M1-N5": 3092,
+      "R35-M1-N6": 3190,
+      "R35-M1-N7": 3171,
+      "R35-M1-N8": 3205,
+      "R35-M1-N9": 4344,
+      "R35-M1-NA": 4101,
+      "R35-M1-NB": 2992,
+      "R35-M1-NC": 2880,
+      "R35-M1-ND": 3026,
+      "R35-M1-NE": 2973,
+      "R35-M1-NF": 3664
+     }
+    }
+   }
+  },
+  "R36": {
+   "events": 114274,
+   "midplanes": {
+    "R36-M0": {
+     "events": 54932,
+     "node_cards": {
+      "R36-M0-N0": 3058,
+      "R36-M0-N1": 3599,
+      "R36-M0-N2": 3455,
+      "R36-M0-N3": 3463,
+      "R36-M0-N4": 3239,
+      "R36-M0-N5": 4146,
+      "R36-M0-N6": 3379,
+      "R36-M0-N7": 3475,
+      "R36-M0-N8": 3053,
+      "R36-M0-N9": 3439,
+      "R36-M0-NA": 3662,
+      "R36-M0-NB": 3339,
+      "R36-M0-NC": 3218,
+      "R36-M0-ND": 3616,
+      "R36-M0-NE": 3399,
+      "R36-M0-NF": 3373
+     }
+    },
+    "R36-M1": {
+     "events": 59342,
+     "node_cards": {
+      "R36-M1-N0": 3725,
+      "R36-M1-N1": 3528,
+      "R36-M1-N2": 3710,
+      "R36-M1-N3": 3566,
+      "R36-M1-N4": 3126,
+      "R36-M1-N5": 3629,
+      "R36-M1-N6": 3598,
+      "R36-M1-N7": 3529,
+      "R36-M1-N8": 3476,
+      "R36-M1-N9": 4300,
+      "R36-M1-NA": 4129,
+      "R36-M1-NB": 4188,
+      "R36-M1-NC": 3525,
+      "R36-M1-ND": 3779,
+      "R36-M1-NE": 3754,
+      "R36-M1-NF": 3758
+     }
+    }
+   }
+  },
+  "R37": {
+   "events": 147371,
+   "midplanes": {
+    "R37-M0": {
+     "events": 55198,
+     "node_cards": {
+      "R37-M0-N0": 3227,
+      "R37-M0-N1": 3632,
+      "R37-M0-N2": 3416,
+      "R37-M0-N3": 3356,
+      "R37-M0-N4": 2953,
+      "R37-M0-N5": 3331,
+      "R37-M0-N6": 3439,
+      "R37-M0-N7": 3322,
+      "R37-M0-N8": 3125,
+      "R37-M0-N9": 3575,
+      "R37-M0-NA": 3598,
+      "R37-M0-NB": 3736,
+      "R37-M0-NC": 3526,
+      "R37-M0-ND": 3518,
+      "R37-M0-NE": 3527,
+      "R37-M0-NF": 3881
+     }
+    },
+    "R37-M1": {
+     "events": 92173,
+     "node_cards": {
+      "R37-M1-N0": 3096,
+      "R37-M1-N1": 3680,
+      "R37-M1-N2": 3725,
+      "R37-M1-N3": 3590,
+      "R37-M1-N4": 3327,
+      "R37-M1-N5": 3762,
+      "R37-M1-N6": 3649,
+      "R37-M1-N7": 3633,
+      "R37-M1-N8": 3054,
+      "R37-M1-N9": 3596,
+      "R37-M1-NA": 3691,
+      "R37-M1-NB": 3700,
+      "R37-M1-NC": 38345,
+      "R37-M1-ND": 3764,
+      "R37-M1-NE": 3676,
+      "R37-M1-NF": 3855
+     }
+    }
+   }
+  },
+  "R40": {
+   "events": 17717,
+   "midplanes": {
+    "R40-M0": {
+     "events": 8786,
+     "node_cards": {
+      "R40-M0-N0": 942,
+      "R40-M0-N1": 295,
+      "R40-M0-N2": 313,
+      "R40-M0-N3": 304,
+      "R40-M0-N4": 962,
+      "R40-M0-N5": 298,
+      "R40-M0-N6": 300,
+      "R40-M0-N7": 306,
+      "R40-M0-N8": 944,
+      "R40-M0-N9": 317,
+      "R40-M0-NA": 342,
+      "R40-M0-NB": 900,
+      "R40-M0-NC": 951,
+      "R40-M0-ND": 278,
+      "R40-M0-NE": 1010,
+      "R40-M0-NF": 320
+     }
+    },
+    "R40-M1": {
+     "events": 8931,
+     "node_cards": {
+      "R40-M1-N0": 969,
+      "R40-M1-N1": 881,
+      "R40-M1-N2": 311,
+      "R40-M1-N3": 339,
+      "R40-M1-N4": 967,
+      "R40-M1-N5": 329,
+      "R40-M1-N6": 382,
+      "R40-M1-N7": 315,
+      "R40-M1-N8": 971,
+      "R40-M1-N9": 349,
+      "R40-M1-NA": 346,
+      "R40-M1-NB": 381,
+      "R40-M1-NC": 975,
+      "R40-M1-ND": 405,
+      "R40-M1-NE": 653,
+      "R40-M1-NF": 353
+     }
+    }
+   }
+  },
+  "R41": {
+   "events": 18305,
+   "midplanes": {
+    "R41-M0": {
+     "events": 8730,
+     "node_cards": {
+      "R41-M0-N0": 1078,
+      "R41-M0-N1": 327,
+      "R41-M0-N2": 342,
+      "R41-M0-N3": 344,
+      "R41-M0-N4": 984,
+      "R41-M0-N5": 347,
+      "R41-M0-N6": 332,
+      "R41-M0-N7": 333,
+      "R41-M0-N8": 999,
+      "R41-M0-N9": 325,
+      "R41-M0-NA": 405,
+      "R41-M0-NB": 350,
+      "R41-M0-NC": 1413,
+      "R41-M0-ND": 331,
+      "R41-M0-NE": 486,
+      "R41-M0-NF": 330
+     }
+    },
+    "R41-M1": {
+     "events": 9575,
+     "node_cards": {
+      "R41-M1-N0": 999,
+      "R41-M1-N1": 350,
+      "R41-M1-N2": 375,
+      "R41-M1-N3": 378,
+      "R41-M1-N4": 1012,
+      "R41-M1-N5": 341,
+      "R41-M1-N6": 719,
+      "R41-M1-N7": 360,
+      "R41-M1-N8": 1136,
+      "R41-M1-N9": 443,
+      "R41-M1-NA": 377,
+      "R41-M1-NB": 735,
+      "R41-M1-NC": 969,
+      "R41-M1-ND": 360,
+      "R41-M1-NE": 603,
+      "R41-M1-NF": 410
+     }
+    }
+   }
+  },
+  "R42": {
+   "events": 17022,
+   "midplanes": {
+    "R42-M0": {
+     "events": 8363,
+     "node_cards": {
+      "R42-M0-N0": 953,
+      "R42-M0-N1": 299,
+      "R42-M0-N2": 299,
+      "R42-M0-N3": 305,
+      "R42-M0-N4": 1056,
+      "R42-M0-N5": 328,
+      "R42-M0-N6": 459,
+      "R42-M0-N7": 366,
+      "R42-M0-N8": 924,
+      "R42-M0-N9": 320,
+      "R42-M0-NA": 307,
+      "R42-M0-NB": 320,
+      "R42-M0-NC": 892,
+      "R42-M0-ND": 881,
+      "R42-M0-NE": 300,
+      "R42-M0-NF": 349
+     }
+    },
+    "R42-M1": {
+     "events": 8659,
+     "node_cards": {
+      "R42-M1-N0": 1011,
+      "R42-M1-N1": 271,
+      "R42-M1-N2": 278,
+      "R42-M1-N3": 555,
+      "R42-M1-N4": 953,
+      "R42-M1-N5": 339,
+      "R42-M1-N6": 492,
+      "R42-M1-N7": 434,
+      "R42-M1-N8": 968,
+      "R42-M1-N9": 270,
+      "R42-M1-NA": 280,
+      "R42-M1-NB": 296,
+      "R42-M1-NC": 949,
+      "R42-M1-ND": 960,
+      "R42-M1-NE": 295,
+      "R42-M1-NF": 302
+     }
+    }
+   }
+  },
+  "R43": {
+   "events": 17383,
+   "midplanes": {
+    "R43-M0": {
+     "events": 8739,
+     "node_cards": {
+      "R43-M0-N0": 949,
+      "R43-M0-N1": 349,
+      "R43-M0-N2": 276,
+      "R43-M0-N3": 281,
+      "R43-M0-N4": 991,
+      "R43-M0-N5": 302,
+      "R43-M0-N6": 311,
+      "R43-M0-N7": 335,
+      "R43-M0-N8": 994,
+      "R43-M0-N9": 466,
+      "R43-M0-NA": 284,
+      "R43-M0-NB": 493,
+      "R43-M0-NC": 1753,
+      "R43-M0-ND": 283,
+      "R43-M0-NE": 335,
+      "R43-M0-NF": 310
+     }
+    },
+    "R43-M1": {
+     "events": 8644,
+     "node_cards": {
+      "R43-M1-N0": 981,
+      "R43-M1-N1": 369,
+      "R43-M1-N2": 457,
+      "R43-M1-N3": 325,
+      "R43-M1-N4": 911,
+      "R43-M1-N5": 425,
+      "R43-M1-N6": 932,
+      "R43-M1-N7": 337,
+      "R43-M1-N8": 1023,
+      "R43-M1-N9": 307,
+      "R43-M1-NA": 332,
+      "R43-M1-NB": 279,
+      "R43-M1-NC": 985,
+      "R43-M1-ND": 281,
+      "R43-M1-NE": 297,
+      "R43-M1-NF": 367
+     }
+    }
+   }
+  },
+  "R44": {
+   "events": 20973,
+   "midplanes": {
+    "R44-M0": {
+     "events": 8513,
+     "node_cards": {
+      "R44-M0-N0": 933,
+      "R44-M0-N1": 341,
+      "R44-M0-N2": 318,
+      "R44-M0-N3": 383,
+      "R44-M0-N4": 947,
+      "R44-M0-N5": 351,
+      "R44-M0-N6": 341,
+      "R44-M0-N7": 305,
+      "R44-M0-N8": 966,
+      "R44-M0-N9": 343,
+      "R44-M0-NA": 332,
+      "R44-M0-NB": 936,
+      "R44-M0-NC": 1005,
+      "R44-M0-ND": 302,
+      "R44-M0-NE": 368,
+      "R44-M0-NF": 338
+     }
+    },
+    "R44-M1": {
+     "events": 12460,
+     "node_cards": {
+      "R44-M1-N0": 1145,
+      "R44-M1-N1": 517,
+      "R44-M1-N2": 470,
+      "R44-M1-N3": 488,
+      "R44-M1-N4": 2672,
+      "R44-M1-N5": 458,
+      "R44-M1-N6": 466,
+      "R44-M1-N7": 537,
+      "R44-M1-N8": 1141,
+      "R44-M1-N9": 541,
+      "R44-M1-NA": 464,
+      "R44-M1-NB": 803,
+      "R44-M1-NC": 1149,
+      "R44-M1-ND": 356,
+      "R44-M1-NE": 688,
+      "R44-M1-NF": 551
+     }
+    }
+   }
+  },
+  "R45": {
+   "events": 20335,
+   "midplanes": {
+    "R45-M0": {
+     "events": 10396,
+     "node_cards": {
+      "R45-M0-N0": 968,
+      "R45-M0-N1": 321,
+      "R45-M0-N2": 495,
+      "R45-M0-N3": 336,
+      "R45-M0-N4": 1465,
+      "R45-M0-N5": 292,
+      "R45-M0-N6": 454,
+      "R45-M0-N7": 1431,
+      "R45-M0-N8": 1103,
+      "R45-M0-N9": 690,
+      "R45-M0-NA": 325,
+      "R45-M0-NB": 329,
+      "R45-M0-NC": 1104,
+      "R45-M0-ND": 295,
+      "R45-M0-NE": 379,
+      "R45-M0-NF": 309
+     }
+    },
+    "R45-M1": {
+     "events": 9939,
+     "node_cards": {
+      "R45-M1-N0": 975,
+      "R45-M1-N1": 323,
+      "R45-M1-N2": 363,
+      "R45-M1-N3": 304,
+      "R45-M1-N4": 1111,
+      "R45-M1-N5": 303,
+      "R45-M1-N6": 307,
+      "R45-M1-N7": 350,
+      "R45-M1-N8": 991,
+      "R45-M1-N9": 338,
+      "R45-M1-NA": 2147,
+      "R45-M1-NB": 349,
+      "R45-M1-NC": 1039,
+      "R45-M1-ND": 336,
+      "R45-M1-NE": 360,
+      "R45-M1-NF": 337
+     }
+    }
+   }
+  },
+  "R46": {
+   "events": 19490,
+   "midplanes": {
+    "R46-M0": {
+     "events": 8446,
+     "node_cards": {
+      "R46-M0-N0": 849,
+      "R46-M0-N1": 394,
+      "R46-M0-N2": 271,
+      "R46-M0-N3": 268,
+      "R46-M0-N4": 1120,
+      "R46-M0-N5": 281,
+      "R46-M0-N6": 269,
+      "R46-M0-N7": 299,
+      "R46-M0-N8": 831,
+      "R46-M0-N9": 267,
+      "R46-M0-NA": 270,
+      "R46-M0-NB": 287,
+      "R46-M0-NC": 1766,
+      "R46-M0-ND": 711,
+      "R46-M0-NE": 265,
+      "R46-M0-NF": 294
+     }
+    },
+    "R46-M1": {
+     "events": 11044,
+     "node_cards": {
+      "R46-M1-N0": 1018,
+      "R46-M1-N1": 394,
+      "R46-M1-N2": 395,
+      "R46-M1-N3": 401,
+      "R46-M1-N4": 1023,
+      "R46-M1-N5": 699,
+      "R46-M1-N6": 698,
+      "R46-M1-N7": 396,
+      "R46-M1-N8": 1047,
+      "R46-M1-N9": 402,
+      "R46-M1-NA": 1516,
+      "R46-M1-NB": 680,
+      "R46-M1-NC": 1108,
+      "R46-M1-ND": 451,
+      "R46-M1-NE": 407,
+      "R46-M1-NF": 402
+     }
+    }
+   }
+  },
+  "R47": {
+   "events": 19993,
+   "midplanes": {
+    "R47-M0": {
+     "events": 8887,
+     "node_cards": {
+      "R47-M0-N0": 1251,
+      "R47-M0-N1": 271,
+      "R47-M0-N2": 316,
+      "R47-M0-N3": 283,
+      "R47-M0-N4": 1994,
+      "R47-M0-N5": 270,
+      "R47-M0-N6": 273,
+      "R47-M0-N7": 353,
+      "R47-M0-N8": 930,
+      "R47-M0-N9": 263,
+      "R47-M0-NA": 289,
+      "R47-M0-NB": 264,
+      "R47-M0-NC": 1019,
+      "R47-M0-ND": 275,
+      "R47-M0-NE": 276,
+      "R47-M0-NF": 549
+     }
+    },
+    "R47-M1": {
+     "events": 11106,
+     "node_cards": {
+      "R47-M1-N0": 944,
+      "R47-M1-N1": 437,
+      "R47-M1-N2": 855,
+      "R47-M1-N3": 392,
+      "R47-M1-N4": 3170,
+      "R47-M1-N5": 366,
+      "R47-M1-N6": 393,
+      "R47-M1-N7": 374,
+      "R47-M1-N8": 875,
+      "R47-M1-N9": 336,
+      "R47-M1-NA": 540,
+      "R47-M1-NB": 324,
+      "R47-M1-NC": 1015,
+      "R47-M1-ND": 339,
+      "R47-M1-NE": 364,
+      "R47-M1-NF": 365
+     }
+    }
+   }
+  },
+  "R50": {
+   "events": 16346,
+   "midplanes": {
+    "R50-M0": {
+     "events": 8863,
+     "node_cards": {
+      "R50-M0-N0": 928,
+      "R50-M0-N1": 391,
+      "R50-M0-N2": 584,
+      "R50-M0-N3": 270,
+      "R50-M0-N4": 1088,
+      "R50-M0-N5": 301,
+      "R50-M0-N6": 578,
+      "R50-M0-N7": 316,
+      "R50-M0-N8": 888,
+      "R50-M0-N9": 352,
+      "R50-M0-NA": 568,
+      "R50-M0-NB": 259,
+      "R50-M0-NC": 1007,
+      "R50-M0-ND": 296,
+      "R50-M0-NE": 303,
+      "R50-M0-NF": 726
+     }
+    },
+    "R50-M1": {
+     "events": 7483,
+     "node_cards": {
+      "R50-M1-N0": 1054,
+      "R50-M1-N1": 315,
+      "R50-M1-N2": 266,
+      "R50-M1-N3": 292,
+      "R50-M1-N4": 927,
+      "R50-M1-N5": 276,
+      "R50-M1-N6": 313,
+      "R50-M1-N7": 271,
+      "R50-M1-N8": 906,
+      "R50-M1-N9": 257,
+      "R50-M1-NA": 282,
+      "R50-M1-NB": 258,
+      "R50-M1-NC": 1089,
+      "R50-M1-ND": 279,
+      "R50-M1-NE": 332,
+      "R50-M1-NF": 358
+     }
+    }
+   }
+  },
+  "R51": {
+   "events": 20319,
+   "midplanes": {
+    "R51-M0": {
+     "events": 8428,
+     "node_cards": {
+      "R51-M0-N0": 984,
+      "R51-M0-N1": 284,
+      "R51-M0-N2": 264,
+      "R51-M0-N3": 357,
+      "R51-M0-N4": 974,
+      "R51-M0-N5": 281,
+      "R51-M0-N6": 342,
+      "R51-M0-N7": 268,
+      "R51-M0-N8": 1071,
+      "R51-M0-N9": 443,
+      "R51-M0-NA": 290,
+      "R51-M0-NB": 276,
+      "R51-M0-NC": 1003,
+      "R51-M0-ND": 993,
+      "R51-M0-NE": 263,
+      "R51-M0-NF": 327
+     }
+    },
+    "R51-M1": {
+     "events": 11891,
+     "node_cards": {
+      "R51-M1-N0": 1128,
+      "R51-M1-N1": 461,
+      "R51-M1-N2": 748,
+      "R51-M1-N3": 437,
+      "R51-M1-N4": 2474,
+      "R51-M1-N5": 440,
+      "R51-M1-N6": 434,
+      "R51-M1-N7": 794,
+      "R51-M1-N8": 1088,
+      "R51-M1-N9": 441,
+      "R51-M1-NA": 558,
+      "R51-M1-NB": 420,
+      "R51-M1-NC": 1185,
+      "R51-M1-ND": 455,
+      "R51-M1-NE": 410,
+      "R51-M1-NF": 401
+     }
+    }
+   }
+  },
+  "R52": {
+   "events": 16557,
+   "midplanes": {
+    "R52-M0": {
+     "events": 8800,
+     "node_cards": {
+      "R52-M0-N0": 896,
+      "R52-M0-N1": 270,
+      "R52-M0-N2": 398,
+      "R52-M0-N3": 305,
+      "R52-M0-N4": 1690,
+      "R52-M0-N5": 280,
+      "R52-M0-N6": 295,
+      "R52-M0-N7": 333,
+      "R52-M0-N8": 884,
+      "R52-M0-N9": 258,
+      "R52-M0-NA": 318,
+      "R52-M0-NB": 511,
+      "R52-M0-NC": 1336,
+      "R52-M0-ND": 490,
+      "R52-M0-NE": 271,
+      "R52-M0-NF": 257
+     }
+    },
+    "R52-M1": {
+     "events": 7757,
+     "node_cards": {
+      "R52-M1-N0": 954,
+      "R52-M1-N1": 275,
+      "R52-M1-N2": 271,
+      "R52-M1-N3": 572,
+      "R52-M1-N4": 954,
+      "R52-M1-N5": 270,
+      "R52-M1-N6": 320,
+      "R52-M1-N7": 277,
+      "R52-M1-N8": 946,
+      "R52-M1-N9": 318,
+      "R52-M1-NA": 508,
+      "R52-M1-NB": 269,
+      "R52-M1-NC": 969,
+      "R52-M1-ND": 281,
+      "R52-M1-NE": 289,
+      "R52-M1-NF": 270
+     }
+    }
+   }
+  },
+  "R53": {
+   "events": 20890,
+   "midplanes": {
+    "R53-M0": {
+     "events": 10375,
+     "node_cards": {
+      "R53-M0-N0": 1039,
+      "R53-M0-N1": 405,
+      "R53-M0-N2": 643,
+      "R53-M0-N3": 621,
+      "R53-M0-N4": 1995,
+      "R53-M0-N5": 304,
+      "R53-M0-N6": 369,
+      "R53-M0-N7": 321,
+      "R53-M0-N8": 989,
+      "R53-M0-N9": 336,
+      "R53-M0-NA": 399,
+      "R53-M0-NB": 342,
+      "R53-M0-NC": 1059,
+      "R53-M0-ND": 835,
+      "R53-M0-NE": 345,
+      "R53-M0-NF": 344
+     }
+    },
+    "R53-M1": {
+     "events": 10515,
+     "node_cards": {
+      "R53-M1-N0": 1522,
+      "R53-M1-N1": 342,
+      "R53-M1-N2": 318,
+      "R53-M1-N3": 460,
+      "R53-M1-N4": 1800,
+      "R53-M1-N5": 462,
+      "R53-M1-N6": 354,
+      "R53-M1-N7": 361,
+      "R53-M1-N8": 992,
+      "R53-M1-N9": 499,
+      "R53-M1-NA": 311,
+      "R53-M1-NB": 697,
+      "R53-M1-NC": 1142,
+      "R53-M1-ND": 498,
+      "R53-M1-NE": 395,
+      "R53-M1-NF": 331
+     }
+    }
+   }
+  },
+  "R54": {
+   "events": 16878,
+   "midplanes": {
+    "R54-M0": {
+     "events": 8148,
+     "node_cards": {
+      "R54-M0-N0": 981,
+      "R54-M0-N1": 341,
+      "R54-M0-N2": 349,
+      "R54-M0-N3": 411,
+      "R54-M0-N4": 994,
+      "R54-M0-N5": 308,
+      "R54-M0-N6": 281,
+      "R54-M0-N7": 267,
+      "R54-M0-N8": 911,
+      "R54-M0-N9": 305,
+      "R54-M0-NA": 592,
+      "R54-M0-NB": 262,
+      "R54-M0-NC": 890,
+      "R54-M0-ND": 357,
+      "R54-M0-NE": 557,
+      "R54-M0-NF": 333
+     }
+    },
+    "R54-M1": {
+     "events": 8730,
+     "node_cards": {
+      "R54-M1-N0": 967,
+      "R54-M1-N1": 295,
+      "R54-M1-N2": 298,
+      "R54-M1-N3": 304,
+      "R54-M1-N4": 1251,
+      "R54-M1-N5": 275,
+      "R54-M1-N6": 336,
+      "R54-M1-N7": 335,
+      "R54-M1-N8": 991,
+      "R54-M1-N9": 314,
+      "R54-M1-NA": 303,
+      "R54-M1-NB": 314,
+      "R54-M1-NC": 1708,
+      "R54-M1-ND": 296,
+      "R54-M1-NE": 356,
+      "R54-M1-NF": 379
+     }
+    }
+   }
+  },
+  "R55": {
+   "events": 22887,
+   "midplanes": {
+    "R55-M0": {
+     "events": 13297,
+     "node_cards": {
+      "R55-M0-N0": 1121,
+      "R55-M0-N1": 333,
+      "R55-M0-N2": 747,
+      "R55-M0-N3": 351,
+      "R55-M0-N4": 991,
+      "R55-M0-N5": 314,
+      "R55-M0-N6": 307,
+      "R55-M0-N7": 327,
+      "R55-M0-N8": 961,
+      "R55-M0-N9": 5130,
+      "R55-M0-NA": 360,
+      "R55-M0-NB": 297,
+      "R55-M0-NC": 1033,
+      "R55-M0-ND": 370,
+      "R55-M0-NE": 303,
+      "R55-M0-NF": 342
+     }
+    },
+    "R55-M1": {
+     "events": 9590,
+     "node_cards": {
+      "R55-M1-N0": 973,
+      "R55-M1-N1": 308,
+      "R55-M1-N2": 327,
+      "R55-M1-N3": 1067,
+      "R55-M1-N4": 999,
+      "R55-M1-N5": 306,
+      "R55-M1-N6": 314,
+      "R55-M1-N7": 811,
+      "R55-M1-N8": 968,
+      "R55-M1-N9": 304,
+      "R55-M1-NA": 283,
+      "R55-M1-NB": 331,
+      "R55-M1-NC": 1012,
+      "R55-M1-ND": 803,
+      "R55-M1-NE": 343,
+      "R55-M1-NF": 342
+     }
+    }
+   }
+  },
+  "R56": {
+   "events": 20293,
+   "midplanes": {
+    "R56-M0": {
+     "events": 10702,
+     "node_cards": {
+      "R56-M0-N0": 1073,
+      "R56-M0-N1": 394,
+      "R56-M0-N2": 380,
+      "R56-M0-N3": 365,
+      "R56-M0-N4": 1220,
+      "R56-M0-N5": 365,
+      "R56-M0-N6": 368,
+      "R56-M0-N7": 369,
+      "R56-M0-N8": 1504,
+      "R56-M0-N9": 391,
+      "R56-M0-NA": 1015,
+      "R56-M0-NB": 407,
+      "R56-M0-NC": 1065,
+      "R56-M0-ND": 892,
+      "R56-M0-NE": 521,
+      "R56-M0-NF": 364
+     }
+    },
+    "R56-M1": {
+     "events": 9591,
+     "node_cards": {
+      "R56-M1-N0": 1019,
+      "R56-M1-N1": 409,
+      "R56-M1-N2": 378,
+      "R56-M1-N3": 365,
+      "R56-M1-N4": 1061,
+      "R56-M1-N5": 346,
+      "R56-M1-N6": 341,
+      "R56-M1-N7": 361,
+      "R56-M1-N8": 1008,
+      "R56-M1-N9": 320,
+      "R56-M1-NA": 421,
+      "R56-M1-NB": 376,
+      "R56-M1-NC": 1918,
+      "R56-M1-ND": 352,
+      "R56-M1-NE": 331,
+      "R56-M1-NF": 573
+     }
+    }
+   }
+  },
+  "R57": {
+   "events": 20062,
+   "midplanes": {
+    "R57-M0": {
+     "events": 10685,
+     "node_cards": {
+      "R57-M0-N0": 1077,
+      "R57-M0-N1": 332,
+      "R57-M0-N2": 347,
+      "R57-M0-N3": 1219,
+      "R57-M0-N4": 1035,
+      "R57-M0-N5": 330,
+      "R57-M0-N6": 372,
+      "R57-M0-N7": 335,
+      "R57-M0-N8": 921,
+      "R57-M0-N9": 332,
+      "R57-M0-NA": 338,
+      "R57-M0-NB": 772,
+      "R57-M0-NC": 1240,
+      "R57-M0-ND": 329,
+      "R57-M0-NE": 1322,
+      "R57-M0-NF": 369
+     }
+    },
+    "R57-M1": {
+     "events": 9377,
+     "node_cards": {
+      "R57-M1-N0": 1072,
+      "R57-M1-N1": 524,
+      "R57-M1-N2": 332,
+      "R57-M1-N3": 618,
+      "R57-M1-N4": 1027,
+      "R57-M1-N5": 747,
+      "R57-M1-N6": 355,
+      "R57-M1-N7": 345,
+      "R57-M1-N8": 917,
+      "R57-M1-N9": 333,
+      "R57-M1-NA": 367,
+      "R57-M1-NB": 335,
+      "R57-M1-NC": 1295,
+      "R57-M1-ND": 330,
+      "R57-M1-NE": 417,
+      "R57-M1-NF": 348
+     }
+    }
+   }
+  },
+  "R60": {
+   "events": 37295,
+   "midplanes": {
+    "R60-M0": {
+     "events": 18852,
+     "node_cards": {
+      "R60-M0-N0": 1504,
+      "R60-M0-N1": 1123,
+      "R60-M0-N2": 1336,
+      "R60-M0-N3": 812,
+      "R60-M0-N4": 1602,
+      "R60-M0-N5": 762,
+      "R60-M0-N6": 1109,
+      "R60-M0-N7": 1453,
+      "R60-M0-N8": 1495,
+      "R60-M0-N9": 857,
+      "R60-M0-NA": 880,
+      "R60-M0-NB": 844,
+      "R60-M0-NC": 1895,
+      "R60-M0-ND": 1421,
+      "R60-M0-NE": 815,
+      "R60-M0-NF": 919
+     }
+    },
+    "R60-M1": {
+     "events": 18443,
+     "node_cards": {
+      "R60-M1-N0": 2321,
+      "R60-M1-N1": 913,
+      "R60-M1-N2": 1680,
+      "R60-M1-N3": 826,
+      "R60-M1-N4": 1526,
+      "R60-M1-N5": 988,
+      "R60-M1-N6": 776,
+      "R60-M1-N7": 1125,
+      "R60-M1-N8": 1520,
+      "R60-M1-N9": 860,
+      "R60-M1-NA": 862,
+      "R60-M1-NB": 799,
+      "R60-M1-NC": 1715,
+      "R60-M1-ND": 825,
+      "R60-M1-NE": 821,
+      "R60-M1-NF": 857
+     }
+    }
+   }
+  },
+  "R61": {
+   "events": 36724,
+   "midplanes": {
+    "R61-M0": {
+     "events": 18287,
+     "node_cards": {
+      "R61-M0-N0": 1520,
+      "R61-M0-N1": 1460,
+      "R61-M0-N2": 750,
+      "R61-M0-N3": 901,
+      "R61-M0-N4": 1586,
+      "R61-M0-N5": 735,
+      "R61-M0-N6": 873,
+      "R61-M0-N7": 745,
+      "R61-M0-N8": 1888,
+      "R61-M0-N9": 1020,
+      "R61-M0-NA": 961,
+      "R61-M0-NB": 1512,
+      "R61-M0-NC": 1599,
+      "R61-M0-ND": 929,
+      "R61-M0-NE": 1007,
+      "R61-M0-NF": 767
+     }
+    },
+    "R61-M1": {
+     "events": 18437,
+     "node_cards": {
+      "R61-M1-N0": 1539,
+      "R61-M1-N1": 729,
+      "R61-M1-N2": 784,
+      "R61-M1-N3": 753,
+      "R61-M1-N4": 1600,
+      "R61-M1-N5": 728,
+      "R61-M1-N6": 798,
+      "R61-M1-N7": 763,
+      "R61-M1-N8": 1688,
+      "R61-M1-N9": 1679,
+      "R61-M1-NA": 800,
+      "R61-M1-NB": 736,
+      "R61-M1-NC": 1593,
+      "R61-M1-ND": 2140,
+      "R61-M1-NE": 748,
+      "R61-M1-NF": 1326
+     }
+    }
+   }
+  },
+  "R62": {
+   "events": 194975,
+   "midplanes": {
+    "R62-M0": {
+     "events": 176696,
+     "node_cards": {
+      "R62-M0-N0": 11354,
+      "R62-M0-N1": 10451,
+      "R62-M0-N2": 10451,
+      "R62-M0-N3": 10462,
+      "R62-M0-N4": 11726,
+      "R62-M0-N5": 10467,
+      "R62-M0-N6": 10934,
+      "R62-M0-N7": 10989,
+      "R62-M0-N8": 11363,
+      "R62-M0-N9": 11527,
+      "R62-M0-NA": 11258,
+      "R62-M0-NB": 10439,
+      "R62-M0-NC": 11387,
+      "R62-M0-ND": 11644,
+      "R62-M0-NE": 10933,
+      "R62-M0-NF": 11283
+     }
+    },
+    "R62-M1": {
+     "events": 18279,
+     "node_cards": {
+      "R62-M1-N0": 1732,
+      "R62-M1-N1": 857,
+      "R62-M1-N2": 869,
+      "R62-M1-N3": 973,
+      "R62-M1-N4": 1653,
+      "R62-M1-N5": 924,
+      "R62-M1-N6": 926,
+      "R62-M1-N7": 941,
+      "R62-M1-N8": 1630,
+      "R62-M1-N9": 841,
+      "R62-M1-NA": 1358,
+      "R62-M1-NB": 840,
+      "R62-M1-NC": 1726,
+      "R62-M1-ND": 941,
+      "R62-M1-NE": 1013,
+      "R62-M1-NF": 1030
+     }
+    }
+   }
+  },
+  "R63": {
+   "events": 147795,
+   "midplanes": {
+    "R63-M0": {
+     "events": 127015,
+     "node_cards": {
+      "R63-M0-N0": 8383,
+      "R63-M0-N1": 6799,
+      "R63-M0-N2": 7880,
+      "R63-M0-N3": 10435,
+      "R63-M0-N4": 7855,
+      "R63-M0-N5": 6935,
+      "R63-M0-N6": 7644,
+      "R63-M0-N7": 7606,
+      "R63-M0-N8": 8155,
+      "R63-M0-N9": 6785,
+      "R63-M0-NA": 6732,
+      "R63-M0-NB": 6843,
+      "R63-M0-NC": 7870,
+      "R63-M0-ND": 9157,
+      "R63-M0-NE": 7650,
+      "R63-M0-NF": 9521
+     }
+    },
+    "R63-M1": {
+     "events": 20780,
+     "node_cards": {
+      "R63-M1-N0": 1940,
+      "R63-M1-N1": 1074,
+      "R63-M1-N2": 869,
+      "R63-M1-N3": 931,
+      "R63-M1-N4": 1693,
+      "R63-M1-N5": 1002,
+      "R63-M1-N6": 874,
+      "R63-M1-N7": 978,
+      "R63-M1-N8": 1810,
+      "R63-M1-N9": 911,
+      "R63-M1-NA": 1206,
+      "R63-M1-NB": 866,
+      "R63-M1-NC": 3486,
+      "R63-M1-ND": 943,
+      "R63-M1-NE": 1306,
+      "R63-M1-NF": 857
+     }
+    }
+   }
+  },
+  "R64": {
+   "events": 35205,
+   "midplanes": {
+    "R64-M0": {
+     "events": 16994,
+     "node_cards": {
+      "R64-M0-N0": 1575,
+      "R64-M0-N1": 786,
+      "R64-M0-N2": 813,
+      "R64-M0-N3": 818,
+      "R64-M0-N4": 1555,
+      "R64-M0-N5": 792,
+      "R64-M0-N6": 853,
+      "R64-M0-N7": 1125,
+      "R64-M0-N8": 2073,
+      "R64-M0-N9": 804,
+      "R64-M0-NA": 827,
+      "R64-M0-NB": 942,
+      "R64-M0-NC": 1572,
+      "R64-M0-ND": 804,
+      "R64-M0-NE": 819,
+      "R64-M0-NF": 811
+     }
+    },
+    "R64-M1": {
+     "events": 18211,
+     "node_cards": {
+      "R64-M1-N0": 1652,
+      "R64-M1-N1": 1279,
+      "R64-M1-N2": 867,
+      "R64-M1-N3": 981,
+      "R64-M1-N4": 1601,
+      "R64-M1-N5": 814,
+      "R64-M1-N6": 1004,
+      "R64-M1-N7": 848,
+      "R64-M1-N8": 1598,
+      "R64-M1-N9": 1311,
+      "R64-M1-NA": 811,
+      "R64-M1-NB": 933,
+      "R64-M1-NC": 1615,
+      "R64-M1-ND": 830,
+      "R64-M1-NE": 809,
+      "R64-M1-NF": 1233
+     }
+    }
+   }
+  },
+  "R65": {
+   "events": 35850,
+   "midplanes": {
+    "R65-M0": {
+     "events": 17558,
+     "node_cards": {
+      "R65-M0-N0": 1569,
+      "R65-M0-N1": 815,
+      "R65-M0-N2": 1380,
+      "R65-M0-N3": 855,
+      "R65-M0-N4": 1658,
+      "R65-M0-N5": 777,
+      "R65-M0-N6": 1082,
+      "R65-M0-N7": 999,
+      "R65-M0-N8": 1511,
+      "R65-M0-N9": 1242,
+      "R65-M0-NA": 762,
+      "R65-M0-NB": 807,
+      "R65-M0-NC": 1541,
+      "R65-M0-ND": 974,
+      "R65-M0-NE": 782,
+      "R65-M0-NF": 772
+     }
+    },
+    "R65-M1": {
+     "events": 18292,
+     "node_cards": {
+      "R65-M1-N0": 1709,
+      "R65-M1-N1": 810,
+      "R65-M1-N2": 826,
+      "R65-M1-N3": 860,
+      "R65-M1-N4": 1625,
+      "R65-M1-N5": 797,
+      "R65-M1-N6": 1685,
+      "R65-M1-N7": 904,
+      "R65-M1-N8": 1530,
+      "R65-M1-N9": 932,
+      "R65-M1-NA": 1393,
+      "R65-M1-NB": 1116,
+      "R65-M1-NC": 1552,
+      "R65-M1-ND": 880,
+      "R65-M1-NE": 817,
+      "R65-M1-NF": 821
+     }
+    }
+   }
+  },
+  "R66": {
+   "events": 73302,
+   "midplanes": {
+    "R66-M0": {
+     "events": 36548,
+     "node_cards": {
+      "R66-M0-N0": 2801,
+      "R66-M0-N1": 2419,
+      "R66-M0-N2": 2076,
+      "R66-M0-N3": 2115,
+      "R66-M0-N4": 2745,
+      "R66-M0-N5": 1963,
+      "R66-M0-N6": 2218,
+      "R66-M0-N7": 2067,
+      "R66-M0-N8": 2652,
+      "R66-M0-N9": 1622,
+      "R66-M0-NA": 2035,
+      "R66-M0-NB": 2041,
+      "R66-M0-NC": 3092,
+      "R66-M0-ND": 1964,
+      "R66-M0-NE": 2113,
+      "R66-M0-NF": 2592
+     }
+    },
+    "R66-M1": {
+     "events": 36754,
+     "node_cards": {
+      "R66-M1-N0": 2650,
+      "R66-M1-N1": 2779,
+      "R66-M1-N2": 2072,
+      "R66-M1-N3": 2003,
+      "R66-M1-N4": 2745,
+      "R66-M1-N5": 2070,
+      "R66-M1-N6": 1946,
+      "R66-M1-N7": 1958,
+      "R66-M1-N8": 2744,
+      "R66-M1-N9": 1901,
+      "R66-M1-NA": 3389,
+      "R66-M1-NB": 1979,
+      "R66-M1-NC": 2751,
+      "R66-M1-ND": 1863,
+      "R66-M1-NE": 1939,
+      "R66-M1-NF": 1933
+     }
+    }
+   }
+  },
+  "R67": {
+   "events": 74162,
+   "midplanes": {
+    "R67-M0": {
+     "events": 36405,
+     "node_cards": {
+      "R67-M0-N0": 2744,
+      "R67-M0-N1": 2146,
+      "R67-M0-N2": 2040,
+      "R67-M0-N3": 2057,
+      "R67-M0-N4": 2729,
+      "R67-M0-N5": 2258,
+      "R67-M0-N6": 2064,
+      "R67-M0-N7": 2238,
+      "R67-M0-N8": 2715,
+      "R67-M0-N9": 2014,
+      "R67-M0-NA": 2071,
+      "R67-M0-NB": 1911,
+      "R67-M0-NC": 2889,
+      "R67-M0-ND": 2249,
+      "R67-M0-NE": 2171,
+      "R67-M0-NF": 2077
+     }
+    },
+    "R67-M1": {
+     "events": 37757,
+     "node_cards": {
+      "R67-M1-N0": 2844,
+      "R67-M1-N1": 1924,
+      "R67-M1-N2": 2115,
+      "R67-M1-N3": 2048,
+      "R67-M1-N4": 2735,
+      "R67-M1-N5": 2081,
+      "R67-M1-N6": 2114,
+      "R67-M1-N7": 2490,
+      "R67-M1-N8": 2746,
+      "R67-M1-N9": 2279,
+      "R67-M1-NA": 2940,
+      "R67-M1-NB": 2077,
+      "R67-M1-NC": 2955,
+      "R67-M1-ND": 2120,
+      "R67-M1-NE": 2107,
+      "R67-M1-NF": 2145
+     }
+    }
+   }
+  },
+  "R70": {
+   "events": 19055,
+   "midplanes": {
+    "R70-M0": {
+     "events": 9623,
+     "node_cards": {
+      "R70-M0-N0": 952,
+      "R70-M0-N1": 743,
+      "R70-M0-N2": 330,
+      "R70-M0-N3": 340,
+      "R70-M0-N4": 1001,
+      "R70-M0-N5": 375,
+      "R70-M0-N6": 390,
+      "R70-M0-N7": 666,
+      "R70-M0-N8": 936,
+      "R70-M0-N9": 332,
+      "R70-M0-NA": 334,
+      "R70-M0-NB": 334,
+      "R70-M0-NC": 1014,
+      "R70-M0-ND": 674,
+      "R70-M0-NE": 329,
+      "R70-M0-NF": 858
+     }
+    },
+    "R70-M1": {
+     "events": 9432,
+     "node_cards": {
+      "R70-M1-N0": 962,
+      "R70-M1-N1": 1137,
+      "R70-M1-N2": 340,
+      "R70-M1-N3": 374,
+      "R70-M1-N4": 1017,
+      "R70-M1-N5": 482,
+      "R70-M1-N6": 381,
+      "R70-M1-N7": 329,
+      "R70-M1-N8": 950,
+      "R70-M1-N9": 428,
+      "R70-M1-NA": 337,
+      "R70-M1-NB": 335,
+      "R70-M1-NC": 1338,
+      "R70-M1-ND": 341,
+      "R70-M1-NE": 334,
+      "R70-M1-NF": 332
+     }
+    }
+   }
+  },
+  "R71": {
+   "events": 19811,
+   "midplanes": {
+    "R71-M0": {
+     "events": 10519,
+     "node_cards": {
+      "R71-M0-N0": 963,
+      "R71-M0-N1": 281,
+      "R71-M0-N2": 320,
+      "R71-M0-N3": 314,
+      "R71-M0-N4": 2518,
+      "R71-M0-N5": 437,
+      "R71-M0-N6": 309,
+      "R71-M0-N7": 281,
+      "R71-M0-N8": 930,
+      "R71-M0-N9": 276,
+      "R71-M0-NA": 393,
+      "R71-M0-NB": 270,
+      "R71-M0-NC": 1135,
+      "R71-M0-ND": 296,
+      "R71-M0-NE": 652,
+      "R71-M0-NF": 1120
+     }
+    },
+    "R71-M1": {
+     "events": 9292,
+     "node_cards": {
+      "R71-M1-N0": 1002,
+      "R71-M1-N1": 269,
+      "R71-M1-N2": 277,
+      "R71-M1-N3": 272,
+      "R71-M1-N4": 1056,
+      "R71-M1-N5": 332,
+      "R71-M1-N6": 865,
+      "R71-M1-N7": 332,
+      "R71-M1-N8": 1295,
+      "R71-M1-N9": 386,
+      "R71-M1-NA": 441,
+      "R71-M1-NB": 395,
+      "R71-M1-NC": 1138,
+      "R71-M1-ND": 442,
+      "R71-M1-NE": 299,
+      "R71-M1-NF": 475
+     }
+    }
+   }
+  },
+  "R72": {
+   "events": 19078,
+   "midplanes": {
+    "R72-M0": {
+     "events": 9622,
+     "node_cards": {
+      "R72-M0-N0": 1387,
+      "R72-M0-N1": 414,
+      "R72-M0-N2": 1285,
+      "R72-M0-N3": 342,
+      "R72-M0-N4": 945,
+      "R72-M0-N5": 444,
+      "R72-M0-N6": 361,
+      "R72-M0-N7": 268,
+      "R72-M0-N8": 937,
+      "R72-M0-N9": 377,
+      "R72-M0-NA": 354,
+      "R72-M0-NB": 338,
+      "R72-M0-NC": 1026,
+      "R72-M0-ND": 336,
+      "R72-M0-NE": 337,
+      "R72-M0-NF": 456
+     }
+    },
+    "R72-M1": {
+     "events": 9456,
+     "node_cards": {
+      "R72-M1-N0": 972,
+      "R72-M1-N1": 525,
+      "R72-M1-N2": 279,
+      "R72-M1-N3": 698,
+      "R72-M1-N4": 987,
+      "R72-M1-N5": 453,
+      "R72-M1-N6": 483,
+      "R72-M1-N7": 420,
+      "R72-M1-N8": 951,
+      "R72-M1-N9": 312,
+      "R72-M1-NA": 402,
+      "R72-M1-NB": 354,
+      "R72-M1-NC": 1374,
+      "R72-M1-ND": 381,
+      "R72-M1-NE": 409,
+      "R72-M1-NF": 425
+     }
+    }
+   }
+  },
+  "R73": {
+   "events": 19255,
+   "midplanes": {
+    "R73-M0": {
+     "events": 8992,
+     "node_cards": {
+      "R73-M0-N0": 1011,
+      "R73-M0-N1": 434,
+      "R73-M0-N2": 350,
+      "R73-M0-N3": 373,
+      "R73-M0-N4": 955,
+      "R73-M0-N5": 293,
+      "R73-M0-N6": 277,
+      "R73-M0-N7": 429,
+      "R73-M0-N8": 992,
+      "R73-M0-N9": 362,
+      "R73-M0-NA": 350,
+      "R73-M0-NB": 375,
+      "R73-M0-NC": 1553,
+      "R73-M0-ND": 427,
+      "R73-M0-NE": 344,
+      "R73-M0-NF": 430
+     }
+    },
+    "R73-M1": {
+     "events": 10263,
+     "node_cards": {
+      "R73-M1-N0": 1242,
+      "R73-M1-N1": 1340,
+      "R73-M1-N2": 480,
+      "R73-M1-N3": 291,
+      "R73-M1-N4": 970,
+      "R73-M1-N5": 359,
+      "R73-M1-N6": 312,
+      "R73-M1-N7": 374,
+      "R73-M1-N8": 940,
+      "R73-M1-N9": 271,
+      "R73-M1-NA": 1586,
+      "R73-M1-NB": 269,
+      "R73-M1-NC": 950,
+      "R73-M1-ND": 283,
+      "R73-M1-NE": 276,
+      "R73-M1-NF": 280
+     }
+    }
+   }
+  },
+  "R74": {
+   "events": 20743,
+   "midplanes": {
+    "R74-M0": {
+     "events": 9417,
+     "node_cards": {
+      "R74-M0-N0": 917,
+      "R74-M0-N1": 1333,
+      "R74-M0-N2": 444,
+      "R74-M0-N3": 329,
+      "R74-M0-N4": 946,
+      "R74-M0-N5": 267,
+      "R74-M0-N6": 339,
+      "R74-M0-N7": 394,
+      "R74-M0-N8": 957,
+      "R74-M0-N9": 485,
+      "R74-M0-NA": 344,
+      "R74-M0-NB": 345,
+      "R74-M0-NC": 954,
+      "R74-M0-ND": 644,
+      "R74-M0-NE": 353,
+      "R74-M0-NF": 351
+     }
+    },
+    "R74-M1": {
+     "events": 11326,
+     "node_cards": {
+      "R74-M1-N0": 1832,
+      "R74-M1-N1": 331,
+      "R74-M1-N2": 585,
+      "R74-M1-N3": 401,
+      "R74-M1-N4": 1028,
+      "R74-M1-N5": 433,
+      "R74-M1-N6": 343,
+      "R74-M1-N7": 374,
+      "R74-M1-N8": 1033,
+      "R74-M1-N9": 418,
+      "R74-M1-NA": 329,
+      "R74-M1-NB": 1271,
+      "R74-M1-NC": 1268,
+      "R74-M1-ND": 872,
+      "R74-M1-NE": 359,
+      "R74-M1-NF": 434
+     }
+    }
+   }
+  },
+  "R75": {
+   "events": 15994,
+   "midplanes": {
+    "R75-M0": {
+     "events": 8263,
+     "node_cards": {
+      "R75-M0-N0": 968,
+      "R75-M0-N1": 345,
+      "R75-M0-N2": 354,
+      "R75-M0-N3": 272,
+      "R75-M0-N4": 941,
+      "R75-M0-N5": 401,
+      "R75-M0-N6": 269,
+      "R75-M0-N7": 684,
+      "R75-M0-N8": 1104,
+      "R75-M0-N9": 314,
+      "R75-M0-NA": 270,
+      "R75-M0-NB": 274,
+      "R75-M0-NC": 1171,
+      "R75-M0-ND": 276,
+      "R75-M0-NE": 309,
+      "R75-M0-NF": 296
+     }
+    },
+    "R75-M1": {
+     "events": 7731,
+     "node_cards": {
+      "R75-M1-N0": 1061,
+      "R75-M1-N1": 272,
+      "R75-M1-N2": 271,
+      "R75-M1-N3": 265,
+      "R75-M1-N4": 919,
+      "R75-M1-N5": 276,
+      "R75-M1-N6": 317,
+      "R75-M1-N7": 278,
+      "R75-M1-N8": 947,
+      "R75-M1-N9": 268,
+      "R75-M1-NA": 283,
+      "R75-M1-NB": 289,
+      "R75-M1-NC": 895,
+      "R75-M1-ND": 304,
+      "R75-M1-NE": 797,
+      "R75-M1-NF": 274
+     }
+    }
+   }
+  },
+  "R76": {
+   "events": 23066,
+   "midplanes": {
+    "R76-M0": {
+     "events": 7856,
+     "node_cards": {
+      "R76-M0-N0": 996,
+      "R76-M0-N1": 281,
+      "R76-M0-N2": 302,
+      "R76-M0-N3": 281,
+      "R76-M0-N4": 983,
+      "R76-M0-N5": 286,
+      "R76-M0-N6": 293,
+      "R76-M0-N7": 439,
+      "R76-M0-N8": 952,
+      "R76-M0-N9": 352,
+      "R76-M0-NA": 373,
+      "R76-M0-NB": 386,
+      "R76-M0-NC": 956,
+      "R76-M0-ND": 302,
+      "R76-M0-NE": 367,
+      "R76-M0-NF": 278
+     }
+    },
+    "R76-M1": {
+     "events": 15210,
+     "node_cards": {
+      "R76-M1-N0": 1314,
+      "R76-M1-N1": 736,
+      "R76-M1-N2": 741,
+      "R76-M1-N3": 861,
+      "R76-M1-N4": 1369,
+      "R76-M1-N5": 646,
+      "R76-M1-N6": 706,
+      "R76-M1-N7": 686,
+      "R76-M1-N8": 1323,
+      "R76-M1-N9": 704,
+      "R76-M1-NA": 695,
+      "R76-M1-NB": 889,
+      "R76-M1-NC": 1301,
+      "R76-M1-ND": 960,
+      "R76-M1-NE": 1578,
+      "R76-M1-NF": 674
+     }
+    }
+   }
+  },
+  "R77": {
+   "events": 18771,
+   "midplanes": {
+    "R77-M0": {
+     "events": 9284,
+     "node_cards": {
+      "R77-M0-N0": 1012,
+      "R77-M0-N1": 399,
+      "R77-M0-N2": 374,
+      "R77-M0-N3": 363,
+      "R77-M0-N4": 1040,
+      "R77-M0-N5": 366,
+      "R77-M0-N6": 441,
+      "R77-M0-N7": 355,
+      "R77-M0-N8": 1290,
+      "R77-M0-N9": 355,
+      "R77-M0-NA": 621,
+      "R77-M0-NB": 354,
+      "R77-M0-NC": 1116,
+      "R77-M0-ND": 359,
+      "R77-M0-NE": 363,
+      "R77-M0-NF": 369
+     }
+    },
+    "R77-M1": {
+     "events": 9487,
+     "node_cards": {
+      "R77-M1-N0": 1057,
+      "R77-M1-N1": 486,
+      "R77-M1-N2": 416,
+      "R77-M1-N3": 464,
+      "R77-M1-N4": 1067,
+      "R77-M1-N5": 416,
+      "R77-M1-N6": 673,
+      "R77-M1-N7": 489,
+      "R77-M1-N8": 995,
+      "R77-M1-N9": 439,
+      "R77-M1-NA": 433,
+      "R77-M1-NB": 410,
+      "R77-M1-NC": 968,
+      "R77-M1-ND": 389,
+      "R77-M1-NE": 386,
+      "R77-M1-NF": 378
+     }
+    }
+   }
+  }
+ },
+ "templates": [
+  {
+   "events": 1706751,
+   "level": "INFO",
+   "template": "generating core.<N>"
+  },
+  {
+   "events": 295764,
+   "level": "INFO",
+   "template": "<N> double-hummer alignment exceptions"
+  },
+  {
+   "events": 267725,
+   "level": "INFO",
+   "template": "<N> floating point alignment exceptions"
+  },
+  {
+   "events": 201206,
+   "level": "INFO",
+   "template": "CE sym <N>, at <N>, mask <N>"
+  },
+  {
+   "events": 152734,
+   "level": "FATAL",
+   "template": "data TLB error interrupt"
+  },
+  {
+   "events": 135092,
+   "level": "INFO",
+   "template": "<N> microseconds spent in the rbs signal handler during <N> calls. <N> microseconds was the maximum time for a single instance of a correctable ddr."
+  },
+  {
+   "events": 135092,
+   "level": "INFO",
+   "template": "<N> total interrupts. <N> critical input interrupts. <N> microseconds total spent on critical input interrupts, <N> microseconds max time in a critical input in"
+  },
+  {
+   "events": 105924,
+   "level": "INFO",
+   "template": "instruction cache parity error corrected"
+  },
+  {
+   "events": 84168,
+   "level": "ERROR",
+   "template": "idoproxydb hit ASSERT condition: ASSERT expression=<N> Source file=idotransportmgr.cpp Source line=<N> Function=int IdoTransportMgr::SendPacket(IdoUdpMgr*, BglC"
+  },
+  {
+   "events": 63491,
+   "level": "FATAL",
+   "template": "data storage interrupt"
+  },
+  {
+   "events": 54790,
+   "level": "INFO",
+   "template": "iar <N> dear <N>c<N>c"
+  },
+  {
+   "events": 47563,
+   "level": "FATAL",
+   "template": "instruction address: <N>"
+  },
+  {
+   "events": 39457,
+   "level": "INFO",
+   "template": "ciod: Received signal <N>, code=<N>, errno=<N>, address=<N>"
+  },
+  {
+   "events": 33939,
+   "level": "INFO",
+   "template": "<N> ddr errors(s) detected and corrected on rank <N>, symbol <N>, bit <N>"
+  },
+  {
+   "events": 33933,
+   "level": "INFO",
+   "template": ""
+  },
+  {
+   "events": 28485,
+   "level": "INFO",
+   "template": "total of <N> ddr error(s) detected and corrected"
+  },
+  {
+   "events": 26546,
+   "level": "FATAL",
+   "template": "ciod: Error reading message prefix on CioStream socket to <N>.<N>.<N>.<N>:<N>, Link has been severed"
+  },
+  {
+   "events": 26426,
+   "level": "FATAL",
+   "template": "Lustre mount FAILED : bglio<N> : point /p/gb<N>"
+  },
+  {
+   "events": 22175,
+   "level": "INFO",
+   "template": "Kernel detected <N> integer alignment exceptions (<N>) iar <N>, dear <N> (<N>) iar <N>, dear <N> (<N>) iar <N>, dear <N> (<N>) iar <N>, dear <N> (<N>) iar <N>, "
+  },
+  {
+   "events": 20480,
+   "level": "FATAL",
+   "template": "ciod: Error loading /bgl/apps/scaletest/performance/MINIBEN/mb_<N>_<N>/allreduce.rts: invalid or missing program image, Exec format error"
+  },
+  {
+   "events": 18587,
+   "level": "FATAL",
+   "template": "rts: kernel terminated for reason <N>"
+  },
+  {
+   "events": 18233,
+   "level": "INFO",
+   "template": "iar <N> dear <N>e<N>c"
+  },
+  {
+   "events": 17364,
+   "level": "WARNING",
+   "template": "Node card is not fully functional"
+  },
+  {
+   "events": 17305,
+   "level": "SEVERE",
+   "template": "Can not get assembly information for node card"
+  },
+  {
+   "events": 17012,
+   "level": "ERROR",
+   "template": "Node card status: no ALERTs are active. Clock Mode is Low. Clock Select is Midplane. Phy JTAG Reset is asserted. ASIC JTAG Reset is asserted. Temperature Mask i"
+  },
+  {
+   "events": 16790,
+   "level": "INFO",
+   "template": "iar <N>dc dear <N>c<N>c"
+  },
+  {
+   "events": 15440,
+   "level": "INFO",
+   "template": "iar <N> dear <N>c"
+  },
+  {
+   "events": 15273,
+   "level": "FATAL",
+   "template": "ciod: Error reading message prefix after LOAD_MESSAGE on CioStream socket to <N>.<N>.<N>.<N>:<N>: Link has been severed"
+  },
+  {
+   "events": 14497,
+   "level": "FATAL",
+   "template": "data address: <N>"
+  },
+  {
+   "events": 14481,
+   "level": "INFO",
+   "template": "MACHINE CHECK DCR read timeout (mc=e<N>x iar <N> lr <N>)"
+  },
+  {
+   "events": 14355,
+   "level": "FATAL",
+   "template": "machine check: i-fetch......................<N>"
+  },
+  {
+   "events": 14351,
+   "level": "FATAL",
+   "template": "exception syndrome register: <N>"
+  },
+  {
+   "events": 13941,
+   "level": "INFO",
+   "template": "data cache search parity error detected. attempting to correct"
+  },
+  {
+   "events": 13038,
+   "level": "FATAL",
+   "template": "floating pt ex mode <N> enable......<N>"
+  },
+  {
+   "events": 12480,
+   "level": "INFO",
+   "template": "ciod: generated <N> core files for program /home/germann<N>/BGL-demo/SPaSM_mpi"
+  },
+  {
+   "events": 11840,
+   "level": "INFO",
+   "template": "iar <N> dear <N>a<N>c"
+  },
+  {
+   "events": 11088,
+   "level": "FATAL",
+   "template": "ciod: LOGIN chdir(/bgl/apps/SWL/performance/MINIBEN///<N>.<N>.<N>-<N>.<N>.<N>) failed: No such file or directory"
+  },
+  {
+   "events": 10436,
+   "level": "INFO",
+   "template": "<N> ddr error(s) detected and corrected on rank <N>, symbol <N> over <N> seconds"
+  },
+  {
+   "events": 10415,
+   "level": "INFO",
+   "template": "total of <N> ddr error(s) detected and corrected over <N> seconds"
+  },
+  {
+   "events": 10258,
+   "level": "FATAL",
+   "template": "program interrupt: illegal instruction......<N>"
+  },
+  {
+   "events": 9000,
+   "level": "INFO",
+   "template": "iar <N>e<N> dear <N>c"
+  },
+  {
+   "events": 7847,
+   "level": "INFO",
+   "template": "<N> tree receiver <N> in re-synch state event(s) (dcr <N>) detected"
+  },
+  {
+   "events": 7694,
+   "level": "INFO",
+   "template": "suppressing further interrupts of same type"
+  },
+  {
+   "events": 6561,
+   "level": "FATAL",
+   "template": "wait state enable.................<N>"
+  },
+  {
+   "events": 6556,
+   "level": "FATAL",
+   "template": "critical input interrupt enable...<N>"
+  },
+  {
+   "events": 6553,
+   "level": "FATAL",
+   "template": "external input interrupt enable...<N>"
+  },
+  {
+   "events": 6543,
+   "level": "FATAL",
+   "template": "problem state (<N>=sup,<N>=usr).......<N>"
+  },
+  {
+   "events": 6538,
+   "level": "FATAL",
+   "template": "floating point instr. enabled.....<N>"
+  },
+  {
+   "events": 6535,
+   "level": "FATAL",
+   "template": "machine check enable..............<N>"
+  },
+  {
+   "events": 6521,
+   "level": "FATAL",
+   "template": "debug wait enable.................<N>"
+  },
+  {
+   "events": 6518,
+   "level": "FATAL",
+   "template": "debug interrupt enable............<N>"
+  },
+  {
+   "events": 6511,
+   "level": "FATAL",
+   "template": "machine state register: <N>"
+  },
+  {
+   "events": 6503,
+   "level": "FATAL",
+   "template": "instruction address space.........<N>"
+  },
+  {
+   "events": 6500,
+   "level": "FATAL",
+   "template": "data address space................<N>"
+  },
+  {
+   "events": 6492,
+   "level": "FATAL",
+   "template": "disable store gathering..................<N>"
+  },
+  {
+   "events": 6443,
+   "level": "INFO",
+   "template": "ciod: pollControlDescriptors: Detected the debugger died."
+  },
+  {
+   "events": 6428,
+   "level": "FATAL",
+   "template": "core configuration register: <N>"
+  },
+  {
+   "events": 6321,
+   "level": "INFO",
+   "template": "iar <N> dear <N>db<N>c"
+  },
+  {
+   "events": 6208,
+   "level": "INFO",
+   "template": "iar <N> dear <N>c<N>dc"
+  },
+  {
+   "events": 6162,
+   "level": "FATAL",
+   "template": "floating point operation....................<N>"
+  }
+ ]
+}
