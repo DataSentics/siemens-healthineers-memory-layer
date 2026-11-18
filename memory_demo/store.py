@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import atexit
 import json
+import logging
 import queue
 import sqlite3
 import threading
@@ -17,6 +18,8 @@ from dataclasses import asdict
 from typing import Any, Protocol
 
 from .models import MemoryItem, Signal
+
+log = logging.getLogger(__name__)
 
 ITEM_COLS = ["item_id", "item_type", "term", "aliases", "meaning", "origin", "owner_email",
              "owner_team", "owner_department", "shareable", "status", "supersedes", "created_at"]
@@ -150,6 +153,17 @@ class DatabricksExecutor:
             pass
         session.con, session.last_used = self._connect(), time.monotonic()
 
+    def _recover(self, session: _Session, error: Exception) -> None:
+        """After a failed statement. If the warehouse ran it and refused it (bad SQL, no permission, a missing
+        table), the connection is fine and is kept. Otherwise a new one is opened; if that fails too it is only
+        logged, so the caller re-raises the original error, and the next statement on this slot tries again."""
+        if _statement_failed(error):
+            return
+        try:
+            self._reconnect(session)
+        except Exception as e:
+            log.warning("could not reconnect to the warehouse after %s: %s", type(error).__name__, e)
+
     @staticmethod
     def _execute(session: _Session, sql: str, params) -> list[dict[str, Any]]:
         with session.con.cursor() as cur:
@@ -180,14 +194,15 @@ class DatabricksExecutor:
         try:
             if time.monotonic() - session.last_used > IDLE_RECONNECT_S:
                 self._reconnect(session)
-            # Reads are retried once on a fresh connection; writes are not, so a row is never written twice.
+            # A read that failed on the connection is retried once on a fresh one; a write is not, so a row is never
+            # written twice, and neither is a statement the warehouse refused (it would only be refused again).
             attempts = 2 if sql.lstrip().upper().startswith("SELECT") else 1
             for attempt in range(attempts):
                 try:
                     return self._execute(session, sql, params)
-                except Exception:
-                    self._reconnect(session)
-                    if attempt == attempts - 1:
+                except Exception as e:
+                    self._recover(session, e)
+                    if attempt == attempts - 1 or _statement_failed(e):
                         raise
         finally:
             self._release(session)
@@ -200,11 +215,20 @@ class DatabricksExecutor:
             for sql, params in statements:
                 try:
                     self._execute(session, sql, params)
-                except Exception:
-                    self._reconnect(session)
+                except Exception as e:
+                    self._recover(session, e)
                     raise
         finally:
             self._release(session)
+
+
+def _statement_failed(error: Exception) -> bool:
+    """The warehouse ran the statement and refused it; the connection itself is fine."""
+    try:
+        from databricks.sql.exc import ServerOperationError
+    except ImportError:  # no connector: nothing can have come from the warehouse
+        return False
+    return isinstance(error, ServerOperationError)
 
 
 DDL = [

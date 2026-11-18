@@ -20,7 +20,7 @@ import itertools
 import json
 import logging
 import threading
-from concurrent.futures import ThreadPoolExecutor
+import time
 from typing import Any
 from urllib.parse import urlparse
 
@@ -30,6 +30,8 @@ from .api import MemoryServiceError
 
 log = logging.getLogger(__name__)
 LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1"}
+RETRY_STATUS = {502, 503, 504}  # the service is briefly away
+RETRY_WAIT_S = 1.0
 
 
 class DatabricksAuth(httpx.Auth):
@@ -50,8 +52,9 @@ class MemoryClient:
 
     One connection is kept open and each call is a single request. The memory server keeps no session between
     requests (stateless streamable HTTP), so a tool call needs no handshake first; setting up a new client and
-    session for every call cost about 250 ms, almost all of it creating the HTTP client. If a server does insist on
-    a session, the client notices once and uses the full MCP handshake from then on (that needs the `mcp` package).
+    session for every call cost about 250 ms, almost all of it creating the HTTP client. A brief outage (502, 503,
+    504, e.g. while the memory app redeploys) is retried once; any other failure raises MemoryServiceError, and no
+    failure changes how the next call is made.
 
     Create one per app and share it: it is safe across threads. `headers`: extra request headers (tests).
     `transport`: an httpx transport (tests)."""
@@ -65,7 +68,6 @@ class MemoryClient:
         self._http: httpx.Client | None = None
         self._lock = threading.Lock()
         self._ids = itertools.count(1)
-        self._direct = True  # one request per call; False once a server turned out to need a session
 
     def _auth(self):
         if not self.databricks:
@@ -92,72 +94,56 @@ class MemoryClient:
     # ---- calling a tool ------------------------------------------------------------------------------------
     def call(self, tool_name: str, **args: Any) -> dict[str, Any]:
         """Call one tool and return its structured result. Raises MemoryServiceError when the server refuses or
-        fails the call."""
+        fails the call, or cannot be reached."""
         args = {k: v for k, v in args.items() if v is not None}
-        if self._direct:
-            try:
-                return self._post(tool_name, args)
-            except _NeedsSession as e:
-                log.info("the memory server needs an MCP session (%s); using the full handshake from now on", e)
-                self._direct = False
-        return self._with_session(tool_name, args)
+        body = {"jsonrpc": "2.0", "id": next(self._ids), "method": "tools/call",
+                "params": {"name": tool_name, "arguments": args}}
+        response = self._send(body)
+        if response.status_code in (401, 403):
+            raise MemoryServiceError(f"the memory service refused the caller (HTTP {response.status_code})")
+        if response.status_code >= 400:
+            raise MemoryServiceError(f"the memory service answered HTTP {response.status_code}")
+        message = _message(response)
+        if "error" in message:  # a protocol error; a tool's own errors come back as results
+            detail = message["error"].get("message", message["error"]) if isinstance(message["error"], dict) \
+                else message["error"]
+            raise MemoryServiceError(f"the memory service rejected the call: {str(detail)[:200]}")
+        return _result(tool_name, message.get("result") or {})
 
     async def acall(self, tool_name: str, **args: Any) -> dict[str, Any]:
         """`call` for async agents: runs in a worker thread, so the kept-open connection is shared whatever event
         loop the caller is on."""
         return await asyncio.to_thread(lambda: self.call(tool_name, **args))
 
-    def _post(self, tool_name: str, args: dict[str, Any]) -> dict[str, Any]:
-        body = {"jsonrpc": "2.0", "id": next(self._ids), "method": "tools/call",
-                "params": {"name": tool_name, "arguments": args}}
+    def _send(self, body: dict[str, Any]) -> httpx.Response:
+        """One POST, and once more when the kept-open connection was closed by the other side or the service was
+        briefly unavailable (a redeploy)."""
         for attempt in (1, 2):
             try:
                 response = self._client().post(self.url, json=body)
-                break
-            except httpx.RemoteProtocolError:  # the kept-open connection was closed by the other side: once more
+            except httpx.RemoteProtocolError:
                 if attempt == 2:
-                    raise
-        if response.status_code in (401, 403):
-            raise MemoryServiceError(f"the memory service refused the caller (HTTP {response.status_code})")
-        if response.status_code >= 400:
-            raise _NeedsSession(f"HTTP {response.status_code}")
-        message = _message(response)
-        if "error" in message:  # a protocol error, e.g. "missing session id"; tool errors come back as results
-            raise _NeedsSession(str(message["error"].get("message", message["error"]))[:200])
-        return _result(tool_name, message.get("result") or {})
-
-    def _with_session(self, tool_name: str, args: dict[str, Any]) -> dict[str, Any]:
-        """The full MCP way: new session, handshake, call. On its own event loop in a worker thread, so it also
-        works when the caller is inside a running loop."""
-        try:
-            from mcp import ClientSession
-            from mcp.client.streamable_http import create_mcp_http_client, streamable_http_client
-        except ImportError:
-            raise MemoryServiceError("the memory server needs an MCP session: install the `mcp` package") from None
-
-        async def run():
-            http = create_mcp_http_client(headers=self.headers, timeout=httpx.Timeout(self.timeout),
-                                          auth=self._auth())
-            async with http, streamable_http_client(self.url, http_client=http) as (read, write, _):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    result = await session.call_tool(tool_name, args)
-            return _result(tool_name, result.model_dump())
-
-        with ThreadPoolExecutor(1) as pool:
-            return pool.submit(asyncio.run, run()).result()
-
-
-class _NeedsSession(Exception):
-    """The server did not accept a tool call without an MCP session."""
+                    raise MemoryServiceError("the memory service closed the connection") from None
+                continue
+            except httpx.HTTPError as e:
+                raise MemoryServiceError(f"the memory service could not be reached ({type(e).__name__})") from None
+            if response.status_code in RETRY_STATUS and attempt == 1:
+                log.info("the memory service answered HTTP %s; trying once more", response.status_code)
+                time.sleep(RETRY_WAIT_S)
+                continue
+            return response
+        raise AssertionError("unreachable")
 
 
 def _message(response: httpx.Response) -> dict[str, Any]:
     """The JSON-RPC reply, whether the server answered with JSON or with a one-message event stream."""
-    if "text/event-stream" in response.headers.get("content-type", ""):
-        data = [line[5:].strip() for line in response.text.splitlines() if line.startswith("data:")]
-        return json.loads(data[-1]) if data else {}
-    return response.json()
+    try:
+        if "text/event-stream" in response.headers.get("content-type", ""):
+            data = [line[5:].strip() for line in response.text.splitlines() if line.startswith("data:")]
+            return json.loads(data[-1]) if data else {}
+        return response.json()
+    except ValueError:
+        raise MemoryServiceError("the memory service answered something that is not an MCP reply") from None
 
 
 def _result(tool_name: str, result: dict[str, Any]) -> dict[str, Any]:

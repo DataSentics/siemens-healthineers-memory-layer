@@ -87,6 +87,9 @@ class FakeCursor:
         try:
             if "FAIL" in sql:
                 raise RuntimeError("session expired")
+            if "REFUSED" in sql:
+                from databricks.sql.exc import ServerOperationError
+                raise ServerOperationError("[TABLE_OR_VIEW_NOT_FOUND] memory_items")
             time.sleep(0.1)
         finally:
             with hub.lock:
@@ -142,6 +145,36 @@ def test_a_broken_connection_is_replaced_and_a_read_retried():
         ex.run("UPDATE FAIL")  # a write is never retried
     assert len(hub.made) == 4
     assert ex.run("SELECT 1") == [{"n": 1}]  # the pool still works
+
+
+def test_a_refused_statement_keeps_its_connection_and_is_not_retried():
+    """Review 18 Nov: a statement the warehouse refuses (bad SQL, no permission) also replaced the connection and,
+    for a read, ran again."""
+    from databricks.sql.exc import ServerOperationError
+
+    hub = Hub()
+    ex = DatabricksExecutor("wh", "c", "s", size=1, connect=hub.connect)
+    with pytest.raises(ServerOperationError, match="TABLE_OR_VIEW_NOT_FOUND"):
+        ex.run("SELECT REFUSED")
+    with pytest.raises(ServerOperationError):
+        ex.run_many([("UPDATE REFUSED", None)])
+    assert len(hub.made) == 1 and not hub.made[0].closed  # the same connection, still open
+    assert ex.run("SELECT 1") == [{"n": 1}]
+
+
+def test_a_failed_reconnect_does_not_hide_the_real_error():
+    hub = Hub()
+    ex = DatabricksExecutor("wh", "c", "s", size=1, connect=hub.connect)
+    ex.run("SELECT 1")  # the pool's one connection
+
+    def warehouse_down():
+        raise ConnectionError("warehouse is starting")
+
+    ex._connect = warehouse_down
+    with pytest.raises(RuntimeError, match="session expired"):  # the statement's own error, not the reconnect's
+        ex.run("UPDATE FAIL")
+    ex._connect = hub.connect
+    assert ex.run("SELECT 1") == [{"n": 1}]
 
 
 def test_waiting_for_a_connection_gives_up_with_a_clear_error(monkeypatch):

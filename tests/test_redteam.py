@@ -70,6 +70,14 @@ def test_undo_cannot_remove_or_revive_items_the_user_has_no_right_to(svc):
     assert status(svc, tomas_own.item_id) == "withdrawn"
 
 
+def test_a_forged_mem0_undo_is_refused(svc):
+    """Review 18 Nov: an Undo claiming to restore a forgotten Mem0 note called Mem0 even with Mem0 switched off, and
+    with it on would have saved whatever text the client sent."""
+    with pytest.raises(ValueError, match="Nothing to undo"):
+        svc.undo(TOMAS, {"op": "withdraw", "where": "mem0", "item_id": "x", "meaning": "planted text"})
+    assert svc.view(TOMAS)["personal"] == []
+
+
 def test_undo_of_a_team_update_only_restores_what_was_folded_into_it(svc):
     writes = svc.apply(TOMAS, [term_op("SOMARIS10", "the scanner software")])
     team = next(w for w in writes if w.op == "team").to_dict()

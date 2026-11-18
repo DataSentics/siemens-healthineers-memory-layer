@@ -286,7 +286,10 @@ def test_async_calls_from_different_event_loops_share_the_client(svc):
         assert set(watch.methods) == {"tools/call"} and len(set(watch.ports)) <= 2  # two at once: at most two
 
 
-def test_a_server_that_needs_a_session_gets_the_full_handshake():
+def test_a_server_that_needs_a_session_is_reported_not_worked_around():
+    """Our server keeps no session. Before 18 Nov the client switched for good to a full MCP handshake after any
+    failed request, which needs the `mcp` package the light client does not install: one bad answer turned memory
+    off until a restart."""
     stateful = FastMCP("needs-session", stateless_http=False, json_response=True,
                        transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))
 
@@ -298,12 +301,10 @@ def test_a_server_that_needs_a_session_gets_the_full_handshake():
     watch = Watch(stateful.streamable_http_app())
     with serving(watch) as url:
         client = MemoryClient(url)
-        assert client.call("health") == {"status": "healthy"}
-        assert watch.methods[0] == "tools/call" and "initialize" in watch.methods  # tried, then fell back
-        assert client._direct is False
-        assert client.call("health") == {"status": "healthy"}
-        # one refused direct attempt in all, then a handshake and a call for each of the two calls
-        assert watch.methods.count("initialize") == 2 and watch.methods.count("tools/call") == 3
+        for _ in range(2):
+            with pytest.raises(MemoryServiceError):
+                client.call("health")
+        assert "initialize" not in watch.methods  # no handshake, no switch: each call is one request
 
 
 def reply(result=None, error=None, status=200, sse=False):
@@ -349,8 +350,43 @@ def test_a_refused_caller_and_a_dropped_connection():
     assert client.call("health") == {"n": 2}  # the stale connection is retried once
     denied = MemoryClient("http://127.0.0.1:9/mcp", transport=httpx.MockTransport(lambda r: httpx.Response(403)))
     with pytest.raises(MemoryServiceError, match="HTTP 403"):
-        denied.call("health")  # not mistaken for "needs a session"
-    assert denied._direct
+        denied.call("health")
+
+
+def test_a_brief_outage_is_retried_once_and_changes_nothing_after(monkeypatch):
+    """A 503 while the memory app redeploys: one retry; if it is still down, a clear error; and the next call,
+    once the app is back, goes through as usual."""
+    import memory_demo.remote as remote_mod
+
+    monkeypatch.setattr(remote_mod, "RETRY_WAIT_S", 0)
+    answers = [503, 200, 503, 503, 500, 200]
+    seen = []
+
+    def handler(request):
+        status = answers[len(seen)]
+        seen.append(status)
+        if status != 200:
+            return httpx.Response(status, text="<html>upstream unavailable</html>")
+        return reply({"structuredContent": {"ok": True}, "content": [], "isError": False})
+
+    client = MemoryClient("http://127.0.0.1:9/mcp", transport=httpx.MockTransport(handler))
+    assert client.call("health") == {"ok": True}  # 503, then 200
+    with pytest.raises(MemoryServiceError, match="HTTP 503"):
+        client.call("health")  # 503 twice
+    with pytest.raises(MemoryServiceError, match="HTTP 500"):
+        client.call("health")  # a 500 is not retried
+    assert client.call("health") == {"ok": True} and seen == answers
+
+
+def test_unreachable_or_garbled_answers_are_memory_errors():
+    down = MemoryClient("http://127.0.0.1:9/mcp", transport=httpx.MockTransport(
+        lambda r: (_ for _ in ()).throw(httpx.ConnectError("refused"))))
+    with pytest.raises(MemoryServiceError, match="could not be reached"):
+        down.call("health")
+    html = MemoryClient("http://127.0.0.1:9/mcp", transport=httpx.MockTransport(
+        lambda r: httpx.Response(200, text="<html>sign in</html>")))
+    with pytest.raises(MemoryServiceError, match="not an MCP reply"):
+        html.call("health")
 
 
 # ---- AskFST's text-to-SQL agent: its input is the main agent's task ----------------------------------------------

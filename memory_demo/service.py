@@ -447,11 +447,13 @@ class MemoryService:
         return {**dict.fromkeys(restore, "active"), item.item_id: "withdrawn"}
 
     def _undo_personal(self, viewer: Person, op: str, item_id: str, write: dict) -> str:
-        """Undo in the Mem0 personal store; returns the id of the item the undo ends on."""
+        """Undo in the Mem0 personal store; returns the id of the item the undo ends on. A forgotten note is gone
+        from Mem0, so bringing it back would mean saving whatever text the client sends: that is refused."""
+        if self.personal is None:
+            raise NotAllowed("Nothing to undo: no such item.")
         if op == "withdraw":
-            return self.personal.add(viewer, str(write.get("item_type") or "fact"),
-                                     _one_line(str(write.get("meaning") or ""), MAX_MEANING)).item_id
-        item = self.personal.get(item_id, viewer) if self.personal else None  # None unless it is the viewer's own
+            raise NotAllowed("A forgotten personal note cannot be brought back; say it again to save it.")
+        item = self.personal.get(item_id, viewer)  # None unless it is the viewer's own
         _require(item is not None)
         if op == "add":
             self.personal.delete(item_id)
