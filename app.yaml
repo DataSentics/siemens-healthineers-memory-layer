@@ -18,7 +18,7 @@ env:
     value: databricks-claude-sonnet-5-5
   - name: PERSONAL_MEMORY
     value: store
-  # Embeddings for the "Find terms with Mem0" switch (off by default in the sidebar)
+  # Embeddings for "Find terms with Mem0" (on by default; a sidebar switch turns it off)
   - name: DATABRICKS_EMBEDDING_ENDPOINT
     value: databricks-gte-large-en
   - name: EMBEDDING_DIMS

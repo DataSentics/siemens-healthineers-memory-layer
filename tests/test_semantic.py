@@ -11,14 +11,15 @@ os.environ["MEM0_TELEMETRY"] = "False"
 from memory_demo import config, seeding  # noqa: E402
 from memory_demo.models import MemoryItem  # noqa: E402
 from memory_demo.org import Org  # noqa: E402
-from memory_demo.semantic import TermIndex, spelling_matches, windows  # noqa: E402
+from memory_demo.semantic import TermIndex, another_of_its_kind, spelling_matches, windows  # noqa: E402
 from memory_demo.service import MemoryService  # noqa: E402
 from memory_demo.store import MemoryStore, SqliteExecutor  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 LUKAS = "lukas.brandt@shs-demo.example"
 DIMS = 16
-SAME = {"ram problems": "memory errors"}  # what the fake embedder treats as meaning the same
+SAME = {"ram problems": "memory errors", "quiet rack": "the noisy rack", "rack": "the noisy rack"}
+# what the fake embedder treats as meaning the same (the last two are false friends the guard must catch)
 
 
 from langchain_core.embeddings import Embeddings  # noqa: E402
@@ -98,3 +99,18 @@ def test_a_failing_index_falls_back_to_exact_wording(svc):
     _, trace = svc.retrieve(LUKAS, "How many memory errors and RAM problems?", fuzzy=True)
     assert [i.term for i in trace.items if i.term] == ["memory errors"]
     assert "unavailable (ConnectionError)" in trace.note
+
+
+def test_another_thing_of_the_same_kind_is_never_a_match():
+    """Real run 18 Nov (databricks-gte-large-en): "quiet rack" matched "noisy rack" by meaning (0.88), so rack R37's
+    meaning was applied to a question about R12."""
+    assert another_of_its_kind("quiet rack", "the noisy rack") and another_of_its_kind("rack", "noisy rack")
+    assert another_of_its_kind("r38 errors", "r37 errors") and another_of_its_kind("quiet rack rack", "noisy rack")
+    assert not another_of_its_kind("ram problems", "ram errors")  # a synonym: another head word
+    assert not another_of_its_kind("ddr memory errors", "memory errors")  # narrower, same thing named
+
+
+def test_false_friends_found_by_meaning_are_not_applied(svc):
+    assert "the noisy rack" not in terms(svc, "How many events on the quiet rack?")
+    assert "the noisy rack" not in terms(svc, "Which rack logged the most?")
+    assert "the noisy rack" in terms(svc, "How many events on the noisy rack?")  # its own wording still works

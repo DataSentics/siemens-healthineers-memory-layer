@@ -3,18 +3,18 @@
 This is the update phase of Mem0 (Chhikara et al. 2025, "Mem0: Building Production-Ready AI Agents with Scalable
 Long-Term Memory", section 2.1 and Algorithm 1): each new memory is compared with the most similar existing memories,
 and an LLM decides whether it is new (ADD), changes one (UPDATE / DELETE) or is already there (NOOP). Our memory is
-structured (a term, its meaning and a SQL filter, per scope), so the question splits in two:
+structured (a term and its meaning, per scope), so the question splits in two:
 
 1. Is the term one we already know, spelled differently? ("SOMARIS 10", "Somaris10", "memroy errors", "memory error")
    Only spelling counts: case, spacing, punctuation, articles, plurals, one typo per word, or a known alias. A
    different word with the same meaning ("link issues" next to "link card problems") is a synonym and stays a term of
    its own, so the user's own word keeps working.
-2. Does that term already have this meaning, worded differently? Then the new item copies the existing wording and
-   filter exactly, so the rest of the layer (team counts, folding into the team meaning) sees one meaning, not two.
-   Cheap checks go first (the same filter, or the same words up to case, punctuation, articles, plurals and two
-   typos; never different numbers like R37 / R38 or different words like correctable / uncorrectable). When they are
-   not enough, the LLM decides from the user's own words, as in Mem0. The cheap checks are also used when meanings are
-   compared on read (`same_meaning`).
+2. Does that term already have this meaning, worded differently? Then the new item copies the existing wording
+   exactly, so the rest of the layer (team counts, folding into the team meaning) sees one meaning, not two.
+   A cheap check goes first (the same words up to case, punctuation, articles, plurals and two typos; never different
+   numbers like R37 / R38 or different words like correctable / uncorrectable). When it is not enough, the LLM decides
+   from the user's own words, as in Mem0. The cheap check is also used when meanings are compared on read
+   (`same_meaning`).
 """
 
 from __future__ import annotations
@@ -94,29 +94,9 @@ def same_term(a: str, b: str) -> bool:
     return bool(a and b) and (compact(a) == compact(b) or same_words(a, b, max_typos=1))
 
 
-def sql_key(sql: str | None) -> str | None:
-    """A filter without spacing, case and outer brackets; None for no filter or a constant one like (1=0)."""
-    if not sql:
-        return None
-    s = re.sub(r"\s+", "", sql.lower())
-    while s.startswith("(") and s.endswith(")") and _encloses(s):
-        s = s[1:-1]
-    return None if re.fullmatch(r"(1=0|1=1|0=1|true|false)", s) else s
-
-
-def _encloses(s: str) -> bool:
-    depth = 0
-    for i, ch in enumerate(s):
-        depth += (ch == "(") - (ch == ")")
-        if depth == 0 and i < len(s) - 1:
-            return False
-    return True
-
-
 def same_meaning(a: MemoryItem, b: MemoryItem) -> bool:
-    """The same SQL filter, or the same wording up to case, punctuation, articles, plurals and two typos."""
-    ka, kb = sql_key(a.sql_hint), sql_key(b.sql_hint)
-    return bool(ka and ka == kb) or same_words(a.meaning, b.meaning, max_typos=2)
+    """The same wording up to case, punctuation, articles, plurals and two typos."""
+    return same_words(a.meaning, b.meaning, max_typos=2)
 
 
 # ---- the decision ------------------------------------------------------------------------------------------
@@ -134,22 +114,22 @@ class SameAs(BaseModel):
 SYSTEM = """You keep the shared memory of a data assistant free of duplicates. A user just said what a term means, and
 memory already has one or more meanings for that same term. Decide whether one of them is what the user means.
 
-same_meaning_id: the id of the entry that means what the user means: only worded differently, with typos, or with a
-differently written filter. Judge by what the user said: the meanings and filters were written down by an assistant
-and can differ in form for the same intent. A meaning is different when the user's words ask for different events
+same_meaning_id: the id of the entry that means what the user means: only worded differently or with typos. Judge
+by what the user said: the meanings were written down by an assistant and can differ in form for the same intent. A
+meaning is different when the user's words ask for different events
 (narrower, broader or other ones). Null if none of them is.
 
 Always answer by calling the SameAs tool."""
 
 
-def resolve(term: str, meaning: str, sql: str | None, known: list[MemoryItem], llm: BaseChatModel | None = None,
+def resolve(term: str, meaning: str, known: list[MemoryItem], llm: BaseChatModel | None = None,
             decided: frozenset[str] | set[str] = frozenset(), said: str | None = None) -> Resolution:
     """`known`: term items the user's memory can see (own, teammates', team, department, other departments, gold).
     `decided`: terms applied this turn. The extractor already compared the user's meaning with their meanings in use
     (the applied one and its alternatives), so the LLM is not asked about those meanings again.
     `said`: the user's message, so the LLM judges what they meant rather than how it was written down."""
     known = [k for k in known if k.term]
-    new = MemoryItem(item_type="term", term=term, meaning=meaning, sql_hint=sql, owner_email=None, owner_team=None,
+    new = MemoryItem(item_type="term", term=term, meaning=meaning, owner_email=None, owner_team=None,
                      owner_department=None)
     canon = new.term
     if any(k.term == canon or canon in k.aliases for k in known):
@@ -169,9 +149,9 @@ def resolve(term: str, meaning: str, sql: str | None, known: list[MemoryItem], l
 
 
 def _ask(llm: BaseChatModel, new: MemoryItem, entries: list[MemoryItem], canon: str, said: str | None) -> Resolution:
-    lines = "\n".join(f"[{e.item_id}] meaning: {e.meaning} | filter: {e.sql_hint or 'none'}" for e in entries)
+    lines = "\n".join(f"[{e.item_id}] meaning: {e.meaning}" for e in entries)
     human = (f"Term: {canon}\nWhat the user said: {(said or 'not available')[:1500]}\n"
-             f"As written down: meaning: {new.meaning} | filter: {new.sql_hint or 'none'}\n\n"
+             f"As written down: meaning: {new.meaning}\n\n"
              f"Meanings already in memory:\n{lines}")
     try:
         msg = llm.bind_tools([SameAs]).invoke([("system", SYSTEM), ("human", human)])

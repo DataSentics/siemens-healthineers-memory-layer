@@ -202,7 +202,7 @@ def active(svc, origin, term):
 def test_five_teammates_teaching_a_new_term_at_once_make_one_team_meaning(svc, monkeypatch):
     slow_state(svc, monkeypatch)
     ops = [MemoryOp(op="add", item_type="term", term="zeta runs", meaning=f"meaning number {n}",
-                    sql_hint=f"event_id = {n}", evidence="stated") for n in range(len(TEAM))]
+                    evidence="stated") for n in range(len(TEAM))]
     together([lambda e=e, op=op: svc.apply(e, [op]) for e, op in zip(TEAM, ops)])
     assert len(active(svc, "team", "zeta runs")) == 1  # the first one; the others keep theirs as their own
     assert len(active(svc, "user", "zeta runs")) == len(TEAM) - 1
@@ -219,8 +219,8 @@ def test_two_teams_agreeing_at_once_make_one_department_meaning(svc, monkeypatch
     slow_state(svc, monkeypatch)
     for e in (EMAIL("anna.novak"), EMAIL("elena.dvorak")):  # R&D / B and R&D / C
         svc.set_consent(e, remember=True, share=True)
-    op = MemoryOp(op="add", item_type="term", term="noisy rack", meaning="rack R37, the loud one",
-                  sql_hint="rack = 'R37'", evidence="stated")
+    op = MemoryOp(op="add", item_type="term", term="noisy rack",
+                  meaning="Rack R37, which produces by far the most events.", evidence="stated")
     together([lambda e=e: svc.apply(e, [op]) for e in (EMAIL("anna.novak"), EMAIL("elena.dvorak"))])
     assert len(active(svc, "department", "the noisy rack")) == 1
     assert active(svc, "team", "the noisy rack") == []  # all three teams' copies folded into it

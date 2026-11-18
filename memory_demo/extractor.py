@@ -5,9 +5,9 @@ messages as context, an LLM picks out what is worth keeping. Users do not have t
 or a standing wish stated in passing is enough. Only what the user said counts, never the assistant's own reading.
 Comparing it with what memory already holds (Mem0's update phase) happens next, in `consolidate`.
 
-The data the assistant works on is described to the model in plain text (`data`): which tables and columns there
-are, so it can write each term's SQL filter. The demo's default is the BGL table; another assistant (AskFST) passes a
-description of its own tables (see memory_demo/config.py, DATA_DESCRIPTION_FILE)."""
+A definition is stored in words only, never as SQL: the assistant that uses it writes its own query. So the words keep
+every exact detail that pins the meaning down (codes, labels, names, numbers, the texts a message contains). The SQL
+that ran this turn, when the caller passes it, helps get those details exactly right."""
 
 from __future__ import annotations
 
@@ -24,10 +24,8 @@ class MemoryOp(BaseModel):
     item_type: Literal["preference", "term", "relation", "fact"]
     term: str | None = Field(None, description="For terms and relations: the user's term, as they write it. Null for "
                                                "preferences and facts.")
-    meaning: str = Field(description="What it means for this user, one short sentence in plain language.")
-    sql_hint: str | None = Field(
-        None, description="For terms and relations: a SQL boolean expression over the columns of the data described "
-                          "in the instructions that selects exactly the rows the term refers to. Null otherwise.")
+    meaning: str = Field(description="What it means for this user, one sentence in plain language, with every exact "
+                                     "value, code, name or text that pins it down.")
     target_item_id: str | None = Field(None, description="For update/withdraw: the id of the memory item it changes.")
     evidence: Literal["correction", "stated", "inferred"] = Field(
         description="correction: the user corrected how the assistant read something. stated: the user said it "
@@ -60,11 +58,8 @@ class MemoryOps(BaseModel):
         default_factory=list, description="One entry per applied term or relation: how well it fitted this turn.")
 
 
-SYSTEM = """You maintain the long-term memory of a data assistant that answers questions over the data described below.
+SYSTEM = """You maintain the long-term memory of a data assistant that answers questions over data with SQL.
 After each turn you decide what durable knowledge to remember about the user. Most turns need nothing.
-
-The data:
-{data}
 
 Save what stays true beyond this one question, whenever the user states it. They do not have to ask you to remember
 it: a definition or a standing wish said in passing counts ("by X I mean Y", "X is Y", "we call Y X", "no, X means
@@ -88,10 +83,11 @@ saved).
 
 A term is a definition: it would be true for any colleague who uses the word the same way. Liking, disliking or an
 opinion about something is not a definition: "I like SOMARIS10" is not a term, and it is not saved at all.
-Set private=true only for a name that only makes sense for the user ("my rack" = rack R12) or a fact about them
-personally: private items are never shared. A definition is NOT private because
-the user says "for me", "I mean" or "in my view": what someone teaches about a term is theirs anyway, and the memory
-layer itself decides whether it counts for their team. Set is_joke=true for definitions that are clearly jokes or
+Set private=true only for a name that only makes sense for the user ("my rack" = the rack they look after) or a fact
+about them personally: private items are never shared. A definition is NOT private because the user says "for me",
+"I mean" or "in my view", and a name the user says they or their colleagues use ("we call R12 the quiet rack") is
+never private: what someone teaches about a term is theirs anyway, and the memory layer itself decides whether it
+counts for their team. Set is_joke=true for definitions that are clearly jokes or
 nonsense.
 
 Memory items applied this turn are already remembered: never add them again just because they were used. Only return
@@ -99,11 +95,13 @@ an op for one when the user corrects or refines it; then return op=update with i
 If the user states a meaning that is already listed under 'Memory items applied this turn' (applied, or another
 meaning in use) in other words, still return it, with same_as_item_id set to that meaning's id.
 If the user asks to forget something, return op=withdraw with its target_item_id.
-For terms and relations write sql_hint as a boolean SQL expression over the columns of the data. When the SQL
-that ran this turn implements the user's definition, copy that condition from it exactly as it ran (leave out date
-filters, grouping and limits): it was checked against the data. When the term names something that is not in the
-data (a product, a site, a person), sql_hint is null. `meaning` is the definition only, one sentence in the user's words,
-without repeating the term. Write the term as the user writes it.
+`meaning` is the definition only, one sentence, without repeating the term. It is all that a colleague's assistant
+gets when it writes its own SQL for the term, so it must select exactly the same events without guessing: keep every
+exact detail that pins it down, such as codes and labels, component, level and type names, numbers and ranges, and
+the exact texts a message contains or starts with (in quotes, as written). Take these details from the user's words
+and, when the SQL that ran this turn implements the user's definition, from that SQL's conditions (never its date
+range, grouping or limit). Never add a detail that neither the user nor that SQL gave. Write the term as the user
+writes it.
 Earlier messages of the conversation are context only: save only what the latest user message states (it may refer
 back to them, e.g. "it is our scanner software" after a question about SOMARIS10).
 
@@ -112,18 +110,6 @@ Also rate every applied term or relation (not preferences) for how well it fitte
 - medium: the term came up, but the remembered meaning fits only partly or mattered only in passing
 - low: it matched by wording, but the user probably meant something else, or it played no role in the answer
 Judge from the question, the answer and the SQL; this is your own judgement, not a rule check."""
-
-
-def bgl_data() -> str:
-    """The demo's data: the BGL event table and its columns."""
-    from .bgl import COLUMNS, TABLE
-
-    cols = "\n".join(f"- {n} ({t}): {c}" for n, t, c in COLUMNS)
-    return f"Table {TABLE}, one row per log event. Columns:\n{cols}"
-
-
-def system_prompt(data: str | None = None) -> str:
-    return SYSTEM.replace("{data}", (data or bgl_data()).strip())
 
 
 MAX_MESSAGE, MAX_ANSWER, MAX_SQL = 4000, 2000, 2000  # characters of each part that reach the model
@@ -157,10 +143,9 @@ def extract(
     personal: list[dict],
     sql: list[str] | None = None,
     recent: list[str] | None = None,
-    data: str | None = None,
 ) -> MemoryOps:
-    """`recent`: the user's earlier messages in this conversation, oldest first (context only).
-    `data`: the tables and columns the assistant answers from (default: the demo's BGL table)."""
+    """`sql`: the SQL that ran this turn (optional; it helps word a definition exactly).
+    `recent`: the user's earlier messages in this conversation, oldest first (context only)."""
     personal_txt = "\n".join(f"- [{p['item_id']}] {p.get('term') or p.get('item_type', 'preference')}: {p['meaning']}"
                              for p in personal) or "none"
     earlier = "\n".join(f"- {m[:300]}" for m in (recent or [])[-RECENT:]) or "none"
@@ -175,7 +160,7 @@ def extract(
         f"The user's existing personal memory:\n{personal_txt}"
     )
     # Offered as a normal tool, not forced: Claude on Databricks rejects a forced tool_choice.
-    msg = llm.bind_tools([MemoryOps]).invoke([("system", system_prompt(data) + ANSWER_WITH_TOOL), ("human", human)])
+    msg = llm.bind_tools([MemoryOps]).invoke([("system", SYSTEM + ANSWER_WITH_TOOL), ("human", human)])
     call = next((tc for tc in getattr(msg, "tool_calls", []) or [] if tc["name"] == "MemoryOps"), None)
     return parse(call["args"]) if call else MemoryOps()
 

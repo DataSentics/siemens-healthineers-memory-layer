@@ -42,7 +42,8 @@ DO NOT make any DML statements (INSERT, UPDATE, DELETE, DROP etc.) to the databa
 
 The table you can query is described below, with a comment on every column, so you do not need to list the
 tables or fetch the schema first. Use as few queries as possible, usually one.
-When the memory section gives a SQL filter for a term, put that filter into the WHERE clause exactly as written.
+When the memory section defines a term, select exactly what the definition says, with its exact values, names and
+message texts.
 When the user explains what a term means, build the filter from the real message wordings listed below (or look up
 matching event_template values first), so it matches the actual errors and not other messages with similar words.
 

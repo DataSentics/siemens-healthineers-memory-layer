@@ -29,7 +29,7 @@ def fake_extract(_llm, prev, msg, answer, applied, personal, **kwargs):
     ops = []
     if "for me memory errors" in msg.lower():
         ops = [MemoryOp(op="add", item_type="term", term="memory errors", meaning="only correctable DDR errors",
-                        sql_hint="message LIKE '%ddr error%'", evidence="stated")]
+                        evidence="stated")]
     rated = [TermRelevance(item_id=a["item_id"], level="high", reason="asked") for a in applied if a.get("term")]
     return MemoryOps(ops=ops, relevance=rated)
 
@@ -49,7 +49,7 @@ def test_calls(svc):
                           "use_meaning", "get_consent", "set_consent"}
     memory = LocalMemory(svc)
     ctx = memory.call("memory_context", question="memory errors on the noisy rack?", user_email=LUKAS)
-    assert "rack = 'R37'" in ctx["context"] and {i["term"] for i in ctx["trace"]["items"]} == {
+    assert "rack R37" in ctx["context"] and {i["term"] for i in ctx["trace"]["items"]} == {
         "memory errors", "the noisy rack"}
     learned = memory.call("memory_learn", question="For me memory errors means only DDR errors", answer="16,718",
                           user_email=TOMAS, trace=ctx["trace"])
@@ -120,7 +120,7 @@ def test_an_agent_gets_memory(svc):
     out = agent.invoke({"messages": [HumanMessage("memory errors on the noisy rack last month?")]},
                        context=UserContext(user_email=LUKAS))
     system = SEEN[0][0].content
-    assert "## Memory" in system and "rack = 'R37'" in system and "ddr error" in system  # injected into the prompt
+    assert "## Memory" in system and "rack R37" in system and "'ddr error'" in system  # injected into the prompt
     assert "## Memory" in SEEN[1][0].content  # and into every model call of the turn
     shown = next(m for m in out["messages"] if m.type == "tool")
     assert "[your department] comms errors" in shown.content and "keep answers short" not in shown.content
@@ -155,3 +155,23 @@ def test_the_agent_answers_when_memory_fails(svc):
     assert "Memory was unavailable" in out["memory_trace"]["note"]
     tool_reply = next(m for m in out["messages"] if m.type == "tool")
     assert tool_reply.content == f"Memory is not available: {FAILED}"
+
+
+def test_terms_are_found_by_meaning_by_default(svc):
+    """Mem0 term matching is on unless a caller turns it off (fuzzy=False), both for a direct call and in an agent."""
+    class Index:
+        asked: list = []
+
+        def match(self, question, items):
+            self.asked.append(question)
+            return {}
+
+    index = Index()
+    svc.term_index = lambda: index
+    memory = LocalMemory(svc)
+    memory.call("memory_context", question="any RAM trouble?", user_email=LUKAS)
+    memory.call("memory_context", question="exact only", user_email=LUKAS, fuzzy=False)
+    agent = create_agent(Model(messages=iter([AIMessage("none")])), tools=[], middleware=[MemoryMiddleware(memory)],
+                         context_schema=UserContext)
+    agent.invoke({"messages": [HumanMessage("RAM trouble last month?")]}, context=UserContext(user_email=LUKAS))
+    assert index.asked == ["any RAM trouble?", "RAM trouble last month?"]

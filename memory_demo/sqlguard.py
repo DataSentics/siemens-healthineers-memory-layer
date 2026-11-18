@@ -38,35 +38,3 @@ def problem(sql: str, dialect: str = "databricks") -> str | None:
     if others:
         return f"only the table {TABLE} may be queried, not {', '.join(others)}"
     return None
-
-
-def filter_problem(sql: str) -> str | None:
-    """Why a term's SQL filter may not be saved, or None when it is one plain condition.
-
-    A saved filter is handed to colleagues' agents with "use exactly as written", so it must be a single boolean
-    expression over columns: no second statement, no subquery (it could read other tables), no comment (it could cut
-    off the rest of the query it is put into) and no unbalanced bracket (it could escape the WHERE clause)."""
-    if not sql or not sql.strip():
-        return "empty"
-    for dialect in ("databricks", "sqlite"):
-        try:
-            statements = [s for s in sqlglot.parse(f"SELECT 1 FROM t WHERE ({sql}\n)", read=dialect) if s is not None]
-        except sqlglot.errors.SqlglotError:
-            continue
-        break
-    else:
-        return "not a SQL condition"
-    if len(statements) != 1 or not isinstance(statements[0], exp.Select):
-        return "more than one statement"
-    root = statements[0]
-    where = root.args.get("where")
-    extra = {k for k, v in root.args.items() if v} - {"expressions", "from", "from_", "where"}
-    if where is None or not isinstance(where.this, exp.Paren) or extra:
-        return "more than a condition"  # a bracket that closes ours, or a GROUP BY / ORDER BY / UNION after it
-    if any(isinstance(n, (exp.Query, exp.Subquery, *_WRITES)) for n in where.walk()):
-        return "contains a query"
-    if [t for t in root.find_all(exp.Table) if t.name.lower() != "t"]:
-        return "reads another table"
-    if any(n.comments for n in root.walk()):
-        return "contains a comment"
-    return None

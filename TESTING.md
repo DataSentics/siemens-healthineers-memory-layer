@@ -8,7 +8,7 @@ Run these on the deployed app: https://shs-memory-demo-2052394040785539.19.azure
   behaviour**: who sees which meaning, at which level (Yours, Your team, Your department, Gold), with which confidence.
 - Turns take about 30 s on the deployed app. Wait for the status to say **Done** before you click anything.
 - After **Reset memory** or **Load pilot month**, wait for the spinner to finish before typing.
-- Open **SQL** under an answer to see which filter was used.
+- Open **SQL** under an answer to see the query the agent wrote.
 
 **The rules being tested**
 - Levels: personal > your team > your department > gold. Other departments' meanings are shown to everyone and never

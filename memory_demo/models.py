@@ -82,7 +82,6 @@ class MemoryItem:
     owner_team: str | None  # None for department items
     owner_department: str | None
     term: str | None = None  # normalised key; None for preferences
-    sql_hint: str | None = None
     aliases: list[str] = field(default_factory=list)
     origin: Origin = "user"
     # For a personal term: may it count towards a team meaning, and be shown to teammates (without the owner's name)
@@ -134,7 +133,6 @@ class UsedItem:
     item_type: ItemType
     term: str | None
     meaning: str
-    sql_hint: str | None
     scope: Scope
     support_label: str  # "you", "your team", "your department", "gold (official definition)"
     applied_as: str

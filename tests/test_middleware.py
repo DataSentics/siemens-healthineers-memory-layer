@@ -59,7 +59,7 @@ def test_memory_injected_and_streamed(tmp_path, monkeypatch):
             updates[node] = upd
 
     system = SEEN[-1][0].content
-    assert "## Memory" in system and "rack = 'R37'" in system and "ddr error" in system
+    assert "## Memory" in system and "rack R37" in system and "'ddr error'" in system
     assert system.startswith("You are an agent") and "Treat 2006-01-01 as today" in system  # step 2 = a month later
     trace = next(u["memory_trace"] for u in updates.values() if u and "memory_trace" in u)
     assert {i["term"] for i in trace["items"]} == {"memory errors", "the noisy rack"}

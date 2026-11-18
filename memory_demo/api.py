@@ -1,13 +1,16 @@
-"""The memory as an agent's app uses it: `LocalMemory(service)` runs the calls below in the app's own process, and
-`memory_tools` gives the model three tools on top of it.
+"""The memory's calls, and the model's tools on top of them.
 
-    memory = LocalMemory(config.memory_service())          # once per app
+The calls (`CALLS`) run where the memory lives: in the memory MCP server (`mcp_server`, which wraps them in a
+`LocalMemory`), or in-process in the demo app. An agent reaches them through something with
+`call(name, user_email=..., **args)` / `await acall(...)`: a `remote.MemoryClient` (AskFST: the MCP server) or a
+`LocalMemory(service)`. Both return plain JSON-shaped dicts, safe to keep in the agent state, and raise
+`MemoryServiceError` with a message meant for the caller.
+
+    memory = MemoryClient(url)                              # or LocalMemory(config.memory_service()) in-process
     agent = create_agent(model, tools=[*tools, *memory_tools(memory, user_of=...)],
-                         middleware=[MemoryMiddleware(memory, user_of=..., sql_from=...)])
+                         middleware=[MemoryMiddleware(memory, user_of=...)])
 
-`memory.call(name, user_email=..., **args)` (or `await memory.acall(...)`) returns plain JSON-shaped dicts, safe to
-keep in the agent state, and raises `MemoryServiceError` with a message meant for the caller. An Undo button calls
-`memory.call("memory_undo", write=w, user_email=...)`; a hand-built graph calls `memory_context` and `memory_learn`.
+An Undo button calls `memory.call("memory_undo", write=w, user_email=...)`.
 """
 
 from __future__ import annotations
@@ -32,7 +35,7 @@ class MemoryServiceError(RuntimeError):
 
 
 # ---- the calls: (service, user email, arguments) -> JSON-shaped dict -----------------------------------------------
-def memory_context(service: MemoryService, email: str, question: str, fuzzy: bool = False,
+def memory_context(service: MemoryService, email: str, question: str, fuzzy: bool = True,
                    exclude: list[str] | None = None) -> dict[str, Any]:
     context, trace = service.retrieve(email, question, tuple(exclude or ()), fuzzy=fuzzy)
     return {"context": context, "trace": trace.to_dict()}
@@ -126,9 +129,10 @@ class LocalMemory:
         return await asyncio.to_thread(self.call, name, **args)
 
 
-def as_memory(memory) -> LocalMemory:
-    """A LocalMemory as given; a bare MemoryService is wrapped in one."""
-    return memory if isinstance(memory, LocalMemory) else LocalMemory(memory)
+def as_memory(memory):
+    """Something to make memory calls on: a `remote.MemoryClient` (the MCP server) or a LocalMemory as given; a bare
+    MemoryService is wrapped in a LocalMemory."""
+    return memory if hasattr(memory, "call") and hasattr(memory, "acall") else LocalMemory(memory)
 
 
 # ---- the model's tools -------------------------------------------------------------------------------------------
@@ -142,9 +146,10 @@ SCOPE_NAMES = {"personal": "yours", "team": "your team", "department": "your dep
 
 
 def memory_tools(memory, user_of=default_user) -> list:
-    """show_my_memory, explain_term and forget_memory for the model. `memory`: a LocalMemory or a MemoryService. The user always comes from the runtime (`user_of`), never from the model, so a prompt cannot make
-    the model read someone else's memory. A failing memory call answers with a short message instead of stopping the
-    agent."""
+    """show_my_memory, explain_term and forget_memory for the model. `memory`: a `remote.MemoryClient` (the calls go
+    to the memory MCP server), a LocalMemory or a MemoryService. The user always comes from the runtime (`user_of`),
+    never from the model, so a prompt cannot make the model read someone else's memory. A failing memory call answers
+    with a short message instead of stopping the agent."""
     memory = as_memory(memory)
 
     def ask(name: str, runtime, **args) -> dict[str, Any] | str:

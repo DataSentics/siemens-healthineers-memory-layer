@@ -19,9 +19,10 @@ Compare them with his code once it is handed over (K1).
 | `memory_demo/consolidate.py` | Before saving, the same term spelled differently and the same meaning in other words are recognised (Mem0's update phase), so nothing is stored twice |
 | `memory_demo/org.py` | The org directory: a table (Delta on Databricks, SQLite locally) re-read every few minutes; teams and departments are whatever it says today |
 | `memory_demo/service.py` | `MemoryService`: retrieve / learn / undo / forget / feedback / viewer |
-| `memory_demo/api.py` | What an agent's app (AskFST) uses: `LocalMemory` runs the memory's calls (`memory_context`, `memory_learn`, `memory_undo`, `show_memory`, `explain_term`, `forget`, ...) in the app's process, and `memory_tools` gives the model show / explain / forget. Installed as the `shs-memory` wheel (`pyproject.toml`). See `INTEGRATION.md` |
-| `deploy/data_description.example.txt` | Example of the table description another assistant gives the memory (`DATA_DESCRIPTION_FILE`) |
-| `memory_demo/middleware.py` | `MemoryMiddleware` for `create_agent`: retrieve once per turn, inject into every model call, learn after the answer; answers without memory if memory fails (FR17) |
+| `memory_demo/api.py` | The memory's calls (`memory_context`, `memory_learn`, `memory_undo`, `show_memory`, `explain_term`, `forget`, ...), `LocalMemory` to run them in-process (the demo, the MCP server), and `memory_tools`: show / explain / forget for the model |
+| `memory_demo/mcp_server.py` | The memory as an MCP server (its own Databricks App, `deploy/mcp/app.yaml`): the calls as tools, who may call for whom (`MEMORY_TRUSTED_CALLERS`), safe error messages. See `INTEGRATION.md` |
+| `memory_demo/remote.py` | `MemoryClient`: what AskFST's text-to-SQL agent uses to reach the MCP server (one kept-open connection, OAuth from the Databricks SDK). With `middleware.py` and `api.py` it is the light client in the `shs-memory` wheel: no Mem0, no SQL connectors |
+| `memory_demo/middleware.py` | `MemoryMiddleware` for `create_agent` (AskFST: on the text-to-SQL agent, through `MemoryClient`): retrieve once per turn, inject into every model call, learn after the answer (from the user's own words when they come along), optionally note the memory used in the answer; answers without memory if memory fails (FR17) |
 | `memory_demo/agent.py` | `build_agent`: SQL agent (`SQLDatabaseToolkit` + `create_agent`, Hub SQL prompt inlined, answer-first rule). `build_supervisor`: supervisor → casebook search + SQL sub-agent; memory is looked up and learned once on the supervisor and passed to the sub-agent |
 | `memory_demo/casebook.py` | Questions answered well before, with their SQL. Saved after each answer that ran SQL (unless it used someone's own meaning), withdrawn when the answer is corrected or rejected; visible to the author and their team, without names |
 | `memory_demo/ontology.py` | Ontology built from the data, no human review (A9): rack → midplane → node card → card, alert families by component, example messages. Summary in the SQL prompt plus a `describe_bgl_entity` tool |
@@ -37,6 +38,11 @@ Four levels; the closest one wins: **personal > your team > your department > go
 **Other departments'** meanings are visible to everyone (Memory tab, and under "Other definitions in use" in an
 answer) but never applied unless the user picks one with **Use this**. A team's own meanings stay inside the team.
 
+- **Definitions in words, no SQL.** Memory stores what a term means, never a SQL filter: the agent writes its own
+  query from the words (18 Nov). So the words keep every exact detail that pins a meaning down: codes, labels,
+  names, numbers, and the texts a message contains (in quotes). The SQL that ran this turn, when the agent passes
+  it, helps word a definition exactly. `scripts/eval_exactness.py` checks on BGL that answers built from the words
+  match the counts of the old filters.
 - **No "remember that" needed.** After each answer one memory call (Mem0's extraction phase) saves what the user
   states: a definition said in passing ("we call R12 the quiet rack"), a correction ("no, memory errors means only
   DDR"), a standing wish ("from now on one sentence"), a fact about them. One-off details of a question and the
@@ -50,19 +56,15 @@ answer) but never applied unless the user picks one with **Use this**. A team's 
   and customer or patient data are not saved at all.
 - **Nothing is stored twice** (Mem0's update phase, `consolidate.py`). Before a term is saved it is compared with
   what memory holds: the same term spelled differently ("SOMARIS 10", "Somaris-10", "memroy errors", "memory
-  error"), and the same meaning in other words (case, punctuation, articles, plurals, up to two typos, or the same
-  SQL filter). Different numbers (R37 / R38) or different words (correctable / uncorrectable) are never merged that
+  error"), and the same meaning in other words (case, punctuation, articles, plurals, up to two typos). Different numbers (R37 / R38) or different words (correctable / uncorrectable) are never merged that
   way. When the term is the same but those checks cannot tell whether the meaning is, an LLM decides, given the
   user's own words, as in Mem0. A different word for the same thing ("link issues" next to "link card problems") is
-  a synonym and stays a term of its own, so the user's word keeps working. A match reuses the existing wording and
-  filter, so colleagues who mean the same thing are counted
-  together; restating what memory holds shows **Already in memory** and saves nothing. This fixes the 5 Nov
-  duplicate: "Only correctable DDR errors, …" and "only the correctable DDR errors, …", written down with two
-  different SQL filters, were counted as two meanings, so Tomas's copy stayed next to the new team meaning.
+  a synonym and stays a term of its own, so the user's word keeps working. A match reuses the existing wording, so colleagues who mean the same thing are counted together; restating what memory holds shows **Already in memory** and saves nothing. This fixes the 5 Nov
+  duplicate: "Only correctable DDR errors, …" and "only the correctable DDR errors, …" were counted as two
+  meanings, so Tomas's copy stayed next to the new team meaning.
 - **Hardening (red-team review, 16 Nov, `tests/test_redteam.py`).** Undo and "Use this" check every id against the
   store (a forged or repeated request cannot retire, revive or copy anything that is not the user's to touch); a wrong
-  target from the model never replaces another item; saved text is one bounded line and a filter is kept only if it
-  is one plain condition; matching works for non-English text (German, Chinese) and never treats a one-character
+  target from the model never replaces another item; saved text is one bounded line; matching works for non-English text (German, Chinese) and never treats a one-character
   difference there as a typo; timestamps always increase, so "latest wins" has no ties; the directory is not re-read
   for every unknown caller, and an agent on a real directory never fills or wipes it (`ORG_SEED=0`).
 - **Storage under load (17 Nov, `tests/test_store.py`).** Warehouse requests go through a pool of connections, so
@@ -81,7 +83,7 @@ answer) but never applied unless the user picks one with **Use this**. A team's 
   meaning keep theirs, since the team level comes first. The pilot month seeds R&D *comms errors* (R&D / A and B),
   Service *incidents* (Service / A and B) and Customer Support *job failures* (A and C).
 - **Teammates see each other's own meanings of a shared term, without names**, under "Other definitions in use", so
-  they can pick the same one. **Use this** copies the filter, so picks always match. A new term from someone who does
+  they can pick the same one. **Use this** copies the wording, so picks always match. A new term from someone who does
   not share stays fully private.
 - **Confidence measures disagreement and time.** With *k* teammates using another meaning and *m* full months since
   the meaning was last used, confidence is (1 − k/T) × (1 − m/6): 100% (petrol), 67% (orange), 33% (berry, a
@@ -106,14 +108,14 @@ answer) but never applied unless the user picks one with **Use this**. A team's 
   team counts for the new one. The Admin tab can add a team the way the sync would; Reset memory restores the seed
   org chart. A renamed team is a new team (its old memory stays under the old name), which needs a stable team id
   from HR to fix.
-- **Find terms with Mem0 (sidebar switch, off by default):** by default a term counts only when the question uses its
-  exact wording, an alias or a plural (other spacing and hyphens count: "somaris 10"). Switched on, terms are also
-  found **by meaning**: every term and alias is a Mem0 memory (embedding from `databricks-gte-large-en`), and 1-3
+- **Find terms with Mem0 (on by default since 18 Nov; sidebar switch, or `fuzzy=False` in an agent's context):**
+  switched off, a term counts only when the question uses its exact wording, an alias or a plural (other spacing and
+  hyphens count: "somaris 10"). Switched on, terms are also found **by meaning**: every term and alias is a Mem0 memory (embedding from `databricks-gte-large-en`), and 1-3
   word windows of the question are matched against them (cosine >= 0.88; "RAM problems" -> memory errors 0.90, while
   "memory usage" stays out at 0.84). Typos are found **by spelling** (ratio >= 0.85; "incidnets", "noisy rak"),
   since embeddings are poor at those. Mem0 only finds the terms; the rules still decide which meaning applies. The
-  index lives in a temp folder and is rebuilt from the tables; building it takes about 10 s when the switch is first
-  turned on, then a lookup adds about 0.8 s. If the embedding endpoint fails, the turn falls back to exact wording
+  index lives in a temp folder and is rebuilt from the tables; building it takes about 10 s on the first lookup after a
+  start, then a lookup adds about 0.8 s. If the embedding endpoint fails, the turn falls back to exact wording
   and says so. `memory_demo/semantic.py`.
 
 This is the PRD's confirmed hierarchy (*personal > team > department > gold*, with *other departments* shown but not
@@ -141,7 +143,7 @@ department items are rows with `origin = 'team'` / `'department'`, so the memory
 | `DEMO_TODAY` | `2005-12-01` | same. The demo clock starts here ("last month" = November 2005); the sidebar's **+1 month** moves it to 2006-01-01 |
 | `JOKE_FILTER` | `1` | `1` |
 | `PERSONAL_MEMORY` | `store` | `store`. `mem0` keeps preferences and facts in Mem0 (local Qdrant in `data/mem0`) |
-| `AZURE_OPENAI_EMBEDDING_DEPLOYMENT`, `EMBEDDING_DIMS` | needed for `mem0`; dims default `1536` (text-embedding-3-small) | – (or `DATABRICKS_EMBEDDING_ENDPOINT` with `LLM_PROVIDER=databricks`) |
+| `AZURE_OPENAI_EMBEDDING_DEPLOYMENT`, `EMBEDDING_DIMS` | for Mem0 (term matching, on by default; and `mem0`); dims default `1536` (text-embedding-3-small) | – (or `DATABRICKS_EMBEDDING_ENDPOINT`, default `databricks-gte-large-en`, with `LLM_PROVIDER=databricks`) |
 
 The sidebar switches between **Supervisor with casebook** (default) and **Single SQL agent**. Both use the
 same memory, so if the supervisor misbehaves on stage, switch to the single agent and carry on.
@@ -158,6 +160,10 @@ python -m venv .venv && .venv/Scripts/pip install -r requirements.txt
 cp .env.example .env   # then fill in the Azure OpenAI values yourself
 .venv/Scripts/streamlit run app.py
 ```
+
+The memory as an MCP server, locally (no Databricks sign-in, so `user_email` is believed as given; never on a shared
+host): `MEMORY_ALLOW_ANONYMOUS=1 .venv/Scripts/python -m memory_demo.mcp_server`, then
+`MemoryClient("http://127.0.0.1:8000/mcp")`.
 
 **What gets remembered, measured.** `scripts/eval_capture.py` runs the 43 labelled messages in
 `evals/capture_cases.json` (definitions, standing wishes, work facts, and things that must not be saved: plain and

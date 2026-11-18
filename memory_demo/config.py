@@ -171,15 +171,7 @@ def personal_memory() -> Mem0Personal | None:
     return Mem0Personal(mem0_client(embedder, llm(), dims, Path(env("MEM0_PATH", str(ROOT / "data" / "mem0")))))
 
 
-def data_description() -> str | None:
-    """DATA_DESCRIPTION_FILE: a text file describing the tables and columns the assistant answers from (another
-    assistant's data, e.g. AskFST's). Unset: the demo's BGL table."""
-    path = os.getenv("DATA_DESCRIPTION_FILE")
-    return Path(path).read_text(encoding="utf-8") if path else None
-
-
 def memory_service(with_llm: bool = True) -> MemoryService:
     return MemoryService(memory_store(), org(), llm() if with_llm else None,
                          joke_filter=env("JOKE_FILTER", "1") == "1", personal=personal_memory(),
-                         term_index=term_index,  # built only when the Mem0 switch is first used
-                         data_description=data_description())
+                         term_index=term_index)  # built only when the Mem0 switch is first used

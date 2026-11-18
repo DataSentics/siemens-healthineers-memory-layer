@@ -164,7 +164,7 @@ with st.sidebar:
         models.set_today(next_day)
         ss.chats.clear()
         st.rerun()
-    fuzzy = st.toggle("Find terms with Mem0", value=False, key="fuzzy",
+    fuzzy = st.toggle("Find terms with Mem0", value=True, key="fuzzy",
                       help="Also recognise terms by meaning (Mem0 embeddings, e.g. RAM problems → memory errors) and "
                            "by spelling (typos). Off: only the exact wording, aliases and plurals count.")
     if fuzzy and not ss.get("index_ready"):  # build the index now, not during the first question (about 10 s)
@@ -311,8 +311,6 @@ def render_trace(trace: dict, n: int, latest: bool) -> None:
                     st.caption(it["matched_by"].capitalize())
                 if it["level"] == "warning" or it.get("untrustworthy"):
                     st.caption(it["reason"])
-                if it.get("sql_hint"):
-                    st.code(it["sql_hint"], language="sql")
                 alternative_rows(it, key, i, n, latest)
                 b2, b3, _ = st.columns([2, 2, 3])
                 if latest and b2.button("Wrong, regenerate", key=f"{key}-{i}-down", type="tertiary",

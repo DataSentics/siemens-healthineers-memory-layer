@@ -10,5 +10,8 @@ pandas
 pyarrow
 python-dotenv
 mem0ai>=1,<2
+mcp>=1.30,<2
+uvicorn
+httpx>=0.27
 sqlglot>=25,<30
 pytest

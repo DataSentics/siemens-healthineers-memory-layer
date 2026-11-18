@@ -64,7 +64,7 @@ def test_supervisor_routes_shares_memory_and_fills_casebook(tmp_path, monkeypatc
     svc.reset(step=2, start="2005-12-01")
     casebook = Casebook(store, org)
     ops = iter([[], [MemoryOp(op="add", item_type="term", term="memory errors", meaning="only DDR errors",
-                              sql_hint="message LIKE '%ddr error%'", evidence="correction")]])
+                              evidence="correction")]])
     monkeypatch.setattr(service, "extract", lambda *a, **k: MemoryOps(ops=next(ops, [])))
     graph = agent_mod.build_supervisor(Scripted(), db, svc, casebook)
 
@@ -79,7 +79,7 @@ def test_supervisor_routes_shares_memory_and_fills_casebook(tmp_path, monkeypatc
     SYSTEMS.clear()
     first = ask("How many memory errors on the noisy rack last month?")
     sql_system = next(s for s in SYSTEMS if s.startswith("You are an agent"))
-    assert "## Memory" in sql_system and "rack = 'R37'" in sql_system  # memory reached the sub-agent
+    assert "## Memory" in sql_system and "rack R37" in sql_system  # memory reached the sub-agent
     assert "## Ontology of the machine" in sql_system
     tool_msgs = [m for u in first["tools"] for m in u["messages"]]
     assert next(m for m in tool_msgs if m.name == "ask_sql_agent").artifact == {"sql": ["SELECT COUNT(*) FROM bgl_events"]}

@@ -18,7 +18,7 @@ from typing import Any, Protocol
 
 from .models import MemoryItem, Signal
 
-ITEM_COLS = ["item_id", "item_type", "term", "aliases", "meaning", "sql_hint", "origin", "owner_email",
+ITEM_COLS = ["item_id", "item_type", "term", "aliases", "meaning", "origin", "owner_email",
              "owner_team", "owner_department", "shareable", "status", "supersedes", "created_at"]
 SIGNAL_COLS = ["item_id", "user_email", "team", "department", "kind", "term", "created_at"]
 
@@ -209,7 +209,7 @@ class DatabricksExecutor:
 
 DDL = [
     "CREATE TABLE IF NOT EXISTS memory_items (item_id {T}, item_type {T}, term {T}, aliases {T}, "
-    "meaning {T}, sql_hint {T}, origin {T}, owner_email {T}, owner_team {T}, "
+    "meaning {T}, origin {T}, owner_email {T}, owner_team {T}, "
     "owner_department {T}, shareable BOOLEAN, status {T}, supersedes {T}, created_at {T})",
     "CREATE TABLE IF NOT EXISTS memory_signals (item_id {T}, user_email {T}, team {T}, "
     "department {T}, kind {T}, term {T}, created_at {T})",
@@ -365,10 +365,10 @@ class MemoryStore:
             "ORDER BY i.term, s.team, s.kind"
         )
 
-    def withdraw_cases_using(self, team: str, sql_filter: str) -> None:
-        """Withdraw a team's casebook cases whose SQL contains this filter (instr works on SQLite and Databricks)."""
+    def withdraw_cases_about(self, team: str, term: str) -> None:
+        """Withdraw a team's casebook cases whose question mentions this term (instr works on SQLite and Databricks)."""
         self.ex.run("UPDATE casebook SET status = 'withdrawn' WHERE owner_team = :t AND status = 'active' "
-                    "AND instr(sql_text, :f) > 0", {"t": team, "f": sql_filter})
+                    "AND instr(lower(question), :term) > 0", {"t": team, "term": term.lower()})
 
     def clear(self) -> None:
         self.ex.run("DELETE FROM memory_signals")

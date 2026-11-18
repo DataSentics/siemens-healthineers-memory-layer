@@ -31,7 +31,7 @@ def load_gold(store: MemoryStore, org: Org) -> int:
         author = org.get(r["author"])
         items.append(MemoryItem(
             item_type="term", term=r["term"], aliases=r.get("aliases", []), meaning=r["meaning"],
-            sql_hint=r.get("sql_hint"), origin="gold", owner_email=None, owner_team=author.team,
+            origin="gold", owner_email=None, owner_team=author.team,
             owner_department=author.department,
         ))
     store.add_items(items)
@@ -49,7 +49,7 @@ def load_pilot(store: MemoryStore, org: Org, personal=None) -> int:
                 continue
             item = MemoryItem(
                 item_type=r["type"], term=r.get("term"), aliases=r.get("aliases", []), meaning=r["meaning"],
-                sql_hint=r.get("sql_hint"), owner_email=author.email, owner_team=author.team,
+                owner_email=author.email, owner_team=author.team,
                 owner_department=author.department,
             )
         elif r["scope"] == "team":  # nobody owns it; who taught and confirmed it stays as background signals
@@ -57,7 +57,7 @@ def load_pilot(store: MemoryStore, org: Org, personal=None) -> int:
             assert author.team == r["team"], r
             item = MemoryItem(
                 item_type=r["type"], term=r.get("term"), aliases=r.get("aliases", []), meaning=r["meaning"],
-                sql_hint=r.get("sql_hint"), origin="team", owner_email=None, owner_team=author.team,
+                origin="team", owner_email=None, owner_team=author.team,
                 owner_department=author.department,
             )
         else:  # a department's shared meaning: the teams in `teams` agreed on it
@@ -65,7 +65,7 @@ def load_pilot(store: MemoryStore, org: Org, personal=None) -> int:
             assert author.department == r["department"] and author.team in r["teams"], r
             item = MemoryItem(
                 item_type=r["type"], term=r.get("term"), aliases=r.get("aliases", []), meaning=r["meaning"],
-                sql_hint=r.get("sql_hint"), origin="department", owner_email=None, owner_team=None,
+                origin="department", owner_email=None, owner_team=None,
                 owner_department=author.department,
             )
             teams.update(r["teams"])

@@ -62,6 +62,22 @@ def _keys(item: MemoryItem) -> list[str]:
     return [k for k in [item.term, *item.aliases] if k]
 
 
+def _content_words(text: str) -> list[str]:
+    words = re.findall(r"[^\W_](?:[\w/'-]*[^\W_])?", text.lower())
+    return [w[:-1] if w.endswith("s") and len(w) > 3 else w for w in words if w not in _STOP]
+
+
+def another_of_its_kind(gram: str, key: str) -> bool:
+    """True when the question's words name another thing of the same kind as the term: the same head word with a
+    modifier the term has and the words lack ("quiet rack" or plain "rack" vs "noisy rack", "R38 errors" vs "R37
+    errors"). Embeddings put such pairs close together (quiet rack ~ noisy rack: 0.88 with databricks-gte-large-en),
+    but they never mean the same. Synonyms keep matching: "RAM problems" ~ "RAM errors" differ in the head word."""
+    g, k = _content_words(gram), _content_words(key)
+    if not g or not k or g[-1] != k[-1]:
+        return False
+    return bool(set(k[:-1]) - set(g[:-1]))
+
+
 def spelling_matches(question: str, items: list[MemoryItem]) -> dict[str, Match]:
     grams = windows(question)
     out: dict[str, Match] = {}
@@ -107,7 +123,10 @@ class TermIndex:
             self.indexed.update((it.item_id, key) for it, key in new)
 
     def meaning_matches(self, question: str, items: list[MemoryItem]) -> dict[str, Match]:
-        grams = windows(question)
+        known = {key.lower() for it in items for key in _keys(it)}
+        # A window that is itself a term the user can see is found by its own wording; it never stands for another
+        # term ("quiet rack" is not "noisy rack", however close their embeddings are).
+        grams = [g for g in windows(question) if g not in known]
         if not grams:
             return {}
         visible = {it.item_id for it in items}
@@ -118,10 +137,11 @@ class TermIndex:
                 for hit in self.m.vector_store.search(query=gram, vectors=vec, limit=3,
                                                        filters={"user_id": NAMESPACE}):
                     meta = hit.payload or {}
-                    term, score = meta.get("term"), float(hit.score)
-                    if (meta.get("item_id") in visible and score >= MEANING_MIN and gram != meta.get("key")
+                    term, score, key = meta.get("term"), float(hit.score), meta.get("key") or ""
+                    if (meta.get("item_id") in visible and score >= MEANING_MIN and gram != key
+                            and not another_of_its_kind(gram, key)
                             and score > getattr(out.get(term), "score", 0)):
-                        out[term] = Match(term, "meaning", gram, meta.get("key"), round(score, 2))
+                        out[term] = Match(term, "meaning", gram, key, round(score, 2))
         return out
 
     def match(self, question: str, items: list[MemoryItem]) -> dict[str, Match]:

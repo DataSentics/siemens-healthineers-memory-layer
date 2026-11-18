@@ -14,7 +14,7 @@ EVA, LUKAS, PETRA, TOMAS, JANA = (EMAIL(n) for n in ("eva.horak", "lukas.brandt"
                                                      "jana.kral"))
 MEI, BEN = EMAIL("mei.chen"), EMAIL("ben.weber")
 DDR_ONLY = MemoryOp(op="add", item_type="term", term="memory errors", meaning="only correctable DDR errors",
-                    sql_hint="message LIKE '%ddr error%'", evidence="correction")
+                    evidence="correction")
 
 
 @pytest.fixture
@@ -50,7 +50,7 @@ def test_newcomer_gets_team_meaning_without_eva_preferences(svc):
     u = used(svc, LUKAS, "How many memory errors were on the noisy rack last month?")
     assert u["memory errors"].scope == "team" and u["memory errors"].confidence == 1.0
     assert u["memory errors"].level == "note" and u["memory errors"].support_label == "your team"
-    assert u["the noisy rack"].sql_hint == "rack = 'R37'"
+    assert u["the noisy rack"].meaning.startswith("rack R37")
     assert not [k for k in u if k.startswith("pref:")]  # preferences stay personal
 
 
@@ -123,7 +123,7 @@ def test_undo_of_a_team_update_restores_the_old_meaning(svc):
 
 def test_different_meanings_lower_confidence_but_do_not_replace(svc):
     for who, n in ((TOMAS, 1), (PETRA, 2), (LUKAS, 3)):
-        svc.apply(who, [DDR_ONLY.model_copy(update={"meaning": f"variant {n}", "sql_hint": f"event_id = {n}"})])
+        svc.apply(who, [DDR_ONLY.model_copy(update={"meaning": f"variant {n}"})])
     u = used(svc, EVA, "memory errors")["memory errors"]
     assert u.scope == "team" and u.confidence == 0.05 and len(u.alternatives) == 3
 
@@ -165,7 +165,7 @@ def test_dismissed_warning_becomes_note(svc):
 
 
 def test_joke_stays_private_and_does_not_count(svc):
-    svc.apply(PETRA, [DDR_ONLY.model_copy(update={"meaning": "gremlins", "sql_hint": "1=1", "is_joke": True})])
+    svc.apply(PETRA, [DDR_ONLY.model_copy(update={"meaning": "gremlins", "is_joke": True})])
     assert used(svc, PETRA, "memory errors")["memory errors"].scope == "personal"
     eva = used(svc, EVA, "memory errors")["memory errors"]
     assert eva.confidence == 1.0 and eva.alternatives == []
@@ -184,15 +184,6 @@ def test_plural_and_alias_matching():
     assert not resolver.mentions(quiet, "quietness")
 
 
-def test_same_filter_counts_as_same_meaning():
-    from memory_demo.models import MemoryItem
-    a = MemoryItem(item_type="term", term="x", meaning="one wording", sql_hint="(message LIKE '%ddr%')",
-                   owner_email=None, owner_team=None, owner_department=None)
-    b = MemoryItem(item_type="term", term="x", meaning="another wording", sql_hint="message  like '%ddr%'",
-                   owner_email=None, owner_team=None, owner_department=None)
-    assert resolver.meaning_key(a) == resolver.meaning_key(b)
-
-
 def test_forgetting_twice_is_recorded_once(svc):
     """Runtime test 16 Nov: the model's forget tool removed Tomas's item, then the after-turn step read the same
     request as a withdraw of the same item, so the removal was logged and shown twice."""
@@ -209,7 +200,7 @@ def test_forgetting_twice_is_recorded_once(svc):
 
 def test_update_own_item_and_undo(svc):
     [first] = svc.apply(TOMAS, [DDR_ONLY])
-    [second] = svc.apply(TOMAS, [DDR_ONLY.model_copy(update={"meaning": "all DDR errors", "sql_hint": "message LIKE '%ddr%'"})])
+    [second] = svc.apply(TOMAS, [DDR_ONLY.model_copy(update={"meaning": "all DDR errors"})])
     assert second.op == "update" and second.superseded_id == first.item_id
     assert used(svc, TOMAS, "memory errors")["memory errors"].meaning == "all DDR errors"
     svc.undo(TOMAS, second.to_dict())
@@ -241,13 +232,6 @@ def test_demo_clock():
     assert models.months_later("2006-01-01", -1) == "2005-12-01"
 
 
-def test_saved_filters_are_bracketed_so_dates_still_apply():
-    from memory_demo.service import _enclosed
-    assert _enclosed("message LIKE '%a%' OR message LIKE '%b%'") == "(message LIKE '%a%' OR message LIKE '%b%')"
-    assert _enclosed("(a) OR (b)") == "((a) OR (b))"
-    assert _enclosed("(a OR b)") == "(a OR b)" and _enclosed("  ") is None
-
-
 def test_terms_only_used_this_turn_are_not_saved_again(svc):
     _, trace = svc.retrieve(LUKAS, "memory errors last month")
     applied = [vars(i) for i in trace.items]
@@ -257,11 +241,10 @@ def test_terms_only_used_this_turn_are_not_saved_again(svc):
     assert svc.apply(LUKAS, [corrected], applied)[0].op == "add"  # a correction still counts
 
 
-def test_team_update_withdraws_cases_with_the_old_filter(svc):
+def test_team_update_withdraws_the_team_s_cases_about_the_term(svc):
     from memory_demo.casebook import Casebook
     cases = Casebook(svc.store, svc.org)
-    old = used(svc, EVA, "memory errors")["memory errors"].sql_hint
-    stale = cases.add(EVA, "memory errors last month?", f"SELECT COUNT(*) FROM bgl_events WHERE {old}")
+    stale = cases.add(EVA, "Memory errors last month?", "SELECT COUNT(*) FROM bgl_events WHERE message LIKE '%ddr%'")
     other = cases.add(EVA, "fatal events?", "SELECT COUNT(*) FROM bgl_events WHERE level = 'FATAL'")
     svc.apply(TOMAS, [DDR_ONLY])
     pick_colleagues(svc, PETRA)
@@ -306,7 +289,7 @@ def test_an_expired_meaning_is_no_longer_applied(svc):
 def test_nothing_is_remembered_without_consent(svc):
     clara = EMAIL("elena.dvorak")  # R&D / C: not part of the pilot, never asked
     assert svc.consent(clara) is None
-    op = DDR_ONLY.model_copy(update={"term": "the bad rack", "meaning": "rack R00", "sql_hint": "rack = 'R00'"})
+    op = DDR_ONLY.model_copy(update={"term": "the bad rack", "meaning": "rack R00"})
     assert svc.apply(clara, [op]) == []
     svc.set_consent(clara, remember=True, share=False)
     assert svc.consent(clara) == {"remember": True, "share": False}

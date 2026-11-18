@@ -15,8 +15,8 @@ Four levels, closest wins: personal > team > department > gold.
 - Meanings fade: confidence drops for every full month a personal, team or department meaning was not used, and after
   `DECAY_MONTHS` unused months it is no longer applied. Gold never fades; its owners maintain it.
 - Consent: only teammates who agreed to share count towards changing the team meaning, or are shown as others.
-- Two meanings are the same when their SQL filters match or their wording differs only in case, punctuation,
-  articles, plurals or a couple of typos (`consolidate.same_meaning`).
+- Two meanings are the same when their wording differs only in case, punctuation, articles, plurals or a couple of
+  typos (`consolidate.same_meaning`).
 
 The thresholds are placeholders for K9 / N4.
 """
@@ -28,7 +28,7 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 
-from .consolidate import same_meaning, sql_key
+from .consolidate import same_meaning
 from .models import SHAREABLE_TYPES, Alternative, MemoryItem, UsedItem
 from .org import Person
 
@@ -85,10 +85,8 @@ def untrustworthy_after(departments: int) -> int:
 
 
 def meaning_key(item: MemoryItem) -> str:
-    """A label for one meaning: its SQL filter (ignoring spacing, case and outer brackets), else its wording. Equal
-    keys always mean the same; for the full comparison use `same_meaning`."""
-    if key := sql_key(item.sql_hint):
-        return "sql:" + key
+    """A label for one meaning: its wording, ignoring case and spacing. Equal keys always mean the same; for the full
+    comparison use `same_meaning`."""
     return "text:" + " ".join(item.meaning.lower().split())
 
 
@@ -269,7 +267,7 @@ def resolve(
         if st.shared is None:
             if st.others:  # only other departments define it: shown, never applied
                 used.append(UsedItem(
-                    item_id="", item_type="term", term=term, meaning="", sql_hint=None, scope="unresolved",
+                    item_id="", item_type="term", term=term, meaning="", scope="unresolved",
                     support_label=support_label("unresolved"), applied_as="not applied", confidence=None,
                     level="note", reason="Neither you, your team, your department nor the official glossary define "
                                          "this term. Other departments do; pick one with Use this to keep it.",
@@ -290,8 +288,7 @@ def resolve(
         if level == "warning" and term in dismissed_terms:
             level, reason = "note", reason + " (You chose not to be warned about this term.)"
         used.append(UsedItem(
-            item_id=win.item_id, item_type=win.item_type, term=term, meaning=win.meaning, sql_hint=win.sql_hint,
-            scope=scope, support_label=support_label(scope), applied_as=f"interpreted “{term}” as {win.meaning}",
+            item_id=win.item_id, item_type=win.item_type, term=term, meaning=win.meaning, scope=scope, support_label=support_label(scope), applied_as=f"interpreted “{term}” as {win.meaning}",
             confidence=conf, level=level, reason=reason, overrides=k, needed=need, months_unused=unused,
             untrustworthy=scope == "gold" and term in flagged, alternatives=alternatives(st, flagged, applied=win),
             matched_by=fuzzy.describe() if fuzzy else None, user_wording=fuzzy.wording if fuzzy else None,
@@ -331,8 +328,7 @@ def plural_months(n: int) -> str:
 
 def _own(it: MemoryItem, applied_as: str, reason: str) -> UsedItem:
     return UsedItem(
-        item_id=it.item_id, item_type=it.item_type, term=it.term, meaning=it.meaning, sql_hint=it.sql_hint,
-        scope="personal", support_label="you", applied_as=applied_as, confidence=None, level="note", reason=reason,
+        item_id=it.item_id, item_type=it.item_type, term=it.term, meaning=it.meaning, scope="personal", support_label="you", applied_as=applied_as, confidence=None, level="note", reason=reason,
     )
 
 
@@ -364,8 +360,10 @@ def context_block(used: list[UsedItem]) -> str:
         return ""
     lines = [
         "## Memory: how this user and their colleagues use terms",
-        "Apply these interpretations when you write SQL and when you phrase the answer. They override your "
-        "own assumptions about what a term means. Do not mention this memory section; the UI shows it.",
+        "Apply these interpretations when you write SQL and when you phrase the answer: select exactly what each "
+        "definition says, with the exact values, names and texts it gives. They override your own assumptions about "
+        "what a term means. When another agent or tool writes the SQL for you, pass the definitions of the terms in "
+        "its task on to it, word for word. Do not mention this memory section; the UI shows it.",
     ]
     prefs = [u for u in used if u.item_type == "preference"]
     facts = [u for u in used if u.item_type == "fact" and not u.term]
@@ -374,8 +372,6 @@ def context_block(used: list[UsedItem]) -> str:
         line = f"- “{u.term}” means: {u.meaning}"
         if u.user_wording:
             line = f"- “{u.term}” (the user wrote “{u.user_wording}”) means: {u.meaning}"
-        if sql_key(u.sql_hint):
-            line += f"\n  SQL filter (use exactly as written): {u.sql_hint}"
         lines.append(line)
     if facts:
         lines.append("What this user told you earlier:")

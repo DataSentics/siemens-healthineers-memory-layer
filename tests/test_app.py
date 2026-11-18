@@ -30,7 +30,7 @@ def test_demo_flow(tmp_path, monkeypatch):
     answers = iter([AIMessage(content=f"Answer {i}") for i in range(10)])
     monkeypatch.setattr(config, "llm", lambda: FakeModel(messages=answers))
     ops = iter([[MemoryOp(op="add", item_type="term", term="memory errors", meaning="DDR and parity errors",
-                          sql_hint="message LIKE '%ddr error%'", evidence="correction")]])
+                          evidence="correction")]])
     def fake_extract(_llm, prev, msg, answer, applied, personal, **kwargs):
         rated = [TermRelevance(item_id=a["item_id"], level="medium", reason="partly") for a in applied if a.get("term")]
         return MemoryOps(ops=next(ops, []), relevance=rated)
@@ -141,7 +141,9 @@ def test_departments_new_team_and_already_in_memory(tmp_path, monkeypatch):
     answers = iter([AIMessage(content=f"Answer {i}") for i in range(10)])
     monkeypatch.setattr(config, "llm", lambda: FakeModel(messages=answers))
     ops = iter([[], [], [MemoryOp(op="add", item_type="term", term="Comms-errors", evidence="stated",
-                                  meaning="ciod socket errors between compute and I/O nodes.")]])
+                                  meaning="ciod socket errors between compute and I/O nodes: messages that start "
+                                          "with 'ciod: Error reading message prefix' or 'ciod: failed to read "
+                                          "message prefix'.")]])
     monkeypatch.setattr(service, "extract", lambda *a, **k: MemoryOps(ops=next(ops, [])))
     import streamlit as st
     st.cache_resource.clear()
