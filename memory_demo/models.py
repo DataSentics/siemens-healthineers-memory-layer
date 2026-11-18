@@ -12,7 +12,8 @@ from dataclasses import asdict, dataclass, field
 from datetime import date, datetime, timedelta, timezone
 from typing import Literal
 
-ItemType = Literal["preference", "term", "relation", "fact"]
+# Memory keeps shared vocabulary only: what terms mean, and how components or event groups relate.
+ItemType = Literal["term", "relation"]
 # user: one person's item (personal). team: the team's shared meaning, made when enough teammates agree.
 # department: the department's, made when enough of its teams agree. gold: official.
 Origin = Literal["user", "team", "department", "gold"]
@@ -21,7 +22,7 @@ SignalKind = Literal["author", "confirm", "correct", "shown", "dismiss", "undo",
 Level = Literal["note", "warning"]
 Relevance = Literal["high", "medium", "low"]
 
-SHAREABLE_TYPES = {"term", "relation"}  # only these can count towards (and become) a team meaning
+ITEM_TYPES = {"term", "relation"}  # rows of other types (from before memory kept vocabulary only) are not read
 
 
 # Demo clock: the data is a 2005 log, so "today" is simulated. Time of day stays real so ordering within a day works.
@@ -79,11 +80,12 @@ class MemoryItem:
     owner_email: str | None  # None for gold, team and department items
     owner_team: str | None  # None for department items
     owner_department: str | None
-    term: str | None = None  # normalised key; None for preferences
+    term: str | None = None  # normalised key
     aliases: list[str] = field(default_factory=list)
     origin: Origin = "user"
-    # For a personal term: may it count towards a team meaning, and be shown to teammates (without the owner's name)
-    # as another meaning in use? False for jokes, preferences and facts.
+    # May a user's own item count towards a team meaning, and be shown to teammates (without the owner's name) as
+    # another meaning in use, when its owner shares? Always True now: only items saved before memory kept vocabulary
+    # only (a name that made sense for its owner alone) carry False, and those stay unshared.
     shareable: bool = True
     status: Literal["active", "withdrawn"] = "active"
     supersedes: str | None = None
@@ -95,8 +97,6 @@ class MemoryItem:
         if self.term:
             self.term = norm_term(self.term)
         self.aliases = [norm_term(a) for a in self.aliases]
-        if self.item_type not in SHAREABLE_TYPES:
-            self.shareable = False
 
 
 @dataclass
@@ -186,8 +186,6 @@ class MemoryWrite:
     meaning: str
     shared_with: str  # human-readable: "only you" / "your team" / "your department"
     superseded_id: str | None = None
-    where: Literal["store", "mem0"] = "store"  # personal memory may live in Mem0
-    previous_meaning: str | None = None  # Mem0 updates in place; kept for undo
     evidence: str | None = None  # correction / stated / inferred (from the extractor)
     note: str | None = None  # team updates: "3 of 5 colleagues use this meaning"
     folded_ids: list[str] = field(default_factory=list)  # team / department updates: items folded into it (for undo)

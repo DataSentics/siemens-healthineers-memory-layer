@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from difflib import SequenceMatcher
 from typing import Any
 
-from .models import SHAREABLE_TYPES, MemoryItem
+from .models import MemoryItem
 
 MEANING_MIN = 0.88  # below this, near-misses like "memory usage" ~ memory errors (0.84) would match
 SPELLING_MIN = 0.85
@@ -118,7 +118,7 @@ class TermIndex:
         """Add the keys of any term not indexed yet (new terms, new team meanings). Withdrawn items never match,
         because matches are limited to the items the user can currently see."""
         with self.lock:
-            new = [(it, key) for it in items if it.term and it.item_type in SHAREABLE_TYPES
+            new = [(it, key) for it in items if it.term
                    for key in _keys(it) if (it.item_id, key) not in self.indexed]
             if not new:
                 return

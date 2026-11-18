@@ -37,7 +37,7 @@ if TYPE_CHECKING:
 IDENTITY_HEADERS = ("x-forwarded-email", "x-forwarded-preferred-username", "x-forwarded-user")
 
 INSTRUCTIONS = """Shared memory of a data assistant: what terms mean for this user, their team, their department and the
-official glossary, plus the user's own preferences. Call memory_context before answering and memory_learn after
+official glossary. Call memory_context before answering and memory_learn after
 answering (from code, every turn). Call show_memory, explain_term or forget when the user asks about their memory."""
 
 

@@ -35,7 +35,7 @@ def svc(tmp_path):
 
 
 def used(svc, email, q):
-    return {u.term or "pref:" + u.meaning: u for u in svc.retrieve(email, q)[1].items}
+    return {u.term: u for u in svc.retrieve(email, q)[1].items}
 
 
 def term_op(term, meaning, **kw):
@@ -101,10 +101,8 @@ def test_undo_twice_changes_nothing_the_second_time(svc):
 
 def test_use_this_only_takes_meanings_the_user_can_see(svc):
     svc.set_consent(TOMAS, remember=True, share=False)
-    [private] = svc.apply(TOMAS, [term_op("my rack", "rack R12", private=True)])
     [unshared] = svc.apply(TOMAS, [DDR_ONLY])  # sharing is off: not offered to colleagues
-    pref = next(r for r in svc.view(EVA)["personal"] if r["type"] == "preference")
-    for item_id in (private.item_id, unshared.item_id, pref["item_id"], "no-such-id"):
+    for item_id in (unshared.item_id, "no-such-id"):
         with pytest.raises(ValueError):
             svc.choose(PETRA, "", item_id)
     assert svc.view(PETRA)["personal"] == []
@@ -116,14 +114,11 @@ def test_use_this_only_takes_meanings_the_user_can_see(svc):
 
 # ---- a wrong target from the model must not remove another item -----------------------------------------------
 def test_a_wrong_target_never_replaces_an_unrelated_item(svc):
-    [rack] = svc.apply(TOMAS, [term_op("my rack", "rack R12", private=True)])
+    svc.set_consent(TOMAS, remember=True, share=False)
+    [rack] = svc.apply(TOMAS, [term_op("the quiet rack", "rack R12")])
     [w] = svc.apply(TOMAS, [DDR_ONLY.model_copy(update={"target_item_id": rack.item_id})])
     assert w.op == "add" and w.superseded_id is None
-    assert used(svc, TOMAS, "errors on my rack")["my rack"].meaning == "rack R12"
-    pref = MemoryOp(op="add", item_type="preference", meaning="keep it short", evidence="stated",
-                    target_item_id=w.item_id)  # a preference "replacing" a term
-    [p] = svc.apply(TOMAS, [pref])
-    assert p.op == "add" and used(svc, TOMAS, "memory errors")["memory errors"].scope == "personal"
+    assert used(svc, TOMAS, "errors on the quiet rack")["the quiet rack"].meaning == "rack R12"
 
 
 def test_a_forgotten_item_is_not_revived_by_undoing_a_later_one(svc):

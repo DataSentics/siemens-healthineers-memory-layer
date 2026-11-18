@@ -43,10 +43,10 @@ def test_memory_injected_and_streamed(tmp_path, monkeypatch):
     llm = RecordingModel(messages=iter([AIMessage(content="There were 33,662 memory errors on R37.")]))
     svc = MemoryService(store, org, llm=llm)
 
-    def fake_extract(_llm, prev, user_message, answer, applied, personal, **kwargs):
+    def fake_extract(_llm, prev, user_message, answer, applied, own, **kwargs):
         assert "memory errors" in user_message and answer.startswith("There were")
         rated = [TermRelevance(item_id=a["item_id"], level="high", reason="asked about it") for a in applied if a.get("term")]
-        return MemoryOps(ops=[MemoryOp(op="add", item_type="preference", meaning="show numbers per node card",
+        return MemoryOps(ops=[MemoryOp(op="add", item_type="term", term="the busy card", meaning="node card R12-M0-N4",
                                        evidence="stated")], relevance=rated + [TermRelevance(item_id="nope", level="low", reason="x")])
 
     monkeypatch.setattr(service, "extract", fake_extract)
@@ -64,7 +64,7 @@ def test_memory_injected_and_streamed(tmp_path, monkeypatch):
     trace = next(u["memory_trace"] for u in updates.values() if u and "memory_trace" in u)
     assert {i["term"] for i in trace["items"]} == {"memory errors", "the noisy rack"}
     writes = next(u["memory_writes"] for u in updates.values() if u and u.get("memory_writes"))
-    assert writes[0]["meaning"] == "show numbers per node card" and writes[0]["shared_with"] == "only you"
+    assert writes[0]["meaning"] == "node card R12-M0-N4" and writes[0]["shared_with"] == "only you"
     relevance = next(u["memory_relevance"] for u in updates.values() if u and u.get("memory_relevance"))
     assert set(relevance) == {i["item_id"] for i in trace["items"]}  # ids not applied this turn are dropped
     assert {r["level"] for r in relevance.values()} == {"high"}

@@ -29,7 +29,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 
 from .consolidate import same_meaning
-from .models import SHAREABLE_TYPES, Alternative, MemoryItem, UsedItem
+from .models import Alternative, MemoryItem, UsedItem
 from .org import Person
 
 WARN_BELOW = 0.6  # K9: confidence under this shows a warning instead of a note
@@ -45,7 +45,7 @@ def months_unused(item: MemoryItem, today: str) -> int:
 
 
 def fades(item: MemoryItem) -> bool:
-    return item.origin != "gold" and item.item_type in SHAREABLE_TYPES
+    return item.origin != "gold"
 
 
 def freshness(item: MemoryItem, today: str) -> float:
@@ -152,7 +152,7 @@ def term_states(viewer: Person, items: list[MemoryItem], today: str, sharing: se
         shared = team or dept or gold
         latest_per_person: dict[str, MemoryItem] = {}
         for i in its:
-            if (i.origin == "user" and teammate(i) and i.shareable and i.item_type in SHAREABLE_TYPES
+            if (i.origin == "user" and teammate(i) and i.shareable
                     and (sharing is None or i.owner_email in sharing)
                     and (shared is None or not same_meaning(i, shared))):
                 prev = latest_per_person.get(i.owner_email)
@@ -221,29 +221,19 @@ def resolve(
     team_size: int,
     departments: int,
     dismissed_terms: set[str] = frozenset(),
-    facts: list[MemoryItem] = (),
     today: str | None = None,
     sharing: set[str] | None = None,
     matches: dict | None = None,
     teammates: set[str] | None = None,
 ) -> list[UsedItem]:
     """`candidates`: the viewer's own items, gold, every team's and department's shared meanings and teammates' own
-    terms. `facts`: the viewer's own facts relevant to this question (personal memory search).
-    `sharing`: teammates who agreed to share their own meanings (None: everyone).
+    terms. `sharing`: teammates who agreed to share their own meanings (None: everyone).
     `matches`: terms found by meaning or spelling (semantic.Match per term), on top of exact wording.
     `teammates`: the viewer's team from the org directory (None: the team stored on each item)."""
     from .models import today as demo_today
 
     today = today or demo_today()
     used: list[UsedItem] = []
-
-    # Personal preferences apply to every answer (FR15).
-    for it in candidates:
-        if it.item_type == "preference" and it.status == "active" and _same_person(it.owner_email, viewer.email):
-            used.append(_own(it, f"applied your preference: {it.meaning}", "Your own preference."))
-    for it in facts:
-        used.append(_own(it, f"used what you told me: {it.meaning}", "Something you told me earlier."))
-
     flagged = untrustworthy_terms(candidates, departments)
     need = needed(team_size)
     for term, st in term_states(viewer, candidates, today, sharing, teammates).items():
@@ -365,18 +355,9 @@ def context_block(used: list[UsedItem]) -> str:
         "what a term means. When another agent or tool writes the SQL for you, pass the definitions of the terms in "
         "its task on to it, word for word. Do not mention this memory section; the UI shows it.",
     ]
-    prefs = [u for u in used if u.item_type == "preference"]
-    facts = [u for u in used if u.item_type == "fact" and not u.term]
-    terms = [u for u in used if u not in prefs and u not in facts]
-    for u in terms:
+    for u in used:
         line = f"- “{u.term}” means: {u.meaning}"
         if u.user_wording:
             line = f"- “{u.term}” (the user wrote “{u.user_wording}”) means: {u.meaning}"
         lines.append(line)
-    if facts:
-        lines.append("What this user told you earlier:")
-        lines += [f"- {u.meaning}" for u in facts]
-    if prefs:
-        lines.append("User preferences (apply to the form of the answer):")
-        lines += [f"- {u.meaning}" for u in prefs]
     return "\n".join(lines)

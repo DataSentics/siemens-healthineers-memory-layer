@@ -13,8 +13,12 @@ structured (a term and its meaning, per scope), so the question splits in two:
    exactly, so the rest of the layer (team counts, folding into the team meaning) sees one meaning, not two.
    A cheap check goes first (the same words up to case, punctuation, articles, plurals and two typos; never different
    numbers like R37 / R38 or different words like correctable / uncorrectable). When it is not enough, the LLM decides
-   from the user's own words, as in Mem0. The cheap check is also used when meanings are compared on read
-   (`same_meaning`).
+   from the user's own words, as in Mem0, but only a match it is certain of counts.
+   Whatever decides, two meanings are never the same when their exact values differ (`same_details`: codes and names
+   in capitals, anything with a digit, quoted texts). A wrong merge would replace what a user said with another
+   meaning and count them towards a team meaning they do not hold; a missed one only keeps a second wording. So
+   merging is strict, and what it merges is the same meaning. The cheap check is also used when meanings are compared
+   on read (`same_meaning`).
 """
 
 from __future__ import annotations
@@ -33,6 +37,7 @@ log = logging.getLogger(__name__)
 ARTICLES = {"a", "an", "the"}
 MAX_ENTRIES = 15  # Mem0 compares with the top s=10 similar memories; one term can have a few more meanings
 WORD = re.compile(r"[^\W_]+")  # letters and digits of any script: "größer" and "内存错误" are words too
+QUOTED = re.compile(r""""([^"]+)"|“([^”]+)”|(?<!\w)'([^']+)'(?!\w)""")  # "x", “x”, 'x' (not an apostrophe)
 
 
 def words(text: str) -> list[str]:
@@ -95,8 +100,30 @@ def same_term(a: str, b: str) -> bool:
 
 
 def same_meaning(a: MemoryItem, b: MemoryItem) -> bool:
-    """The same wording up to case, punctuation, articles, plurals and two typos."""
-    return same_words(a.meaning, b.meaning, max_typos=2)
+    """The same wording up to case, punctuation, articles, plurals and two typos, and the same exact values (a typo
+    in a code like KERNDTLB is another code)."""
+    return same_words(a.meaning, b.meaning, max_typos=2) and same_details(a.meaning, b.meaning)
+
+
+def details(text: str) -> set[str]:
+    """The exact values that pin a meaning down, lower-cased: codes and names in capitals (FATAL, KERNDTLB, LINKCARD),
+    anything with a digit (R37, 2005, the parts of R12-M0-N4) and quoted texts."""
+    text = text or ""
+    quoted = {" ".join(next(g for g in m.groups() if g).lower().split()) for m in QUOTED.finditer(text)}
+    return quoted | {w.lower() for w in WORD.findall(text)
+                     if any(c.isdigit() for c in w) or (len(w) >= 2 and w.isupper())}
+
+
+def same_details(a: str, b: str) -> bool:
+    """Every exact value of each meaning appears in the other (as a word, or for a quoted text as written, ignoring
+    case and spacing). "level FATAL" and "fatal events" agree; R37 / R38 and FATAL / FAILURE do not."""
+    return _covered(details(a), b) and _covered(details(b), a)
+
+
+def _covered(found: set[str], text: str) -> bool:
+    low = " ".join((text or "").lower().split())
+    present = set(WORD.findall(low))
+    return all(d in present if WORD.fullmatch(d) else d in low for d in found)
 
 
 # ---- the decision ------------------------------------------------------------------------------------------
@@ -109,6 +136,8 @@ class Resolution:
 
 class SameAs(BaseModel):
     same_meaning_id: str | None = Field(None, description="Id of the entry that means what the user means, or null.")
+    certain: bool = Field(False, description="True only when you are certain that entry selects exactly the same "
+                                             "events as the user's meaning.")
 
 
 SYSTEM = """You keep the shared memory of a data assistant free of duplicates. A user just said what a term means, and
@@ -116,8 +145,10 @@ memory already has one or more meanings for that same term. Decide whether one o
 
 same_meaning_id: the id of the entry that means what the user means: only worded differently or with typos. Judge
 by what the user said: the meanings were written down by an assistant and can differ in form for the same intent. A
-meaning is different when the user's words ask for different events
-(narrower, broader or other ones). Null if none of them is.
+meaning is different when the user's words ask for different events (narrower, broader or other ones), or name other
+codes, components, levels, numbers or message texts. Null if none of them is.
+certain: true only when you are certain: both select exactly the same events. If you have any doubt, answer null. A
+wrong match replaces what the user said with someone else's meaning; a missed one only keeps a second wording.
 
 Always answer by calling the SameAs tool."""
 
@@ -161,4 +192,6 @@ def _ask(llm: BaseChatModel, new: MemoryItem, entries: list[MemoryItem], canon: 
         log.warning("could not compare “%s” with memory, saving it as said: %s", canon, e)
         return Resolution(canon)
     same = {e.item_id: e for e in entries}.get(answer.same_meaning_id or "")
-    return Resolution(canon, same, "llm" if same else None)
+    if same is None or not answer.certain or not same_details(new.meaning, same.meaning):
+        return Resolution(canon)
+    return Resolution(canon, same, "llm")

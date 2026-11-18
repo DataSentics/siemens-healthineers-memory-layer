@@ -19,7 +19,6 @@ from langchain_core.language_models import BaseChatModel
 
 from .bgl import COLUMNS, TABLE, TABLE_COMMENT
 from .org import Directory
-from .personal import Mem0Personal
 from .service import MemoryService
 from .store import CONNECT_LIMITS, DatabricksExecutor, MemoryStore, SqliteExecutor
 
@@ -129,7 +128,7 @@ def mem0_client(embedder, chat_model, dims: int, path: Path):
     return Memory.from_config({
         "embedder": {"provider": "langchain", "config": {"model": embedder}},
         "llm": {"provider": "langchain", "config": {"model": chat_model}},  # unused: we write with infer=False
-        "vector_store": {"provider": "qdrant", "config": {"collection_name": "personal", "path": str(path),
+        "vector_store": {"provider": "qdrant", "config": {"collection_name": "terms", "path": str(path),
                                                           "embedding_model_dims": dims, "on_disk": True}},
         "history_db_path": str(path / "history.db"),
     })
@@ -164,16 +163,7 @@ def term_index():
     return TermIndex(mem0_client(embedder, llm(), dims, path), embedder)
 
 
-@lru_cache
-def personal_memory() -> Mem0Personal | None:
-    """PERSONAL_MEMORY=mem0 keeps preferences and facts in Mem0; `store` (default) keeps them with the rest."""
-    if env("PERSONAL_MEMORY", "store") != "mem0":
-        return None
-    embedder, dims = embeddings()
-    return Mem0Personal(mem0_client(embedder, llm(), dims, Path(env("MEM0_PATH", str(ROOT / "data" / "mem0")))))
-
-
 def memory_service(with_llm: bool = True) -> MemoryService:
     return MemoryService(memory_store(), org(), llm() if with_llm else None,
-                         joke_filter=env("JOKE_FILTER", "1") == "1", personal=personal_memory(),
+                         joke_filter=env("JOKE_FILTER", "1") == "1",
                          term_index=term_index)  # built only when the Mem0 switch is first used

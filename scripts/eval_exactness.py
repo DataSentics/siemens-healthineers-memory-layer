@@ -47,7 +47,7 @@ args = ap.parse_args()
 OUT = Path(args.out or HERE / "evals" / f"exactness_{args.mode}.md")
 
 DATA = HERE / "data" / "bgl.db"
-os.environ.update({"BACKEND": "sqlite", "SQLITE_DATA": str(DATA), "PERSONAL_MEMORY": "store", "ORG_SEED": "1",
+os.environ.update({"BACKEND": "sqlite", "SQLITE_DATA": str(DATA), "ORG_SEED": "1",
                    "DEMO_TODAY": "2005-12-01"})
 if args.embeddings:
     os.environ.update({"DATABRICKS_EMBEDDING_ENDPOINT": args.embeddings, "EMBEDDING_DIMS": "1024"})

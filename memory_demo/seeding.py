@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .models import SHAREABLE_TYPES, MemoryItem, Signal, months_later, set_today
+from .models import MemoryItem, Signal, months_later, set_today
 from .org import Org
 from .store import MemoryStore
 
@@ -38,15 +38,12 @@ def load_gold(store: MemoryStore, org: Org) -> int:
     return len(rows)
 
 
-def load_pilot(store: MemoryStore, org: Org, personal=None) -> int:
+def load_pilot(store: MemoryStore, org: Org) -> int:
     rows = json.loads((SEED / "pilot_memory.json").read_text(encoding="utf-8"))["items"]
     items, signals, teams = [], [], set()
     for r in rows:
         if r["scope"] == "personal":
             author = org.get(r["author"])
-            if personal and r["type"] not in SHAREABLE_TYPES:  # preferences go to Mem0 when it is on
-                personal.add(author, r["type"], r["meaning"])
-                continue
             item = MemoryItem(
                 item_type=r["type"], term=r.get("term"), aliases=r.get("aliases", []), meaning=r["meaning"],
                 owner_email=author.email, owner_team=author.team,
@@ -87,18 +84,15 @@ def load_pilot(store: MemoryStore, org: Org, personal=None) -> int:
     return len(rows)
 
 
-def reset(store: MemoryStore, org: Org, step: int, start: str, personal=None) -> str:
+def reset(store: MemoryStore, org: Org, step: int, start: str) -> str:
     """`org`: an org.Directory is put back to the seed org chart; a fixed org.Org is used as it is."""
-    emails = [p.email for p in org.people()]  # before the reset, so people of added teams are cleared too
     if getattr(org, "seed_csv", None):  # a Directory that owns its seed; a real directory is left alone
         org.load_seed()
     store.clear()
-    if personal:
-        personal.clear(emails)
     set_today(start)
     n_gold = load_gold(store, org)
     if step == 1:
         return f"Step 1: memory cleared, {n_gold} gold terms loaded."
     set_today(months_later(start))
-    n_pilot = load_pilot(store, org, personal)
+    n_pilot = load_pilot(store, org)
     return f"Step 2: {n_gold} gold terms + {n_pilot} items from the pilot month."

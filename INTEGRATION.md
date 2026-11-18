@@ -37,7 +37,7 @@ memory app (mcp-shs-memory) ◀────────────────�
 ## What happens in a turn of the SQL agent
 
 1. **Before the first model call** the middleware calls `memory_context` with the request the SQL agent received
-   (the main agent's task). The memory block it returns (what the terms mean for this user, their preferences) is
+   (the main agent's task). The memory block it returns (what the terms mean for this user) is
    appended to the system prompt of every model call in the turn. Terms are found by their wording, and by meaning
    with Mem0 ("RAM problems" finds *memory errors*).
 2. **After the answer** it calls `memory_learn`. Learning uses the user's own words when the request carries them
@@ -76,7 +76,6 @@ A Databricks App whose name starts with `mcp-`, running `python -m memory_demo.m
 | `ORG_SEED` | **`0`**. The org directory is filled by the HR / Entra sync; with any other value an empty directory would be filled with the demo's made-up org chart |
 | `MEMORY_DB_CONNECTIONS` | `4` (warehouse connections kept open) |
 | `LLM_PROVIDER`, `DATABRICKS_LLM_ENDPOINT` | `databricks`, the model that decides what to remember (`databricks-claude-sonnet-5-5` in the demo) |
-| `PERSONAL_MEMORY` | `store` (preferences and facts stay in the tables, not in Mem0's local files) |
 | `DATABRICKS_EMBEDDING_ENDPOINT`, `EMBEDDING_DIMS` | `databricks-gte-large-en`, `1024`: Mem0's embeddings (the match thresholds were set on this model) |
 | `MEMORY_TRUSTED_CALLERS` | the id of the service principal the SQL agent signs in as |
 

@@ -16,9 +16,8 @@ from langchain_core.language_models import BaseChatModel
 
 from . import consolidate, resolver, seeding
 from .extractor import MemoryOp, extract
-from .models import SHAREABLE_TYPES, MemoryItem, MemoryTrace, MemoryWrite, Signal, new_id, norm_term, today
+from .models import MemoryItem, MemoryTrace, MemoryWrite, Signal, new_id, norm_term, today
 from .org import Person
-from .personal import Mem0Personal
 from .store import MemoryStore
 
 log = logging.getLogger(__name__)
@@ -47,18 +46,19 @@ class NotAllowed(ValueError):
 
 class MemoryService:
     """`org`: the org directory (org.Directory) or a fixed snapshot (org.Org, in tests).
-    `personal`: optional Mem0 store for preferences and facts (never shared); without it they live in `store`."""
+    Memory holds shared vocabulary only (terms and relations); nothing about a user themself is saved."""
 
     def __init__(self, store: MemoryStore, org, llm: BaseChatModel | None = None, joke_filter: bool = True,
-                 personal: Mem0Personal | None = None, term_index=None):
-        """`term_index`: a callable returning the Mem0 term index (built on first use, only if the switch is on)."""
-        self.store, self.org, self.llm, self.joke_filter, self.personal = store, org, llm, joke_filter, personal
+                 term_index=None):
+        """`joke_filter`: definitions the extractor marks as jokes are not saved.
+        `term_index`: a callable returning the Mem0 term index (built on first use, only if the switch is on)."""
+        self.store, self.org, self.llm, self.joke_filter = store, org, llm, joke_filter
         self.term_index = term_index
         self._writing = TermLocks()
 
     def reset(self, step: int, start: str) -> str:
         """Demo states (see seeding)."""
-        return seeding.reset(self.store, self.org, step, start, personal=self.personal)
+        return seeding.reset(self.store, self.org, step, start)
 
     def teammates(self, viewer: Person) -> list[str]:
         """Everyone in the viewer's team today, from the org directory (so moves and new teams count at once)."""
@@ -74,15 +74,7 @@ class MemoryService:
         t0 = time.perf_counter()
         viewer = self.org.get(email)
         mates = self.teammates(viewer)
-        candidates = self.store.candidate_items(viewer.email, mates)
-        if self.personal:
-            candidates += [i for i in self.personal.all(viewer) if i.item_type == "preference"]
-            facts = self.personal.relevant_facts(viewer, question)  # semantic search
-        else:
-            facts = relevant_facts([i for i in candidates if i.item_type == "fact" and not i.term
-                                    and i.owner_email == viewer.email], question)
-        candidates = [c for c in candidates if c.item_id not in exclude]
-        facts = [f for f in facts if f.item_id not in exclude]
+        candidates = [c for c in self.store.candidate_items(viewer.email, mates) if c.item_id not in exclude]
         rows = self.store.user_signals(viewer.email, mates)
         dismissed = {r["term"] for r in rows if r["kind"] == "dismiss" and r["term"]}
         sharing = _sharing(_consents(rows))
@@ -95,7 +87,7 @@ class MemoryService:
                 log.warning("Mem0 term matching failed, using exact wording: %s", e)
                 note = f"Mem0 matching was unavailable ({type(e).__name__}), so only exact wording was used."
         used = resolver.resolve(viewer, question, candidates, self.org.team_size(viewer.team, today()),
-                                self.org.departments(), dismissed, facts, today=today(),
+                                self.org.departments(), dismissed, today=today(),
                                 sharing=sharing, matches=matches, teammates=_lower(mates))
         trace = MemoryTrace(turn_id=new_id(), user_email=viewer.email, question=question, items=used, note=note)
         # Soft signal: shown. Background evidence only (FR11).
@@ -122,8 +114,8 @@ class MemoryService:
         # The trace comes back from the caller (the agent's state): keep only entries that look like ours.
         applied = [i for i in (trace or {}).get("items") or []
                    if isinstance(i, dict) and isinstance(i.get("item_id"), str) and isinstance(i.get("meaning"), str)]
-        personal = [asdict(i) for i in self.personal_items(email)]
-        result = extract(self.llm, previous_answer, user_message, answer, applied, personal, sql=sql, recent=recent)
+        own = [asdict(i) for i in self.store.own_items(self.org.get(email).email)]
+        result = extract(self.llm, previous_answer, user_message, answer, applied, own, sql=sql, recent=recent)
         ids = {a["item_id"] for a in applied if a.get("term") and a.get("scope") != "unresolved"}
         relevance = {r.item_id: {"level": r.level, "reason": r.reason} for r in result.relevance if r.item_id in ids}
         # apply() saves nothing without consent
@@ -131,7 +123,9 @@ class MemoryService:
 
     def apply(self, email: str, ops: list[MemoryOp], applied: list[dict] | None = None, said: str | None = None
               ) -> list[MemoryWrite]:
-        """What a user teaches about an existing term is theirs first; a new term goes to their team at once.
+        """Only definitions are saved (terms and relations), never anything about the user themself, and never a
+        definition marked as a joke. What a user teaches about an existing term is theirs first; a new term goes to
+        their team at once.
         A term changes for the team only when enough teammates use the same other meaning (`_update_team`), and for
         the department when enough of its teams do (`_update_department`). Before anything is stored it is compared
         with what memory already holds (`consolidate`, Mem0's update phase), so another wording or a typo never
@@ -149,16 +143,10 @@ class MemoryService:
         for op in ops:
             if op.evidence == "inferred":  # only what the user said, never the model's own reading
                 continue
-            if op.item_type not in SHAREABLE_TYPES and op.term:
-                # Preferences and facts are about the user, not definitions: "I like SOMARIS10" must never become
-                # what SOMARIS10 means for them. Stored without a term, they never override a term.
-                op = op.model_copy(update={"term": None})
+            if self.joke_filter and op.is_joke and op.op != "withdraw":
+                continue
             op = _clean(op)
             if op is None:  # no usable term or meaning
-                continue
-            if self.personal and op.item_type not in SHAREABLE_TYPES:
-                if w := self._apply_personal(viewer, op):
-                    writes.append(w)
                 continue
             # The target id comes from the model: it is only a hint, and never the reason another item is replaced.
             target = self.store.get_item(op.target_item_id) if op.target_item_id else None
@@ -166,20 +154,13 @@ class MemoryService:
                 if target and (w := self._withdraw(viewer, target, op.evidence)):
                     writes.append(w)
                 continue
-            if not op.term:  # a preference or fact in the store
-                own = self.store.own_items(viewer.email)
-                if not any(i.term is None and i.item_type == op.item_type
-                           and consolidate.same_words(i.meaning, op.meaning, max_typos=2) for i in own):
-                    prev = target if _replaces(target, viewer, None, op.item_type) else None
-                    writes.append(self._add_own(viewer, op, None, op.meaning, prev, None)[1])
-                continue
-
             # Mem0's update phase: the same term spelled differently, or a meaning memory already has?
             known = self._known_terms(viewer, mates, sharing)
             res = consolidate.resolve(op.term, op.meaning, known, self.llm, decided, said)
             term, same = res.term, res.same
             hint = next((k for k in known if k.item_id == op.same_as_item_id), None) if op.same_as_item_id else None
-            if same is None and hint is not None and hint.term == term and hint.item_id != op.target_item_id:
+            if (same is None and hint is not None and hint.term == term and hint.item_id != op.target_item_id
+                    and consolidate.same_details(op.meaning, hint.meaning)):
                 same = hint  # the extractor saw it listed this turn and said it is the same meaning
             if target is None and term in applied_by_term:
                 target = self.store.get_item(applied_by_term[term]["item_id"])
@@ -207,8 +188,7 @@ class MemoryService:
                     return [w] if w else []
                 return [self._same(state.shared, _where(state.shared))]
         meaning = same.meaning if same else op.meaning
-        private = op.private or (self.joke_filter and op.is_joke)
-        prev = target if _replaces(target, viewer, term, op.item_type) else (state.mine if state else None)
+        prev = target if _replaces(target, viewer, term) else (state.mine if state else None)
         # a shared meaning of this term that the user disagrees with: kept as a background signal
         corrected = target if (target is not None and target.origin != "user" and target.term == term
                                and target.status == "active") else None
@@ -216,10 +196,9 @@ class MemoryService:
         # word must still find it.
         wording = norm_term(op.term)
         aliases = [wording] if consolidate.compact(wording) != consolidate.compact(term) else []
-        item, write = self._add_own(viewer, op, term, meaning, prev, corrected, shareable=not private,
-                                    aliases=aliases)
+        item, write = self._add_own(viewer, op, term, meaning, prev, corrected, aliases=aliases)
         writes = [write]
-        if private or op.item_type not in SHAREABLE_TYPES or not shares:
+        if not shares:  # the user's share switch: their definitions stay theirs
             return writes
         if state is None or state.shared is None:  # a new term: nothing to disagree with, so the team gets it
             writes += self._share_new_term(viewer, item)
@@ -229,13 +208,12 @@ class MemoryService:
                 writes.append(dept)
         return writes
 
-    def _add_own(self, viewer: Person, op: MemoryOp, term: str | None, meaning: str, prev: MemoryItem | None,
-                 corrected: MemoryItem | None, shareable: bool = False,
-                 aliases: list[str] | None = None) -> tuple[MemoryItem, MemoryWrite]:
+    def _add_own(self, viewer: Person, op: MemoryOp, term: str, meaning: str, prev: MemoryItem | None,
+                 corrected: MemoryItem | None, aliases: list[str] | None = None) -> tuple[MemoryItem, MemoryWrite]:
         """Store the user's own item, replacing `prev` (their earlier one). `corrected`: a shared item they disagreed
         with (kept as a background signal)."""
         item = MemoryItem(item_type=op.item_type, term=term, meaning=meaning, owner_email=viewer.email,
-                          owner_team=viewer.team, owner_department=viewer.department, shareable=shareable,
+                          owner_team=viewer.team, owner_department=viewer.department,
                           aliases=aliases or [], supersedes=prev.item_id if prev else None)
         signals = [self._signal(viewer, item.item_id, "author", item.term)]
         if corrected is not None:  # background evidence only
@@ -368,26 +346,6 @@ class MemoryService:
             folded_ids=[i.item_id for i in group],
         )
 
-    def _apply_personal(self, viewer: Person, op: MemoryOp) -> MemoryWrite | None:
-        target = self.personal.get(op.target_item_id, viewer) if op.target_item_id else None
-        if op.op == "withdraw":
-            if not target:
-                return None
-            self.personal.delete(target.item_id)
-            return MemoryWrite(op="withdraw", item_id=target.item_id, item_type=target.item_type, term=None,
-                               meaning=target.meaning, shared_with="only you", where="mem0", evidence=op.evidence)
-        if any(consolidate.same_words(i.meaning, op.meaning, max_typos=2) for i in self.personal.all(viewer)):
-            return None
-        if target:
-            self.personal.update(target, op.meaning)
-            return MemoryWrite(op="update", item_id=target.item_id, item_type=target.item_type, term=None,
-                               meaning=op.meaning, shared_with="only you", where="mem0",
-                               previous_meaning=target.meaning, evidence=op.evidence)
-        item = self.personal.add(viewer, op.item_type, op.meaning)
-        self.store.add_signals([self._signal(viewer, item.item_id, "author", None)])
-        return MemoryWrite(op="add", item_id=item.item_id, item_type=item.item_type, term=None, meaning=item.meaning,
-                           shared_with="only you", where="mem0", evidence=op.evidence)
-
     def undo(self, email: str, write: dict) -> None:
         """Reverse one write that `learn`, `apply` or `choose` returned to this user.
 
@@ -399,10 +357,6 @@ class MemoryService:
         if op == "same":  # nothing was saved
             return
         item_id = str(write.get("item_id") or "")
-        if write.get("where") == "mem0":
-            item_id = self._undo_personal(viewer, op, item_id, write)
-            self.store.add_signals([self._signal(viewer, item_id, "undo", write.get("term"))])
-            return
         item = self.store.get_item(item_id)
         if item is None:
             raise NotAllowed("Nothing to undo: no such item.")
@@ -446,32 +400,11 @@ class MemoryService:
         restore = folded_ids + ([old.item_id] if old is not None and old.origin == item.origin else [])
         return {**dict.fromkeys(restore, "active"), item.item_id: "withdrawn"}
 
-    def _undo_personal(self, viewer: Person, op: str, item_id: str, write: dict) -> str:
-        """Undo in the Mem0 personal store; returns the id of the item the undo ends on. A forgotten note is gone
-        from Mem0, so bringing it back would mean saving whatever text the client sends: that is refused."""
-        if self.personal is None:
-            raise NotAllowed("Nothing to undo: no such item.")
-        if op == "withdraw":
-            raise NotAllowed("A forgotten personal note cannot be brought back; say it again to save it.")
-        item = self.personal.get(item_id, viewer)  # None unless it is the viewer's own
-        _require(item is not None)
-        if op == "add":
-            self.personal.delete(item_id)
-        elif op == "update":
-            self.personal.update(item, _one_line(str(write.get("previous_meaning") or ""), MAX_MEANING))
-        else:
-            raise NotAllowed("Nothing to undo: unknown kind of change.")
-        return item_id
-
     # ---- user controls (FR10, FR12, FR14, FR21) ----------------------------------------------------------
     def forget(self, email: str, item_id: str) -> MemoryWrite | None:
         viewer = self.org.get(email)
         if item := self.store.get_item(item_id):
             return self._withdraw(viewer, item)
-        if self.personal and (item := self.personal.get(item_id, viewer)):
-            self.personal.delete(item_id)
-            return MemoryWrite(op="withdraw", item_id=item_id, item_type=item.item_type, term=None,
-                               meaning=item.meaning, shared_with="only you", where="mem0")
         return None
 
     def feedback(self, email: str, item_id: str, accept: bool) -> None:
@@ -489,8 +422,8 @@ class MemoryService:
         sharing = _sharing(_consents(self.store.user_signals(viewer.email, mates)))
         chosen = self.store.get_item(chosen_id)
         # The id comes from a client: it must be a meaning this user is actually offered, or picking it would copy
-        # someone's private item (or another team's meaning) into their memory.
-        if (chosen is None or chosen.status != "active" or not chosen.term or chosen.item_type not in SHAREABLE_TYPES
+        # a colleague's unshared meaning (or another team's) into their memory.
+        if (chosen is None or chosen.status != "active" or not chosen.term
                 or resolver.expired(chosen, today()) or not _visible(viewer, chosen, _lower(mates), sharing)):
             raise NotAllowed("That meaning is not one you can pick.")
         op = MemoryOp(op="add", item_type=chosen.item_type, term=chosen.term, meaning=chosen.meaning,
@@ -502,10 +435,6 @@ class MemoryService:
     def dismiss_warning(self, email: str, term: str) -> None:
         self.store.add_signals([self._signal(self.org.get(email), "-", "dismiss", norm_term(term))])
 
-    def personal_items(self, email: str) -> list[MemoryItem]:
-        viewer = self.org.get(email)
-        return self.store.own_items(viewer.email) + (self.personal.all(viewer) if self.personal else [])
-
     def untrustworthy(self) -> dict[str, list[str]]:
         """Official terms replaced in many departments, with those departments (admin view)."""
         flagged = resolver.untrustworthy_terms(self.store.replaced_gold(), self.org.departments())
@@ -516,8 +445,7 @@ class MemoryService:
         meanings and gold."""
         viewer = self.org.get(email)
         mates = self.teammates(viewer)
-        in_mem0 = self.personal.all(viewer) if self.personal else []
-        items = self.store.candidate_items(viewer.email, mates) + in_mem0
+        items = self.store.candidate_items(viewer.email, mates)
         day = today()
         sharing = _sharing(_consents(self.store.user_signals(viewer.email, mates)))
         states = resolver.term_states(viewer, items, day, sharing, _lower(mates))
@@ -543,7 +471,6 @@ class MemoryService:
                 continue  # an older twin of a shared meaning (two written at the same moment): only the latest counts
             shared = st.shared if st else None
             row = {"item_id": it.item_id, "type": it.item_type, "term": it.term, "meaning": it.meaning,
-                   "where": "mem0" if it in in_mem0 else "store",
                    "support": (f"{it.owner_department} department" if scope == "other"
                                else resolver.support_label(scope)),
                    "department": it.owner_department, "created_at": it.created_at,
@@ -595,7 +522,7 @@ def _require(ok: bool) -> None:
 
 def _visible(viewer: Person, item: MemoryItem, mates: set[str], sharing: set[str]) -> bool:
     """May this user be shown this term item: their own, a teammate's that is shared, their team's, any department's
-    or the official one. Other teams' meanings and colleagues' private or unshared items are not."""
+    or the official one. Other teams' meanings and colleagues' unshared items are not."""
     if item.origin == "user":
         return item.owner_email == viewer.email or (
             item.shareable and (item.owner_email or "").lower() in mates and item.owner_email in sharing)
@@ -604,12 +531,11 @@ def _visible(viewer: Person, item: MemoryItem, mates: set[str], sharing: set[str
     return True
 
 
-def _replaces(target: MemoryItem | None, viewer: Person, term: str | None, item_type: str) -> bool:
-    """May a new item of `term` replace `target`: only the user's own active item of that same term (for
-    preferences and facts: of that same type). A wrong id from the model must never remove something else."""
+def _replaces(target: MemoryItem | None, viewer: Person, term: str) -> bool:
+    """May a new item of `term` replace `target`: only the user's own active item of that same term. A wrong id from
+    the model must never remove something else."""
     return (target is not None and target.status == "active" and target.origin == "user"
-            and target.owner_email == viewer.email and target.term == term
-            and (term is not None or target.item_type == item_type))
+            and target.owner_email == viewer.email and target.term == term)
 
 
 def _one_line(text: str, limit: int) -> str:
@@ -618,13 +544,13 @@ def _one_line(text: str, limit: int) -> str:
 
 
 def _clean(op: MemoryOp) -> MemoryOp | None:
-    """What a user teaches is put into prompts (their own and, for definitions, their colleagues'), so it is stored
-    as one bounded line of text. None when there is no usable term or meaning."""
+    """What a user teaches is put into prompts (their own and their colleagues'), so it is stored as one bounded line
+    of text. None when there is no usable term or meaning."""
     if op.op == "withdraw":
         return op
     meaning = _one_line(op.meaning or "", MAX_MEANING)
     term = _one_line(op.term, MAX_TERM) if op.term is not None else None
-    if not meaning or (op.item_type in SHAREABLE_TYPES and not consolidate.words(term or "")):
+    if not meaning or not consolidate.words(term or ""):
         return None
     return op.model_copy(update={"term": term, "meaning": meaning})
 
@@ -637,21 +563,6 @@ def _where(item: MemoryItem) -> str:
 
 def _lower(emails: list[str]) -> set[str]:
     return {e.lower() for e in emails}
-
-
-_FACT_STOP = set("about after also always before could does from have into just like more most only other over some "
-                 "than that their them then there these they this were what when which with would your".split())
-
-
-def relevant_facts(facts: list[MemoryItem], question: str, k: int = 3) -> list[MemoryItem]:
-    """The user's facts that share a word with the question (store mode; with Mem0 it is a semantic search), so a
-    fact like 'likes apples' does not ride along with every answer."""
-    def content(text: str) -> set[str]:
-        return {w[:-1] if w.endswith("s") and len(w) > 4 else w for w in consolidate.WORD.findall(text.lower())
-                if len(w) >= 3 and w not in _FACT_STOP}
-    q = content(question)
-    hits = [f for f in facts if content(f.meaning) & q]
-    return sorted(hits, key=lambda f: -len(content(f.meaning) & q))[:k]
 
 
 def _consents(rows: list[dict]) -> dict[str, dict[str, bool]]:

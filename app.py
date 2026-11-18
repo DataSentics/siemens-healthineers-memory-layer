@@ -191,8 +191,7 @@ with st.sidebar:
             memory.reset(step=2, start=config.DEMO_TODAY)
         ss.notice = f"A month later: {day_label(models.today())}. The teams' first month of use is loaded."
         st.rerun()
-    st.caption(f"Personal memory: {'Mem0' if memory.personal else 'memory store'} · "
-               "Data: Blue Gene/L event log (Loghub)")
+    st.caption("Data: Blue Gene/L event log (Loghub)")
 
 def my_consent() -> dict | None:
     if me.email not in ss.consent:
@@ -220,10 +219,6 @@ def regenerate(n: int, exclude: tuple[str, ...] = (), writes: list[dict] | None 
 
 
 def item_title(it: dict) -> str:
-    if it["item_type"] == "preference":
-        return f"Preference: {it['meaning']}"
-    if not it.get("term"):
-        return f"Noted earlier: {it['meaning']}"
     return f"**{it['term']}** = {it['meaning']}"
 
 
@@ -448,7 +443,7 @@ with tab_chat:
     if my_consent() is None:
         with st.container(border=True):
             st.markdown(f"**Memory for {me.name.split()[0]}** :gray[· nothing is remembered until you choose]")
-            remember = st.checkbox("Remember what I teach you: definitions and preferences", value=True,
+            remember = st.checkbox("Remember the definitions I teach you", value=True,
                                    key=f"consent-remember-{me.email}")
             share = st.checkbox("Let my team see my own definitions, without my name, and count them when the team "
                                 "decides on a meaning", value=True, key=f"consent-share-{me.email}",
@@ -517,8 +512,6 @@ with tab_memory:
             meta.append("a closer level (your team or department) uses its own meaning instead")
         if scope == "personal" and r["shown_to_team"]:
             meta.append("colleagues see it as another meaning, without your name")
-        if r.get("where") == "mem0":
-            meta.append("Mem0")
         meta.append(day_label(r["created_at"][:10]))
         line = "&nbsp; ".join(tags + [gray(" · ".join(meta))])
         c1.markdown(f"{head}: {html.escape(r['meaning'])}  \n{line}", unsafe_allow_html=True)
@@ -527,7 +520,7 @@ with tab_memory:
             st.rerun()
 
     def by_term(rows: list[dict]) -> list[dict]:
-        return sorted(rows, key=lambda r: (r["type"] != "preference", r["term"] or ""))
+        return sorted(rows, key=lambda r: r["term"] or "")
 
     for scope in ("personal", "team", "department", "gold"):
         rows = view[scope]

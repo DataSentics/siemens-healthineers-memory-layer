@@ -1,5 +1,5 @@
 {
-  "_comment": "What should be remembered from one chat message. expect: shared = a definition of work vocabulary (may count for the team), personal = saved for the user only (preference, a work fact that could change a future answer, private term), none = nothing saved (since 12 Nov this includes likes and opinions that would not change an answer), either = saving it privately or not at all are both fine. Used by scripts/eval_capture.py. The user is Tomas Vrba (R&D / A) in the pilot month, with memory and sharing on.",
+  "_comment": "What should be remembered from one chat message. expect: shared = a definition of work vocabulary (may count for the team), none = nothing saved. Since 18 Nov memory keeps shared vocabulary only, so preferences, work facts, what the user treats as noise or important, a name only they use and long-term goals expect none (before: personal); since 12 Nov this also includes likes and opinions. Used by scripts/eval_capture.py. The user is Tomas Vrba (R&D / A) in the pilot month, with memory and sharing on.",
   "cases": [
     {"id": "S1", "expect": "shared", "kind": "definition in passing", "msg": "We call rack R12 the quiet rack. How many events did the quiet rack have last month?"},
     {"id": "S2", "expect": "shared", "kind": "definition in passing", "msg": "By memory errors I mean only the correctable DDR errors. How many were there last month?"},
@@ -11,13 +11,13 @@
     {"id": "S8", "expect": "shared", "kind": "explicit remember", "msg": "Remember that for me memory errors are only the DDR errors."},
     {"id": "S9", "expect": "shared", "kind": "relation", "msg": "A midplane contains 16 node cards, so midplane problems include all problems of its node cards. How many midplane problems on R37-M1 last month?"},
 
-    {"id": "P1", "expect": "personal", "kind": "standing wish", "msg": "From now on, keep answers to one sentence. How many incidents last month?"},
-    {"id": "P2", "expect": "personal", "kind": "standing wish", "msg": "Always show results per rack, I never need totals. How many FATAL events last month?"},
-    {"id": "P3", "expect": "personal", "kind": "work focus", "msg": "I only look after racks R30 to R37, so focus on those. What broke last month?"},
-    {"id": "P4", "expect": "personal", "kind": "work fact", "msg": "I'm the on-call engineer for the I/O nodes. Were there I/O node problems last month?"},
-    {"id": "P5", "expect": "personal", "kind": "standing wish", "msg": "Please always give dates in ISO format. When was the last KERNDTLB alert?"},
-    {"id": "P6", "expect": "personal", "kind": "private term", "msg": "My rack is R12. How many errors did my rack have last month?"},
-    {"id": "P7", "expect": "personal", "kind": "presentation preference", "msg": "I don't like long tables, give me the top 5 at most. Which components logged the most errors last month?"},
+    {"id": "P1", "expect": "none", "kind": "standing wish", "msg": "From now on, keep answers to one sentence. How many incidents last month?"},
+    {"id": "P2", "expect": "none", "kind": "standing wish", "msg": "Always show results per rack, I never need totals. How many FATAL events last month?"},
+    {"id": "P3", "expect": "none", "kind": "work focus", "msg": "I only look after racks R30 to R37, so focus on those. What broke last month?"},
+    {"id": "P4", "expect": "none", "kind": "work fact", "msg": "I'm the on-call engineer for the I/O nodes. Were there I/O node problems last month?"},
+    {"id": "P5", "expect": "none", "kind": "standing wish", "msg": "Please always give dates in ISO format. When was the last KERNDTLB alert?"},
+    {"id": "P6", "expect": "none", "kind": "private term", "msg": "My rack is R12. How many errors did my rack have last month?"},
+    {"id": "P7", "expect": "none", "kind": "presentation preference", "msg": "I don't like long tables, give me the top 5 at most. Which components logged the most errors last month?"},
 
     {"id": "N1", "expect": "none", "kind": "plain question", "msg": "How many FATAL events were there on R37 last month?"},
     {"id": "N2", "expect": "none", "kind": "one-off limit", "msg": "Show me only the top 3 racks by events last month this time."},
@@ -42,10 +42,10 @@
     {"id": "N20", "expect": "none", "kind": "like, work related", "msg": "I really like SOMARIS10, it is my favourite platform."},
     {"id": "N21", "expect": "none", "kind": "like, unrelated", "msg": "I like apples. How many alerts last month?"},
     {"id": "N22", "expect": "none", "kind": "background the directory has", "msg": "I'm new here, I joined R&D last week. What are the most common errors?"},
-    {"id": "P8", "expect": "personal", "kind": "what they treat as noise", "msg": "I think LINKCARD alerts are mostly noise. How many were there last month?"},
+    {"id": "P8", "expect": "none", "kind": "what they treat as noise", "msg": "I think LINKCARD alerts are mostly noise. How many were there last month?"},
     {"id": "N23", "expect": "none", "kind": "dislike", "msg": "I hate Mondays. How many incidents were there last month?"},
     {"id": "N24", "expect": "none", "kind": "opinion that changes nothing", "msg": "Honestly I think the old log viewer was nicer. Which rack had the most events last month?"},
-    {"id": "P9", "expect": "personal", "kind": "what they treat as important", "msg": "For my work only FATAL events really matter, warnings are irrelevant to me. What happened on R37 last month?"},
-    {"id": "E5", "expect": "either", "kind": "long-term goal", "msg": "I'm trying to bring the number of node card problems down this quarter. How many last month?"}
+    {"id": "P9", "expect": "none", "kind": "what they treat as important", "msg": "For my work only FATAL events really matter, warnings are irrelevant to me. What happened on R37 last month?"},
+    {"id": "E5", "expect": "none", "kind": "long-term goal", "msg": "I'm trying to bring the number of node card problems down this quarter. How many last month?"}
   ]
 }

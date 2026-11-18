@@ -27,9 +27,6 @@ env:
     value: databricks
   - name: DATABRICKS_LLM_ENDPOINT
     value: databricks-claude-sonnet-5-5
-  # Preferences and facts stay in the memory tables (not in Mem0's local files).
-  - name: PERSONAL_MEMORY
-    value: store
   # Mem0 finds terms by meaning (on by default). Its index lives in this app's temp folder and is rebuilt from the
   # tables; the match thresholds were set on this embedding model.
   - name: DATABRICKS_EMBEDDING_ENDPOINT

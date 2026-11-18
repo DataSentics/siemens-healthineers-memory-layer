@@ -163,13 +163,13 @@ def memory_tools(memory, user_of=default_user) -> list:
 
     @tool
     def show_my_memory(runtime: ToolRuntime) -> str:
-        """Show what the assistant remembers for the current user: their own definitions and preferences, what their
+        """Show what the assistant remembers for the current user: their own definitions, what their
         team and department agreed on (without names), the official glossary and other departments' meanings. Use it
         when the user asks what you remember about them or their team."""
         view = ask("show_memory", runtime)
         if isinstance(view, str):
             return view
-        lines = [f"[{r.get('support') or SCOPE_NAMES[scope]}] {r['term'] or r['type']}: {r['meaning']}"
+        lines = [f"[{r.get('support') or SCOPE_NAMES[scope]}] {r['term']}: {r['meaning']}"
                  + (f" id={r['item_id']}" if scope == "personal" else "")
                  for scope in SCOPE_NAMES for r in view.get(scope, [])]
         return "\n".join(lines) or "Nothing remembered yet."

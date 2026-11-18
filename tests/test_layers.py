@@ -12,7 +12,7 @@ from memory_demo import consolidate, resolver, seeding
 from memory_demo.extractor import MemoryOp, parse
 from memory_demo.models import MemoryItem
 from memory_demo.org import Directory, Org, new_team
-from memory_demo.service import MemoryService, relevant_facts
+from memory_demo.service import MemoryService
 from memory_demo.store import MemoryStore, SqliteExecutor
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,7 +31,7 @@ def svc(tmp_path):
 
 
 def used(svc, email, q):
-    return {u.term or "pref:" + u.meaning: u for u in svc.retrieve(email, q)[1].items}
+    return {u.term: u for u in svc.retrieve(email, q)[1].items}
 
 
 def term_op(term, meaning, **kw):
@@ -110,17 +110,56 @@ class SameAsModel(GenericFakeChatModel):
         return AIMessage("", tool_calls=[{"name": "SameAs", "args": self.answer, "id": "1"}])
 
 
+# The team's "memory errors" in other words, with the same exact values (the quoted message texts).
+REWORDED = ("DDR memory errors that were corrected, and cache parity and CE sym events: messages containing "
+            "'ddr error' or 'parity error', or starting with 'CE sym'")
+
+
 def test_the_llm_decides_when_wording_is_not_enough(svc):
     team_id = used(svc, TOMAS, "memory errors")["memory errors"].item_id
-    llm = SameAsModel(messages=iter([]), answer={"same_meaning_id": team_id})
+    llm = SameAsModel(messages=iter([]), answer={"same_meaning_id": team_id, "certain": True})
     svc.llm = llm
-    [w] = svc.apply(TOMAS, [term_op("RAM errors", "DDR memory errors together with parity errors and CE sym")])
+    [w] = svc.apply(TOMAS, [term_op("RAM errors", REWORDED)])
     assert (w.op, w.term, w.shared_with) == ("same", "memory errors", "your team") and llm.calls == 1
     # A term applied this turn was already compared by the extractor: no second LLM call.
     llm.answer = {"same_meaning_id": None}
     applied = [vars(i) for i in svc.retrieve(TOMAS, "memory errors")[1].items]
     [w] = svc.apply(TOMAS, [term_op("memory errors", "only DDR errors")], applied)
     assert w.op == "add" and llm.calls == 1
+
+
+def test_a_merge_needs_a_certain_model_and_the_same_exact_values(svc):
+    """A wrong merge replaces what the user said with another meaning and counts them for it; a missed one only keeps
+    a second wording. So the model must be certain, and exact values (codes, numbers, quoted texts) must match."""
+    team = used(svc, TOMAS, "memory errors")["memory errors"]
+    unsure = SameAsModel(messages=iter([]), answer={"same_meaning_id": team.item_id, "certain": False})
+    svc.llm = unsure
+    [w] = svc.apply(TOMAS, [term_op("RAM errors", REWORDED)])
+    assert w.op == "add" and unsure.calls == 1  # not certain: saved as his own wording
+    svc.forget(TOMAS, w.item_id)
+    sure = SameAsModel(messages=iter([]), answer={"same_meaning_id": team.item_id, "certain": True})
+    svc.llm = sure
+    [w] = svc.apply(TOMAS, [term_op("RAM errors", REWORDED.replace("'CE sym'", "'CE sym' on rack R37"))])
+    assert w.op == "add" and sure.calls == 1  # certain, but R37 is not in the team's meaning
+    svc.forget(TOMAS, w.item_id)
+    # The extractor's own "same as" hint passes the same check.
+    applied = [vars(i) for i in svc.retrieve(TOMAS, "memory errors")[1].items]
+    other = term_op("memory errors", REWORDED.replace("'parity error'", "'parity fault'"), same_as_item_id=team.item_id)
+    assert svc.apply(TOMAS, [other], applied)[0].op == "add"
+    same = term_op("memory errors", REWORDED, same_as_item_id=team.item_id)
+    assert [w.op for w in svc.apply(TOMAS, [same], applied)] == ["withdraw"]  # his own goes: the team's is his
+
+
+def test_exact_values_must_match_for_two_meanings_to_be_the_same():
+    from memory_demo.consolidate import same_details
+    assert same_details("events at level FATAL", "fatal events")
+    assert same_details('messages starting "data TLB error interrupt"',
+                        "messages that start with \u201cdata TLB error interrupt\u201d")
+    assert not same_details("rack R37", "rack R38")
+    assert not same_details("level FATAL", "level FAILURE")
+    assert not same_details("the KERNDTLB events", "the KERNSTLB events")
+    assert not same_details('starting "data TLB error interrupt"', 'starting "data TLB error"')
+    assert not consolidate.same_meaning(item("the KERNDTLB events"), item("the KERNSTLB events"))  # not a typo
 
 
 def test_a_synonym_stays_a_term_of_its_own(svc):
@@ -201,30 +240,25 @@ def test_picking_another_department_s_meaning_makes_it_your_team_s(svc):
 
 
 # ---- what is about the user stays private -----------------------------------------------------------------
-def test_facts_never_become_terms_and_private_terms_are_never_shared(svc):
-    """Whether a fact is worth saving is the extractor's call (likes are not, since 12 Nov: see evals/). Whatever it
-    saves about a person stays theirs and never changes what a term means."""
-    svc.apply(TOMAS, [term_op("SOMARIS10", "the software platform our CT scanners run on")])
-    fact = MemoryOp(op="add", item_type="fact", term="SOMARIS10", meaning="treats SOMARIS10 warnings as noise",
-                    evidence="stated", private=True)
-    [w] = svc.apply(PETRA, [fact])
-    assert w.term is None and w.shared_with == "only you"  # stored as a fact, not as what SOMARIS10 means
-    petra = used(svc, PETRA, "any SOMARIS10 problems?")
-    key = "pref:treats SOMARIS10 warnings as noise"
-    assert petra["somaris10"].scope == "team" and key in petra  # applied as a fact, by topic
-    assert key not in used(svc, PETRA, "memory errors last month")
-    assert key not in used(svc, TOMAS, "any SOMARIS10 problems?")
-    [mine] = svc.apply(PETRA, [term_op("my rack", "rack R12", private=True)])
-    assert mine.shared_with == "only you"
-    assert used(svc, PETRA, "my rack")["my rack"].scope == "personal"
-    assert "my rack" not in used(svc, TOMAS, "my rack")  # not shared, not even as another meaning
-
-
-def test_relevant_facts_share_a_word_with_the_question():
-    facts = [MemoryItem(item_type="fact", meaning=m, owner_email="a", owner_team="t", owner_department="d")
-             for m in ("likes apples", "looks after racks R30 to R37")]
-    assert [f.meaning for f in relevant_facts(facts, "errors on my racks?")] == ["looks after racks R30 to R37"]
-    assert relevant_facts(facts, "memory errors") == []
+def test_only_vocabulary_is_saved_or_read(svc):
+    """Memory keeps definitions colleagues can use, nothing about the user themself, so no model decides whether a
+    saved item may be shared: the share switch alone does."""
+    out = parse({"ops": [{"op": "add", "item_type": "preference", "meaning": "keep it short", "evidence": "stated"},
+                         {"op": "add", "item_type": "fact", "meaning": "went to Egypt last summer",
+                          "evidence": "stated"},
+                         {"op": "add", "item_type": "term", "term": "SOMARIS10", "meaning": "the CT scanner software",
+                          "evidence": "stated", "private": True}]})
+    assert [(o.item_type, o.term) for o in out.ops] == [("term", "SOMARIS10")]  # no preference, no fact
+    with pytest.raises(ValueError):
+        MemoryOp(op="add", item_type="fact", meaning="looks after racks R30 to R37", evidence="stated")
+    [w, team] = svc.apply(TOMAS, out.ops)  # a "private" flag from a model changes nothing: Tomas shares
+    assert team.op == "team" and used(svc, PETRA, "SOMARIS10 problems?")["somaris10"].scope == "team"
+    # Preferences and facts saved before memory kept vocabulary only stay in the table, unread.
+    svc.store.add_items([MemoryItem(item_type=t, meaning=m, owner_email=TOMAS, owner_team="R&D / A",
+                                    owner_department="R&D") for t, m in (("preference", "keep it short"),
+                                                                         ("fact", "on call for the I/O nodes"))])
+    assert set(used(svc, TOMAS, "memory errors last month")) == {"memory errors"}
+    assert all(r["type"] in ("term", "relation") for rows in svc.view(TOMAS).values() for r in rows)
 
 
 def test_the_extractor_answer_survives_bad_ops():

@@ -5,7 +5,8 @@ LangChain SQL agent (based on Petr's code) over the public **BGL** log (Blue Gen
 
 It also has our own versions of the three things Michal's prototype is known for, built from the PRD's
 description because his code is not available yet: **several agents** (a supervisor in front of the SQL agent),
-a **casebook** of earlier good answers, an **ontology** built from the data, and **Mem0** for personal memory.
+a **casebook** of earlier good answers, an **ontology** built from the data, and **Mem0** for finding terms by
+meaning.
 Compare them with his code once it is handed over (K1).
 
 ## What is in here
@@ -15,7 +16,7 @@ Compare them with his code once it is handed over (K1).
 | `memory_demo/bgl.py` | BGL parsing; table schema and column comments |
 | `memory_demo/models.py` | Memory items, signals, the memory trace (FR19), writes (FR13) |
 | `memory_demo/resolver.py` | Levels `personal > team > department > gold`, other departments shown but never applied, when a team meaning changes, confidence → note/warning, untrustworthy official terms (FR4–FR10) |
-| `memory_demo/extractor.py` | After-turn write decision, one structured LLM call (FR1–FR3; Mem0's extraction phase): saves what the user states, without "remember that"; personal facts only when they would change an answer |
+| `memory_demo/extractor.py` | After-turn write decision, one structured LLM call (FR1–FR3; Mem0's extraction phase): saves the definitions the user states, without "remember that"; nothing about the user themself |
 | `memory_demo/consolidate.py` | Before saving, the same term spelled differently and the same meaning in other words are recognised (Mem0's update phase), so nothing is stored twice |
 | `memory_demo/org.py` | The org directory: a table (Delta on Databricks, SQLite locally) re-read every few minutes; teams and departments are whatever it says today |
 | `memory_demo/service.py` | `MemoryService`: retrieve / learn / undo / forget / feedback / viewer |
@@ -26,7 +27,6 @@ Compare them with his code once it is handed over (K1).
 | `memory_demo/agent.py` | `build_agent`: SQL agent (`SQLDatabaseToolkit` + `create_agent`, Hub SQL prompt inlined, answer-first rule). `build_supervisor`: supervisor → casebook search + SQL sub-agent; memory is looked up and learned once on the supervisor and passed to the sub-agent |
 | `memory_demo/casebook.py` | Questions answered well before, with their SQL. Saved after each answer that ran SQL (unless it used someone's own meaning), withdrawn when the answer is corrected or rejected; visible to the author and their team, without names |
 | `memory_demo/ontology.py` | Ontology built from the data, no human review (A9): rack → midplane → node card → card, alert families by component, example messages. Summary in the SQL prompt plus a `describe_bgl_entity` tool |
-| `memory_demo/personal.py` | Mem0 adapter for personal memory (preferences, facts): Mem0 stores and searches, our extractor decides what to write |
 | `memory_demo/store.py` | Tables `memory_items`, `memory_signals`, `casebook`, `org_people`; same SQL on SQLite and a Databricks SQL warehouse |
 | `seed/` | Mocked org chart (41 fictional people, emails on `shs-demo.example`; loaded into the directory table once), gold glossary, the pilot month of teams and departments |
 | `app.py` | Streamlit demo: chat, memory drop-down, "I remembered" notice with undo, memory viewer, internal signals page |
@@ -45,17 +45,18 @@ answer) but never applied unless the user picks one with **Use this**. A team's 
   names, numbers, and the texts a message contains (in quotes). The SQL that ran this turn, when the agent passes
   it, helps word a definition exactly. `scripts/eval_exactness.py` checks on BGL that answers built from the words
   match the counts of the old filters.
-- **No "remember that" needed.** After each answer one memory call (Mem0's extraction phase) saves what the user
-  states: a definition said in passing ("we call R12 the quiet rack"), a correction ("no, memory errors means only
-  DDR"), a standing wish ("from now on one sentence"), a fact about them. One-off details of a question and the
-  assistant's own guesses are not saved. The call also sees the user's earlier messages in the conversation, as
+- **No "remember that" needed.** After each answer one memory call (Mem0's extraction phase) saves the definitions
+  the user states: one said in passing ("we call R12 the quiet rack"), a correction ("no, memory errors means only
+  DDR"). One-off details of a question and the assistant's own guesses are not saved. The call also sees the user's earlier messages in the conversation, as
   Mem0 does. Every save shows the "Remembered" line above the answer, with **Undo** (FR13).
-- **Only definitions are shared; personal facts only when they change answers.** A fact about the user's work that
-  changes how they want answers ("I look after racks R30 to R37", "LINKCARD alerts are mostly noise") is saved for
-  them only, without a term, so it never changes what a term means, and comes with an answer only when the question
-  shares a word with it. Likes and opinions that would not change an answer ("I like SOMARIS10", "I like apples"),
-  background the org directory has (team, start date), other people's views and plans, temporary things, secrets
-  and customer or patient data are not saved at all.
+- **Only shared vocabulary is saved (18 Nov).** Memory keeps definitions of terms and relations that colleagues
+  could use, and nothing about the user themself: no preferences ("from now on one sentence"), no facts about their
+  work ("I look after racks R30 to R37"), no likes, opinions or private life ("I like apples", "I went to Egypt last
+  summer"), no name that only makes sense for them ("my rack"), no jokes. So no model decides whether a saved item
+  may be shared: every saved item is a definition, and the user's share switch alone decides whether it reaches their
+  team. Background the org directory has, other people's views and plans, temporary things, secrets and customer or
+  patient data are not saved either. The extractor's answer is checked against a schema with only `term` and
+  `relation`, so anything else it returns is dropped.
 - **Nothing is stored twice** (Mem0's update phase, `consolidate.py`). Before a term is saved it is compared with
   what memory holds: the same term spelled differently ("SOMARIS 10", "Somaris-10", "memroy errors", "memory
   error"), and the same meaning in other words (case, punctuation, articles, plurals, up to two typos). Different numbers (R37 / R38) or different words (correctable / uncorrectable) are never merged that
@@ -75,7 +76,7 @@ answer) but never applied unless the user picks one with **Use this**. A team's 
   in a second statement). One writer at a time per department and term, so two people teaching at the same moment
   cannot both create the team meaning. Checked on the real warehouse in a throwaway schema.
 - **A brand-new term goes to the team at once** (if the user shares): there is no team meaning to disagree with.
-- **What a user teaches about an existing term is theirs** ("only you"), and so are preferences and facts.
+- **What a user teaches about an existing term is theirs** ("only you") until enough teammates agree.
 - **A team meaning changes only when enough teammates agree.** A team of *n* people (who had joined by the dataset
   date) needs *T* = max(2, ⌈n/2⌉) teammates using another meaning for themselves, at least two of them the same one.
   Then that meaning becomes the team's, their own copies fold into it, and the old one is retired. R&D / A has 5
@@ -146,13 +147,10 @@ Locally from `.env` (copy `example.env`), on Databricks from `app.yaml`.
 | `ORG_CSV`, `ORG_REFRESH_S` | `seed/org.csv` (fills the directory table when it is empty), `300` (seconds between re-reads of the directory) | same |
 | `DEMO_TODAY` | `2005-12-01` | same. The demo clock starts here ("last month" = November 2005); the sidebar's **+1 month** moves it to 2006-01-01 |
 | `JOKE_FILTER` | `1` | `1` |
-| `PERSONAL_MEMORY` | `store` | `store`. `mem0` keeps preferences and facts in Mem0 (local Qdrant in `data/mem0`) |
-| `AZURE_OPENAI_EMBEDDING_DEPLOYMENT`, `EMBEDDING_DIMS` | for Mem0 (term matching, on by default; and `mem0`); dims default `1536` (text-embedding-3-small) | – (or `DATABRICKS_EMBEDDING_ENDPOINT`, default `databricks-gte-large-en`, with `LLM_PROVIDER=databricks`) |
+| `AZURE_OPENAI_EMBEDDING_DEPLOYMENT`, `EMBEDDING_DIMS` | for Mem0 (term matching, on by default); dims default `1536` (text-embedding-3-small) | – (or `DATABRICKS_EMBEDDING_ENDPOINT`, default `databricks-gte-large-en`, with `LLM_PROVIDER=databricks`) |
 
 The sidebar switches between **Supervisor with casebook** (default) and **Single SQL agent**. Both use the
 same memory, so if the supervisor misbehaves on stage, switch to the single agent and carry on.
-Mem0 on Databricks would need a persistent vector store (Mem0 has a Databricks Vector Search provider); the app
-keeps `PERSONAL_MEMORY=store` there for now.
 
 ## Run locally
 
@@ -177,12 +175,10 @@ scenarios and unit tests, against baselines without memory and with the official
 weak spots and what the tests do not show.
 
 **What gets remembered, measured.** `scripts/eval_capture.py` runs the 43 labelled messages in
-`evals/capture_cases.json` (definitions, standing wishes, work facts, and things that must not be saved: plain and
-one-off questions, hypotheticals, other people's views and plans, small talk, likes and opinions that change no
-answer, secrets, patient data, jokes) through the real extractor and memory rules, several times each, and through
-Mem0's default extraction prompt for comparison. It writes `evals/last_run.md`. On 12 Nov 2026 (Claude Sonnet 5.5,
-3 runs): 129 of 129 runs right, nothing shared that should not be; Mem0's default prompt would have stored something
-for 21 of the 24 messages that need nothing.
+`evals/capture_cases.json` (definitions, and things that must not be saved: standing wishes, work facts, plain
+and one-off questions, hypotheticals, other people's views and plans, small talk, likes and opinions, secrets,
+patient data, jokes) through the real extractor and memory rules, several times each, and through Mem0's default
+extraction prompt for comparison. It writes `evals/last_run.md`. Results: `evals/REPORT.md`.
 The messages were written by the same person who wrote the prompt, so a sample of real AskFST questions is the next
 test.
 

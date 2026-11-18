@@ -30,7 +30,7 @@ def svc(org, tmp_path):
 
 
 def used(svc, email, q, exclude=()):
-    return {u.term or "pref:" + u.meaning: u for u in svc.retrieve(email, q, exclude)[1].items}
+    return {u.term: u for u in svc.retrieve(email, q, exclude)[1].items}
 
 
 def pick_colleagues(svc, email, term="memory errors"):
@@ -46,18 +46,16 @@ def test_threshold_is_half_the_team_at_least_two(org):
     assert [resolver.confidence(k, 3) for k in (0, 1, 2, 3)] == [1.0, 0.67, 0.33, 0.05]
 
 
-def test_newcomer_gets_team_meaning_without_eva_preferences(svc):
+def test_newcomer_gets_team_meaning(svc):
     u = used(svc, LUKAS, "How many memory errors were on the noisy rack last month?")
     assert u["memory errors"].scope == "team" and u["memory errors"].confidence == 1.0
     assert u["memory errors"].level == "note" and u["memory errors"].support_label == "your team"
     assert u["the noisy rack"].meaning.startswith("rack R37")
-    assert not [k for k in u if k.startswith("pref:")]  # preferences stay personal
 
 
 def test_author_of_a_team_meaning_sees_it_as_the_team_s(svc):
     u = used(svc, EVA, "memory errors last month")
     assert u["memory errors"].scope == "team"
-    assert len([k for k in u if k.startswith("pref:")]) == 2
 
 
 SOMARIS = MemoryOp(op="add", item_type="term", term="SOMARIS10", meaning="the scanner software", evidence="stated")
@@ -164,9 +162,9 @@ def test_dismissed_warning_becomes_note(svc):
     assert u.level == "note" and "chose not to be warned" in u.reason
 
 
-def test_joke_stays_private_and_does_not_count(svc):
-    svc.apply(PETRA, [DDR_ONLY.model_copy(update={"meaning": "gremlins", "is_joke": True})])
-    assert used(svc, PETRA, "memory errors")["memory errors"].scope == "personal"
+def test_a_joke_is_not_saved(svc):
+    assert svc.apply(PETRA, [DDR_ONLY.model_copy(update={"meaning": "gremlins", "is_joke": True})]) == []
+    assert used(svc, PETRA, "memory errors")["memory errors"].scope == "team"
     eva = used(svc, EVA, "memory errors")["memory errors"]
     assert eva.confidence == 1.0 and eva.alternatives == []
 

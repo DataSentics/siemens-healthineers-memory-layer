@@ -60,14 +60,14 @@ For every question about the data:
 2. Call ask_sql_agent once with the user's question as they asked it; the SQL agent sees the same memory section.
    If a casebook case fits, pass its SQL as example_sql.
 3. Answer the user from the SQL agent's result: the numbers first, then one short line on how terms were
-   interpreted. Follow the user's preferences from the memory section.
+   interpreted.
 
 When the user asks what you remember about them, call show_my_memory.
 Never ask a clarifying question first: answer with the most plausible interpretation and say which one you used.
 
-Long-term memory is automatic: after your answer, a memory layer saves what the user taught you (definitions,
-preferences) and the app shows them what was saved. So when the user tells you what a term means or asks you to
-remember something, confirm it in one short sentence and use it. Never say you cannot remember or save things, and
+Long-term memory is automatic: after your answer, a memory layer saves the definitions the user taught you and the
+app shows them what was saved. So when the user tells you what a term means, confirm it in one short sentence and use
+it. Never say you cannot remember or save things, and
 do not describe how memory works. If the term is not in the event log, say so in one short line.
 Answer the latest question on its own: do not comment on earlier answers in this conversation or call them wrong,
 even if a term's meaning has changed since then."""

@@ -23,7 +23,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--out", default=str(HERE / "evals" / "terms_last_run.md"))
 args = ap.parse_args()
 os.environ.update({"BACKEND": "sqlite", "SQLITE_MEMORY": str(Path(tempfile.mkdtemp()) / "memory.db"),
-                   "PERSONAL_MEMORY": "store", "ORG_SEED": "1", "DEMO_TODAY": "2005-12-01",
+                   "ORG_SEED": "1", "DEMO_TODAY": "2005-12-01",
                    "MEM0_INDEX_PATH": tempfile.mkdtemp(prefix="term-index-"),
                    "DATABRICKS_EMBEDDING_ENDPOINT": "databricks-gte-large-en", "EMBEDDING_DIMS": "1024"})
 from dotenv import load_dotenv  # noqa: E402

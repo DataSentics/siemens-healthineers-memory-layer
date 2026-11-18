@@ -2,8 +2,10 @@
 
 Each case in evals/capture_cases.json is one message from Tomas Vrba (R&D / A, pilot month, memory and sharing on),
 run against a fresh memory. Ours: the real extractor and MemoryService.apply, so the outcome is what would be stored
-(shared with the team, personal, or nothing). Mem0: its default fact extraction prompt (mem0 1.x,
-USER_MEMORY_EXTRACTION_PROMPT) on the same exchange; it only says which facts it would store, not who sees them.
+(shared with the team, kept for the user only, or nothing). Memory keeps shared vocabulary only, so anything about the
+user themself (preferences, what they look after, likes, a name only they use) is expected to leave nothing.
+Mem0: its default fact extraction prompt (mem0 1.x, USER_MEMORY_EXTRACTION_PROMPT) on the same exchange; it only says
+which facts it would store, not who sees them.
 
     LLM_PROVIDER=databricks DATABRICKS_LLM_ENDPOINT=databricks-claude-sonnet-5-5 DATABRICKS_CONFIG_PROFILE=<profile> \\
         python scripts/eval_capture.py [--runs 2] [--out evals/last_run.md]
@@ -41,8 +43,8 @@ def ours(case: dict, llm, org: Org, workdir: str) -> dict:
     svc = MemoryService(store, org, llm)
     _, trace = svc.retrieve(USER, case["msg"])
     applied = trace.to_dict()["items"]
-    personal = [vars(i) for i in svc.personal_items(USER)]
-    result = extract(llm, case.get("prev"), case["msg"], ANSWER, applied, personal, sql=[], recent=[])
+    own = [vars(i) for i in store.own_items(USER)]
+    result = extract(llm, case.get("prev"), case["msg"], ANSWER, applied, own, sql=[], recent=[])
     writes = svc.apply(USER, result.ops, applied, said=case["msg"])
     saved = []
     folded = {i for w in writes for i in w.folded_ids}  # a personal copy that became the team's is one item
@@ -61,7 +63,7 @@ def ours(case: dict, llm, org: Org, workdir: str) -> dict:
     else:
         outcome = "none"
     return {"outcome": outcome, "saved": saved, "dropped": dropped,
-            "ops": [o.model_dump(include={"op", "item_type", "term", "meaning", "evidence", "private"})
+            "ops": [o.model_dump(include={"op", "item_type", "term", "meaning", "evidence", "is_joke"})
                     for o in result.ops]}
 
 
@@ -81,8 +83,7 @@ def mem0_facts(case: dict, llm) -> list[str]:
 
 
 def correct(expect: str, outcome: str) -> bool:
-    return {"shared": outcome == "shared", "personal": outcome == "personal",
-            "none": outcome in ("none", "same"), "either": outcome in ("none", "personal", "same")}[expect]
+    return {"shared": outcome == "shared", "none": outcome in ("none", "same")}[expect]
 
 
 def main() -> None:
@@ -107,7 +108,7 @@ def main() -> None:
              f"({time.time() - t0:.0f} s)", "",
              "| Case | Kind | Expected | Ours (each run) | What we saved (run 1) | Mem0 would store |",
              "| --- | --- | --- | --- | --- | --- |"]
-    stats = {k: [0, 0] for k in ("shared", "personal", "none", "either")}
+    stats = {k: [0, 0] for k in ("shared", "none")}
     leaks, mem0_fp, mem0_hits = [], 0, 0
     for c, f in zip(cases, facts):
         runs = by_case[c["id"]]
@@ -118,7 +119,7 @@ def main() -> None:
                 leaks.append(c["id"])
         if c["expect"] == "none" and f:
             mem0_fp += 1
-        if c["expect"] in ("shared", "personal") and f:
+        if c["expect"] == "shared" and f:
             mem0_hits += 1
         mark = " ".join(("✓" if correct(c["expect"], r["outcome"]) else "✗") + r["outcome"] for r in runs)
         saved = "; ".join(f"{s['type']} {s['term'] or ''}: {s['meaning'][:60]}{' (team)' if s['shared'] else ''}"
@@ -126,7 +127,7 @@ def main() -> None:
         lines.append(f"| {c['id']} | {c['kind']} | {c['expect']} | {mark} | {saved} | "
                      f"{'; '.join(x[:60] for x in f) or '–'} |")
     n_none = sum(c["expect"] == "none" for c in cases)
-    n_pos = sum(c["expect"] in ("shared", "personal") for c in cases)
+    n_pos = sum(c["expect"] == "shared" for c in cases)
     lines += ["", "## Summary", ""]
     for k, (ok, n) in stats.items():
         lines.append(f"- Ours, expected {k}: {ok} of {n} runs right")

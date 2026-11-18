@@ -13,9 +13,10 @@ Run these on the deployed app: https://shs-memory-demo-2052394040785539.19.azure
 **The rules being tested**
 - Levels: personal > your team > your department > gold. Other departments' meanings are shown to everyone and never
   applied. A team's meanings stay in the team.
-- Nobody has to say "remember that": a definition, correction or standing wish stated in passing is saved, with a
-  "Remembered" line and Undo. One-off details and the assistant's own guesses are not saved. A personal fact is
-  saved, for the user only, when it would change a future answer; likes and opinions that would not are not saved.
+- Nobody has to say "remember that": a definition or correction stated in passing is saved, with a "Remembered"
+  line and Undo. One-off details and the assistant's own guesses are not saved. Memory keeps shared vocabulary only:
+  nothing about the user themself is saved (preferences, what they look after, likes, opinions, a name only they
+  use).
 - Nothing is stored twice: another spelling of a term, other capitals, typos, or the same meaning in other words
   match what is already there ("Already in memory", or the existing wording is reused).
 - A new term goes to the team at once. A team meaning changes once half the team (at least 2) uses the same other
@@ -44,7 +45,7 @@ Run these on the deployed app: https://shs-memory-demo-2052394040785539.19.azure
 |---|---|---|---|
 | A1 | Tomas Vrba | *SOMARIS10 is the software platform our CT scanners run on. Did it log anything last month?* | Above the answer: **Remembered · somaris10 … · your team**, with Undo. He never said "remember". |
 | A2 | Petra Lind | *Did SOMARIS10 have any problems last month?* | SOMARIS10 applied at **100% · Your team**; Memory tab → Your team lists it. Mei Chen (another department) does not get it. |
-| A3 | Petra | *I really like SOMARIS10, it is my favourite platform.* Then *I think LINKCARD alerts are mostly noise.* | First: no "Remembered" line (a like would not change an answer). Second: **Remembered · only you**, with no term in bold: a personal fact. The team's SOMARIS10 meaning is unchanged, and Tomas's Memory tab shows neither. |
+| A3 | Petra | *I really like SOMARIS10, it is my favourite platform.* Then *I think LINKCARD alerts are mostly noise.* Then *From now on, answer me in one sentence.* | No "Remembered" line for any of them: a like, an opinion and a wish about answers are about Petra, not vocabulary. The team's SOMARIS10 meaning is unchanged, and her Memory tab shows none of them. |
 | A4 | Tomas | *How many memory errors did we have last month?* | Team meaning at **100% confidence**, with a relevance rating next to it. |
 | A5 | Tomas | *For me, memory errors means only the correctable DDR errors, without cache parity errors or CE sym events.* | The answer is redone with a lower count. **Remembered · only you** above it. Memory tab → Personal: "colleagues see it as another meaning, without your name". |
 | A6 | Petra | *How many memory errors did we have last month?* | Team meaning at **67%** (orange), "1 colleague uses another meaning; 3 are needed to change it for the team". Under *Other definitions in use*: Tomas's meaning, "1 colleague in your team uses this". No name. |
@@ -68,7 +69,6 @@ Run these on the deployed app: https://shs-memory-demo-2052394040785539.19.azure
 | B5 | Mei Chen (Customer Support / B) | *How many incidents did we have last month?* | **Gold**, tagged **Untrustworthy**, at 100%. Under *Other definitions in use*: the **Service department**'s meaning. Nothing from R&D / A's team. |
 | B6 | Mei | *Any comms errors last month?* | The drop-down says **“comms errors” is only defined in other departments**, listing the **R&D department**'s meaning. It is not applied (her answer is the model's own reading). **Use this** is disabled until she turns memory on. |
 | B7 | Lukas | *How many job failures did we have last month?* | Only defined in other departments: **Customer Support department**. **Use this**: **Remembered · job failures … · your team** (new for R&D / A), and the answer is redone with it. |
-| B8 | Lukas, then Eva | *Show me the top racks by events last month.* | Lukas gets a normal-length answer: Eva's preferences never reach him. Eva gets one sentence plus a small table. |
 
 ## C. Changing your mind
 
@@ -94,7 +94,7 @@ Use any user and check that no "Remembered" line appears above the answer.
 | # | Say | Why nothing should be saved |
 |---|---|---|
 | E1 | *How many FATAL events were there on R37 last month?* | A plain question: R37 is a one-off detail, not a standing rule. |
-| E2 | *Haha, memory errors are just the coffee machine.* | A joke. Even if one is saved, it stays private and never counts as disagreement. |
+| E2 | *Haha, memory errors are just the coffee machine.* | A joke. |
 | E3 | After an answer that used a team meaning: *Thanks, that's right.* | It is already the team meaning. |
 | E4 | *Show me only the top 3 this time.* | A one-off limit for this question. |
 

@@ -6,6 +6,26 @@ memory. The memory saved the right things in 129 of 129 decisions on Claude, pas
 153 unit tests cover 89% of its code. Its weak spots: it finds few synonyms (2 of 9), a term's words inside another
 phrase still trigger it ("uncorrectable memory errors"), and it can copy the agent's own SQL slip into a definition.
 
+## Update (later on 18 Nov): shared vocabulary only, strict merging
+
+Two changes after the runs below, rerun on Claude Sonnet 5.5 (GPT not rerun):
+
+- **Only shared vocabulary is saved**: definitions of terms and relations, nothing about the user themself
+  (preferences, facts about their work, likes, a name only they use, jokes). No model decides any more whether a saved
+  item may be shared: every saved item is a definition, and the user's share switch alone decides.
+- **Merging is strict**: two meanings count as the same only when the model is certain and their exact values (codes
+  and names in capitals, numbers, quoted message texts) match.
+
+| Check | Result |
+| --- | --- |
+| What gets saved: 43 messages, 2 runs (the 10 that used to be saved for the user only now expect nothing) | **86 / 86**; nothing shared that should not be |
+| Behaviour scenarios: 14, 2 runs (5, 7, 10 and 12 rewritten for the change) | **64 / 64** |
+| Unit tests | 165 pass (coverage not remeasured) |
+
+Mem0's default extraction prompt would store something for 30 of the 34 messages that need nothing. Sections 2 and 4
+below describe the runs before the change; their preference rows (scenarios 5 and 10) no longer apply. Results:
+`evals/last_run.md`, `evals/scenarios_last_run.md`.
+
 ## How it was tested
 
 - **The AskFST setup agreed on 18 Nov**: the memory runs as an MCP server (here in a thread, on SQLite), and a SQL agent
@@ -124,7 +144,9 @@ term matching, client. Less is covered in the warehouse code (`store.py`, 83%), 
 2. **A term inside another phrase** ("uncorrectable memory errors") gets the term's meaning.
 3. **The agent's own mistakes can become memory**: a definition takes exact values from the SQL that ran, including a
    wrong "exactly equal". Fix to try: describe text matches the way the user put them.
-4. **Preferences** are only as good as the model's instruction following (2 of 3 here for "one sentence").
+4. **Strict merging can slow agreement**: a rewording that drops an exact value (a quoted message text, a code) no
+   longer counts as the same meaning, so teammates who word one intent differently may take longer to reach a team
+   meaning. Scenario 4 still converged in 2 of 2 runs.
 5. **Model dependence**: saving decisions were perfect on Claude Sonnet 5.5 and 96% on GPT.
 6. **Time**: a lookup took a median of 0.8 s here (SQLite plus the embedding call), 7–10 s the first time after a
    start while Mem0 builds its index; learning adds 1–4 s before the SQL agent returns. On the warehouse add about

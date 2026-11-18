@@ -17,7 +17,7 @@ import time
 from dataclasses import asdict
 from typing import Any, Protocol
 
-from .models import MemoryItem, Signal
+from .models import ITEM_TYPES, MemoryItem, Signal
 
 log = logging.getLogger(__name__)
 
@@ -296,18 +296,18 @@ class MemoryStore:
         sees is decided by the resolver."""
         names = _names("m", teammates)
         rows = self.ex.run(
-            f"SELECT i.*, u.last_used FROM memory_items i {self._LAST_USED} WHERE i.status = 'active' AND "
-            "(i.owner_email = :e OR i.origin IN ('gold', 'team', 'department') "
+            f"SELECT i.*, u.last_used FROM memory_items i {self._LAST_USED} WHERE i.status = 'active' AND {_TYPES} "
+            "AND (i.owner_email = :e OR i.origin IN ('gold', 'team', 'department') "
             f"OR (i.origin = 'user' AND i.owner_email IN ({_in(names)}) AND i.shareable = TRUE AND i.term IS NOT NULL))",
             {"e": email, **names},
         )
         return [_item(r) for r in rows]
 
     def own_items(self, email: str) -> list[MemoryItem]:
-        """One person's active items of every type."""
+        """One person's active definitions."""
         rows = self.ex.run(
-            f"SELECT i.*, u.last_used FROM memory_items i {self._LAST_USED} WHERE i.status = 'active' AND "
-            "i.origin = 'user' AND i.owner_email = :e", {"e": email})
+            f"SELECT i.*, u.last_used FROM memory_items i {self._LAST_USED} WHERE i.status = 'active' AND {_TYPES} "
+            "AND i.origin = 'user' AND i.owner_email = :e", {"e": email})
         return [_item(r) for r in rows]
 
     def term_items(self, term: str, teammates: list[str]) -> list[MemoryItem]:
@@ -383,6 +383,10 @@ class MemoryStore:
         self.ex.run("DELETE FROM memory_signals")
         self.ex.run("DELETE FROM memory_items")
         self.ex.run("DELETE FROM casebook")
+
+
+# Only vocabulary is read: preferences and facts saved before memory kept vocabulary only stay in the table unused.
+_TYPES = "i.item_type IN (" + ", ".join(f"'{t}'" for t in sorted(ITEM_TYPES)) + ")"
 
 
 def _item_row(item: MemoryItem) -> dict[str, Any]:
