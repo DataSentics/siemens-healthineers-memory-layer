@@ -277,17 +277,8 @@ class MemoryStore:
             out.append(_update_status(status))
         return out
 
-    def add_item(self, item: MemoryItem) -> None:
-        self.commit(add=[item])
-
     def add_items(self, items: list[MemoryItem]) -> None:
         self.commit(add=items)
-
-    def set_status(self, item_id: str, status: str) -> None:
-        self.commit(status={item_id: status})
-
-    def set_status_many(self, item_ids: list[str], status: str) -> None:
-        self.commit(status={i: status for i in item_ids})
 
     def get_item(self, item_id: str) -> MemoryItem | None:
         rows = self.ex.run("SELECT * FROM memory_items WHERE item_id = :i", {"i": item_id})
@@ -374,12 +365,6 @@ class MemoryStore:
             f"OR (kind = 'consent' AND user_email IN ({_in(names)})) ORDER BY created_at",
             {"e": email, **names},
         )
-
-    def dismissed_terms(self, email: str) -> set[str]:
-        rows = self.ex.run(
-            "SELECT DISTINCT term FROM memory_signals WHERE user_email = :e AND kind = 'dismiss'", {"e": email}
-        )
-        return {r["term"] for r in rows if r["term"]}
 
     def signal_summary(self) -> list[dict[str, Any]]:
         """Background acceptance evidence for the internal page (FR11): counts per item, team and kind."""

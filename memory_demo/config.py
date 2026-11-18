@@ -15,7 +15,6 @@ from functools import lru_cache
 from pathlib import Path
 
 from dotenv import load_dotenv
-from langchain_community.utilities import SQLDatabase
 from langchain_core.language_models import BaseChatModel
 
 from .bgl import COLUMNS, TABLE, TABLE_COMMENT
@@ -66,7 +65,10 @@ def table_info() -> str:
 
 
 @lru_cache
-def data_db() -> SQLDatabase:
+def data_db():
+    """The demo's BGL table as a LangChain SQLDatabase (the memory app never needs it)."""
+    from langchain_community.utilities import SQLDatabase
+
     backend = env("BACKEND", "sqlite")
     if backend == "sqlite":
         path = env("SQLITE_DATA", str(ROOT / "data" / "bgl.db"))

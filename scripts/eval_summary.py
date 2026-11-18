@@ -10,8 +10,6 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parents[1]
 rows = []
 for f in sorted((HERE / "evals").glob("exactness_*.json")):
-    if f.stem == "exactness_last_run":
-        continue
     d = json.loads(f.read_text(encoding="utf-8"))
     kinds = {"team / department": [0, 0], "official": [0, 0], "taught": [0, 0]}
     for run in d["runs"]:

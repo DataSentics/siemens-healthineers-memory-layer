@@ -160,7 +160,7 @@ The data: download `BGL.zip` (57.5 MB) from https://zenodo.org/records/8196385 (
 the record asks) and unzip it into `data/` to get `data/BGL.log` (743 MB). `data/` is never committed.
 
 ```bash
-python -m venv .venv && .venv/Scripts/pip install -r requirements.txt
+python -m venv .venv && .venv/Scripts/pip install -r requirements.txt pytest
 .venv/Scripts/python scripts/ingest_sqlite.py data/BGL.log data/bgl.db   # a few minutes; 4,747,963 rows
 .venv/Scripts/python scripts/build_ontology.py data/bgl.db   # only if the data changes; seed/ontology.json is checked in
 .venv/Scripts/python -m pytest -q

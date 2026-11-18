@@ -147,7 +147,7 @@ class MemoryService:
         decided = {norm_term(a["term"]) for a in (applied or []) if a.get("term")}
         writes: list[MemoryWrite] = []
         for op in ops:
-            if op.evidence in ("inferred", "implicit"):  # only what the user said, never the model's own reading
+            if op.evidence == "inferred":  # only what the user said, never the model's own reading
                 continue
             if op.item_type not in SHAREABLE_TYPES and op.term:
                 # Preferences and facts are about the user, not definitions: "I like SOMARIS10" must never become

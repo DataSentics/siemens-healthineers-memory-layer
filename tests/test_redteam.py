@@ -331,7 +331,7 @@ def test_two_team_meanings_written_at_once_show_as_one(svc):
     team = svc.store.get_item(used(svc, LUKAS, "the noisy rack")["the noisy rack"].item_id)
     twin = MemoryItem(item_type="term", term=team.term, meaning="rack R37, the loud one", origin="team", owner_email=None, owner_team=team.owner_team,
                       owner_department=team.owner_department)
-    svc.store.add_item(twin)
+    svc.store.add_items([twin])
     rows = [r for r in svc.view(LUKAS)["team"] if r["term"] == "the noisy rack"]
     assert [r["item_id"] for r in rows] == [twin.item_id]
 

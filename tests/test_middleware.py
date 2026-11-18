@@ -47,7 +47,7 @@ def test_memory_injected_and_streamed(tmp_path, monkeypatch):
         assert "memory errors" in user_message and answer.startswith("There were")
         rated = [TermRelevance(item_id=a["item_id"], level="high", reason="asked about it") for a in applied if a.get("term")]
         return MemoryOps(ops=[MemoryOp(op="add", item_type="preference", meaning="show numbers per node card",
-                                       evidence="explicit")], relevance=rated + [TermRelevance(item_id="nope", level="low", reason="x")])
+                                       evidence="stated")], relevance=rated + [TermRelevance(item_id="nope", level="low", reason="x")])
 
     monkeypatch.setattr(service, "extract", fake_extract)
     graph = agent_mod.build_agent(llm, db, svc)

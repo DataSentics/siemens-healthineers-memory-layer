@@ -15,7 +15,7 @@ import json
 from typing import Literal
 
 from langchain_core.language_models import BaseChatModel
-from pydantic import BaseModel, Field, ValidationError, field_validator
+from pydantic import BaseModel, Field, ValidationError
 
 
 
@@ -39,11 +39,6 @@ class MemoryOp(BaseModel):
         None, description="When the user's meaning is one already listed under 'Memory items applied this turn' (an "
                           "applied meaning or another meaning in use), only worded differently: that meaning's id. "
                           "Never for a correction that changes it.")
-
-    @field_validator("evidence", mode="before")
-    @classmethod
-    def _older_names(cls, v):  # the names used before: explicit -> stated, implicit -> inferred
-        return {"explicit": "stated", "implicit": "inferred"}.get(v, v)
 
 
 class TermRelevance(BaseModel):

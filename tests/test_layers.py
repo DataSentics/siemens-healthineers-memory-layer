@@ -227,8 +227,8 @@ def test_relevant_facts_share_a_word_with_the_question():
     assert relevant_facts(facts, "memory errors") == []
 
 
-def test_the_extractor_answer_survives_old_names_and_bad_ops():
-    out = parse({"ops": [{"op": "add", "item_type": "term", "term": "x", "meaning": "y", "evidence": "explicit"},
+def test_the_extractor_answer_survives_bad_ops():
+    out = parse({"ops": [{"op": "add", "item_type": "term", "term": "x", "meaning": "y", "evidence": "stated"},
                          {"op": "add", "item_type": "nonsense", "meaning": "z", "evidence": "stated"}],
                  "relevance": [{"item_id": "a", "level": "high", "reason": "r"}, {"item_id": "b"}]})
     assert [o.evidence for o in out.ops] == ["stated"] and [r.item_id for r in out.relevance] == ["a"]

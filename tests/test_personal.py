@@ -44,7 +44,7 @@ def test_pilot_preferences_live_in_mem0_and_stay_personal(svc):
 
 
 def test_preference_write_update_undo_and_forget(svc):
-    [w] = svc.apply(LUKAS, [MemoryOp(op="add", item_type="preference", meaning="answers in a table", evidence="explicit")])
+    [w] = svc.apply(LUKAS, [MemoryOp(op="add", item_type="preference", meaning="answers in a table", evidence="stated")])
     assert w.where == "mem0" and w.shared_with == "only you" and prefs(svc, LUKAS) == ["answers in a table"]
     [u] = svc.apply(LUKAS, [MemoryOp(op="update", item_type="preference", meaning="answers as a bar chart",
                                      target_item_id=w.item_id, evidence="correction")])
@@ -59,7 +59,7 @@ def test_preference_write_update_undo_and_forget(svc):
 
 
 def test_facts_are_found_by_search_and_go_into_the_prompt(svc):
-    svc.apply(LUKAS, [MemoryOp(op="add", item_type="fact", meaning="I look after racks R30 to R37", evidence="explicit")])
+    svc.apply(LUKAS, [MemoryOp(op="add", item_type="fact", meaning="I look after racks R30 to R37", evidence="stated")])
     context, trace = svc.retrieve(LUKAS, "which of my racks had memory errors?")
     assert any(u.item_type == "fact" for u in trace.items)
     assert "What this user told you earlier:\n- I look after racks R30 to R37" in context

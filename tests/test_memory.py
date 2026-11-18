@@ -60,7 +60,7 @@ def test_author_of_a_team_meaning_sees_it_as_the_team_s(svc):
     assert len([k for k in u if k.startswith("pref:")]) == 2
 
 
-SOMARIS = MemoryOp(op="add", item_type="term", term="SOMARIS10", meaning="the scanner software", evidence="explicit")
+SOMARIS = MemoryOp(op="add", item_type="term", term="SOMARIS10", meaning="the scanner software", evidence="stated")
 
 
 def test_new_term_goes_straight_to_the_team(svc):

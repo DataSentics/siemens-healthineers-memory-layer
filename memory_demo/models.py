@@ -21,8 +21,6 @@ SignalKind = Literal["author", "confirm", "correct", "shown", "dismiss", "undo",
 Level = Literal["note", "warning"]
 Relevance = Literal["high", "medium", "low"]
 
-# FR6: personal > my team > my department > gold. Other departments' meanings are shown to everyone but never applied.
-SCOPE_RANK: dict[str, int] = {"personal": 0, "team": 1, "department": 2, "gold": 3}
 SHAREABLE_TYPES = {"term", "relation"}  # only these can count towards (and become) a team meaning
 
 
@@ -190,7 +188,7 @@ class MemoryWrite:
     superseded_id: str | None = None
     where: Literal["store", "mem0"] = "store"  # personal memory may live in Mem0
     previous_meaning: str | None = None  # Mem0 updates in place; kept for undo
-    evidence: str | None = None  # correction / explicit / implicit (from the extractor)
+    evidence: str | None = None  # correction / stated / inferred (from the extractor)
     note: str | None = None  # team updates: "3 of 5 colleagues use this meaning"
     folded_ids: list[str] = field(default_factory=list)  # team / department updates: items folded into it (for undo)
     same_as: str | None = None  # op "same": where the meaning already is ("your team", "R&D department", ...)
