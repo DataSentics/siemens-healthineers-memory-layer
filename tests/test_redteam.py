@@ -2,25 +2,18 @@
 Written before the fixes; every one of them failed on the code as it was."""
 
 import json
-import socket
-import threading
-import time
 from pathlib import Path
 
-import anyio
 import pytest
-import uvicorn
 from langchain_core.language_models.fake_chat_models import GenericFakeChatModel
 from langchain_core.messages import AIMessage
-from mcp.shared.memory import create_connected_server_and_client_session
 
 from memory_demo import consolidate, models, resolver, seeding, sqlguard
+from memory_demo.api import LocalMemory, MemoryServiceError, memory_tools
 from memory_demo.extractor import MemoryOp, extract, parse
-from memory_demo.mcp_server import build_server, resolve_user
 from memory_demo.middleware import MemoryMiddleware, _turn, _turn_sql
 from memory_demo.models import MemoryItem
 from memory_demo.org import Directory, Org
-from memory_demo.remote import MemoryClient, MemoryServiceError
 from memory_demo.service import MemoryService
 from memory_demo.store import MemoryStore, SqliteExecutor
 
@@ -174,67 +167,34 @@ def test_the_last_consent_choice_wins_even_within_a_second(svc):
         assert svc.consent(MEI) == {"remember": True, "share": False}
 
 
-# ---- the MCP server ---------------------------------------------------------------------------------------------
-def test_without_an_identity_the_server_refuses_by_default(svc):
-    with pytest.raises(ValueError, match="identity"):
-        resolve_user(None, LUKAS, set())  # no Databricks headers: not "whoever the caller says"
-    assert resolve_user(None, LUKAS, set(), require_identity=False) == LUKAS  # local runs opt in
-    server = build_server(svc)
-
-    async def run():
-        async with create_connected_server_and_client_session(server._mcp_server) as s:
-            r = await s.call_tool("show_memory", {"user_email": EVA})
-            assert r.isError and "identity" in r.content[0].text
-
-    anyio.run(run)
+# ---- calls from the agent's code ---------------------------------------------------------------------------------
+def test_the_model_can_never_name_the_user(svc):
+    for t in memory_tools(svc, user_of=lambda runtime: LUKAS):  # the user comes from the agent's sign-in only
+        assert "user" not in " ".join(t.args).lower(), t.name
+    with pytest.raises(MemoryServiceError, match="user_email is required"):
+        LocalMemory(svc).call("show_memory", user_email="")
 
 
-def test_a_service_principal_is_recognised_by_any_of_its_ids():
-    sp = "4a1b2c3d-0000-1111-2222-333344445555"
-    assert resolve_user(sp, LUKAS, {sp}) == LUKAS
-    assert resolve_user(PETRA, LUKAS, {sp}, caller_ids={PETRA, sp}) == LUKAS  # id in another header
-
-
-def test_server_errors_do_not_leak_internals(svc, monkeypatch):
+def test_errors_do_not_leak_internals(svc, monkeypatch):
     def boom(*a, **k):
         raise RuntimeError("could not read askar.shs_memory_demo.memory_items with token dapi123")
     monkeypatch.setattr(svc, "view", boom)
-    server = build_server(svc, require_identity=False)
-
-    async def run():
-        async with create_connected_server_and_client_session(server._mcp_server) as s:
-            r = await s.call_tool("show_memory", {"user_email": LUKAS})
-            assert r.isError and "dapi123" not in r.content[0].text and "memory_items" not in r.content[0].text
-
-    anyio.run(run)
+    with pytest.raises(MemoryServiceError) as e:
+        LocalMemory(svc).call("show_memory", user_email=LUKAS)
+    assert "dapi123" not in str(e.value) and "memory_items" not in str(e.value)
+    shown = next(t for t in memory_tools(svc, user_of=lambda runtime: LUKAS) if t.name == "show_my_memory")
+    reply = shown.func(runtime=None)  # what the model would see
+    assert "dapi123" not in reply and "memory_items" not in reply
 
 
-def test_forged_undo_and_use_meaning_are_refused_over_mcp(svc):
-    with socket.socket() as s:
-        s.bind(("127.0.0.1", 0))
-        port = s.getsockname()[1]
-    server = uvicorn.Server(uvicorn.Config(build_server(svc).streamable_http_app(), host="127.0.0.1", port=port,
-                                           log_level="warning"))
-    thread = threading.Thread(target=server.run, daemon=True)
-    thread.start()
-    for _ in range(100):
-        if server.started:
-            break
-        time.sleep(0.05)
-    try:
-        url = f"http://127.0.0.1:{port}/mcp"
-        gold = used(svc, MEI, "incidents")["incidents"].item_id
-        as_mei = MemoryClient(url, headers={"x-forwarded-email": MEI})
-        with pytest.raises(MemoryServiceError):
-            as_mei.call("memory_undo", write={"op": "add", "item_id": gold, "term": "incidents"})
-        assert status(svc, gold) == "active"
-        with pytest.raises(MemoryServiceError):
-            as_mei.call("use_meaning", rejected_id="", chosen_id="no-such-id")
-        with pytest.raises(MemoryServiceError, match="identity"):
-            MemoryClient(url).call("show_memory", user_email=EVA)  # no identity header at all
-    finally:
-        server.should_exit = True
-        thread.join(5)
+def test_forged_undo_and_use_meaning_are_refused(svc):
+    gold = used(svc, MEI, "incidents")["incidents"].item_id
+    memory = LocalMemory(svc)
+    with pytest.raises(MemoryServiceError):
+        memory.call("memory_undo", write={"op": "add", "item_id": gold, "term": "incidents"}, user_email=MEI)
+    assert status(svc, gold) == "active"
+    with pytest.raises(MemoryServiceError):
+        memory.call("use_meaning", rejected_id="", chosen_id="no-such-id", user_email=MEI)
 
 
 # ---- the directory ----------------------------------------------------------------------------------------------
@@ -390,30 +350,6 @@ def test_a_malformed_trace_from_the_caller_does_not_break_learning(svc, monkeypa
     svc.llm = object()
     for trace in ({"items": [{}]}, {"items": ["x", None, {"item_id": 5}]}, {"items": None}, {}):
         assert svc.learn(LUKAS, None, "memory errors?", "42", trace) == ([], {})
-
-
-def test_health_tells_a_caller_which_ids_the_platform_reports(svc):
-    sp = "4a1b2c3d-0000-1111-2222-333344445555"
-    with socket.socket() as s:
-        s.bind(("127.0.0.1", 0))
-        port = s.getsockname()[1]
-    server = uvicorn.Server(uvicorn.Config(build_server(svc, trusted={sp}).streamable_http_app(), host="127.0.0.1",
-                                           port=port, log_level="warning"))
-    thread = threading.Thread(target=server.run, daemon=True)
-    thread.start()
-    for _ in range(100):
-        if server.started:
-            break
-        time.sleep(0.05)
-    try:
-        url = f"http://127.0.0.1:{port}/mcp"
-        seen = MemoryClient(url, headers={"x-forwarded-user": sp, "x-forwarded-preferred-username": "AskFST app"}
-                            ).call("health")
-        assert seen["caller_ids"] == sorted([sp, "askfst app"]) and seen["trusted"] is True
-        assert MemoryClient(url, headers={"x-forwarded-email": PETRA}).call("health")["trusted"] is False
-    finally:
-        server.should_exit = True
-        thread.join(5)
 
 
 def test_a_blank_setting_fails_with_its_name(monkeypatch):

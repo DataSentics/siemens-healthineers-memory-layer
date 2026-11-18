@@ -23,6 +23,7 @@ from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from . import models, ontology, sqlguard
 from .bgl import TABLE
 from .casebook import Casebook
+from .api import memory_tools
 from .middleware import MemoryContextMiddleware, MemoryMiddleware, UserContext, message_text
 from .service import MemoryService
 
@@ -72,20 +73,9 @@ even if a term's meaning has changed since then."""
 
 
 def _memory_tool(memory: MemoryService):
-    @tool
-    def show_my_memory(runtime: ToolRuntime[UserContext]) -> str:
-        """Show what the assistant remembers about the current user: their own items, what their team and
-        department share, the official glossary and other departments' meanings. Use when the user asks what you
-        remember about them (FR14)."""
-        view = memory.view(runtime.context.user_email)
-        lines = [
-            f"[{scope}] {r['term'] or r['type']}: {r['meaning']} ({r['support']})"
-            for scope in ("personal", "team", "department", "gold", "other")
-            for r in view[scope]
-        ]
-        return "\n".join(lines) or "Nothing remembered yet."
-
-    return show_my_memory
+    """show_my_memory only (FR14): the demo app has its own Forget buttons and shows under every answer what each
+    term meant."""
+    return next(t for t in memory_tools(memory) if t.name == "show_my_memory")
 
 
 @tool

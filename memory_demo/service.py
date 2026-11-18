@@ -1,7 +1,7 @@
 """MemoryService: the memory layer behind one interface.
 
-The agent middleware, the demo UI and (later) an MCP server all talk to this class, so AskFST and other
-agents can share it (FR18).
+The agent middleware (through `api.LocalMemory`) and the demo UI talk to this class, so AskFST and the demo
+share one memory (FR18).
 """
 
 from __future__ import annotations
@@ -119,7 +119,7 @@ class MemoryService:
         `recent`: the user's earlier messages in this conversation, as context (Mem0 passes the last m messages)."""
         if self.llm is None:
             return [], {}
-        # The trace comes back from the caller (over MCP: from another process): keep only entries that look like ours.
+        # The trace comes back from the caller (the agent's state): keep only entries that look like ours.
         applied = [i for i in (trace or {}).get("items") or []
                    if isinstance(i, dict) and isinstance(i.get("item_id"), str) and isinstance(i.get("meaning"), str)]
         personal = [asdict(i) for i in self.personal_items(email)]
@@ -393,7 +393,7 @@ class MemoryService:
     def undo(self, email: str, write: dict) -> None:
         """Reverse one write that `learn`, `apply` or `choose` returned to this user.
 
-        The write comes back from a client (a UI, an MCP caller), so it is not trusted: only its ids are used, each
+        The write comes back from a client (a UI's Undo button), so it is not trusted: only its ids are used, each
         is checked against the store, and the item must still be in the state the write left it in. Raises
         NotAllowed otherwise, so a forged or repeated undo cannot retire or revive anything else."""
         viewer = self.org.get(email)

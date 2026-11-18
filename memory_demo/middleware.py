@@ -4,7 +4,8 @@
 - wrap_model_call: append the memory block to the system prompt of every model call in the ReAct loop
 - after_agent: decide what to remember from this turn
 
-MemoryContextMiddleware is the inject-only part, for sub-agents of a supervisor.
+MemoryMiddleware makes its calls through `api.LocalMemory`. MemoryContextMiddleware is the inject-only part, for
+sub-agents of a supervisor.
 
 This uses the same create_agent middleware hooks as AskFST's Data Planner, so it should attach there unchanged.
 """
@@ -12,14 +13,16 @@ This uses the same create_agent middleware hooks as AskFST's Data Planner, so it
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, NotRequired
+from typing import Any, NotRequired
 
 from langchain.agents.middleware import AgentMiddleware, AgentState, ModelRequest
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 
-if TYPE_CHECKING:  # the remote client imports this module without the server side
-    from .service import MemoryService
+from .api import as_memory, default_user
+
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -119,9 +122,9 @@ def no_memory() -> dict[str, Any]:
     return {"memory_context": "", "memory_trace": {"items": []}, "memory_writes": []}
 
 
-def default_user(runtime) -> str:
-    """The signed-in user's email: `runtime.context.user_email` (UserContext). Pass `user_of` for other contexts."""
-    return runtime.context.user_email
+def nothing_learned() -> dict[str, Any]:
+    """The state update after a turn that taught memory nothing."""
+    return {"memory_writes": [], "memory_relevance": {}}
 
 
 def option(runtime, name: str, default):
@@ -130,27 +133,79 @@ def option(runtime, name: str, default):
 
 
 class MemoryMiddleware(MemoryContextMiddleware):
-    """In-process memory: the agent's app imports this package and reaches the memory tables itself.
-    `user_of(runtime)`: the user's email (default: runtime.context.user_email).
-    `sql_from(messages)`: the SQL that ran this turn (default: sql_db_query calls and sub-agent artifacts)."""
+    """Memory for a create_agent agent: `memory_context` before the first model call (its block is appended to the
+    system prompt of every model call in the turn) and `memory_learn` after the answer. The trace and the writes land
+    in the agent state (memory_trace, memory_writes, memory_relevance) for the UI.
 
-    def __init__(self, service: MemoryService, learn: bool = True, user_of=default_user, sql_from=None):
+    `memory`: a `LocalMemory` (a bare MemoryService is wrapped in one).
+    `user_of(runtime)`: the signed-in user's email (default: runtime.context.user_email).
+    `sql_from(messages)`: the SQL that ran this turn, so saved definitions get the filter that was checked against the
+    data (default: sql_db_query calls and sub-agent artifacts with an "sql" list).
+
+    If memory fails, the agent answers without it and memory_trace["note"] says so: memory never stops an answer."""
+
+    def __init__(self, memory, learn: bool = True, user_of=default_user, sql_from=None):
         super().__init__()
-        self.service, self.learn, self.user_of, self.sql_from = service, learn, user_of, sql_from or _turn_sql
+        self.memory = as_memory(memory)
+        self.learn, self.user_of, self.sql_from = learn, user_of, sql_from or _turn_sql
 
-    def before_agent(self, state, runtime) -> dict[str, Any] | None:
+    # ---- the two calls, shared by the sync and async hooks -------------------------------------------------
+    def _context_args(self, state, runtime) -> dict[str, Any]:
         _, question, _ = _turn(state["messages"])
-        if not question:
+        return {"question": question, "user_email": self.user_of(runtime), "fuzzy": option(runtime, "fuzzy", False),
+                "exclude": list(option(runtime, "exclude", ()))}
+
+    def _learn_args(self, state, runtime) -> dict[str, Any]:
+        prev, question, answer = _turn(state["messages"])
+        return {"question": question, "answer": answer, "user_email": self.user_of(runtime), "previous_answer": prev,
+                "trace": state.get("memory_trace"), "sql": self.sql_from(state["messages"]),
+                "earlier_questions": _earlier_questions(state["messages"])}
+
+    @staticmethod
+    def _context_update(result: dict | None, error: Exception | None = None) -> dict[str, Any]:
+        if error is not None:
+            log.warning("memory_context failed, answering without memory: %s", error)
+            note = f"Memory was unavailable ({type(error).__name__}), so this answer does not use it."
+            return {"memory_context": "", "memory_trace": {"items": [], "note": note}, "memory_writes": []}
+        return {"memory_context": result["context"], "memory_trace": result["trace"], "memory_writes": []}
+
+    @staticmethod
+    def _learn_update(result: dict | None, error: Exception | None = None) -> dict[str, Any]:
+        if error is not None:
+            log.warning("memory_learn failed, nothing remembered this turn: %s", error)
+            return nothing_learned()
+        return {"memory_writes": result["writes"], "memory_relevance": result["relevance"]}
+
+    # ---- sync agents --------------------------------------------------------------------------------------
+    def before_agent(self, state, runtime) -> dict[str, Any] | None:
+        if not _turn(state["messages"])[1]:  # no user message: nothing to look up
             return no_memory()
-        context, trace = self.service.retrieve(self.user_of(runtime), question, tuple(option(runtime, "exclude", ())),
-                                               fuzzy=option(runtime, "fuzzy", False))
-        return {"memory_context": context, "memory_trace": trace.to_dict(), "memory_writes": []}
+        try:
+            return self._context_update(self.memory.call("memory_context", **self._context_args(state, runtime)))
+        except Exception as e:  # memory must never stop the agent from answering
+            return self._context_update(None, e)
 
     def after_agent(self, state, runtime) -> dict[str, Any] | None:
-        prev, question, answer = _turn(state["messages"])
-        if not self.learn or not question:
-            return {"memory_writes": [], "memory_relevance": {}}
-        writes, relevance = self.service.learn(self.user_of(runtime), prev, question, answer,
-                                               state.get("memory_trace"), sql=self.sql_from(state["messages"]),
-                                               recent=_earlier_questions(state["messages"]))
-        return {"memory_writes": [w.to_dict() for w in writes], "memory_relevance": relevance}
+        if not self.learn or not _turn(state["messages"])[1]:
+            return nothing_learned()
+        try:
+            return self._learn_update(self.memory.call("memory_learn", **self._learn_args(state, runtime)))
+        except Exception as e:
+            return self._learn_update(None, e)
+
+    # ---- async agents (ainvoke / astream) -----------------------------------------------------------------
+    async def abefore_agent(self, state, runtime) -> dict[str, Any] | None:
+        if not _turn(state["messages"])[1]:
+            return no_memory()
+        try:
+            return self._context_update(await self.memory.acall("memory_context", **self._context_args(state, runtime)))
+        except Exception as e:
+            return self._context_update(None, e)
+
+    async def aafter_agent(self, state, runtime) -> dict[str, Any] | None:
+        if not self.learn or not _turn(state["messages"])[1]:
+            return nothing_learned()
+        try:
+            return self._learn_update(await self.memory.acall("memory_learn", **self._learn_args(state, runtime)))
+        except Exception as e:
+            return self._learn_update(None, e)

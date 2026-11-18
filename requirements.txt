@@ -12,5 +12,3 @@ python-dotenv
 mem0ai>=1,<2
 sqlglot>=25,<30
 pytest
-mcp>=1.30,<2
-uvicorn

@@ -18,11 +18,10 @@ Compare them with his code once it is handed over (K1).
 | `memory_demo/extractor.py` | After-turn write decision, one structured LLM call (FR1–FR3; Mem0's extraction phase): saves what the user states, without "remember that"; personal facts only when they would change an answer |
 | `memory_demo/consolidate.py` | Before saving, the same term spelled differently and the same meaning in other words are recognised (Mem0's update phase), so nothing is stored twice |
 | `memory_demo/org.py` | The org directory: a table (Delta on Databricks, SQLite locally) re-read every few minutes; teams and departments are whatever it says today |
-| `memory_demo/service.py` | `MemoryService`: retrieve / learn / undo / forget / feedback / viewer. The one interface an MCP server would wrap later (FR18) |
-| `memory_demo/mcp_server.py` | The memory layer as an MCP server (streamable HTTP, Databricks App `mcp-shs-memory`): per-turn tools for code (`memory_context`, `memory_learn`, `memory_undo`) and tools for the model (`show_memory`, `explain_term`, `forget`, ...). See `INTEGRATION.md` |
-| `memory_demo/remote.py` | What another agent (AskFST) imports: `MemoryClient`, `RemoteMemoryMiddleware`, `memory_tools`. Installed as the `shs-memory` wheel (`pyproject.toml`) |
-| `deploy/mcp/` | `app.yaml` of the MCP app, and an example data description for another assistant's tables |
-| `memory_demo/middleware.py` | `MemoryMiddleware` for `create_agent`: retrieve once per turn, inject into every model call, learn after the answer (FR17) |
+| `memory_demo/service.py` | `MemoryService`: retrieve / learn / undo / forget / feedback / viewer |
+| `memory_demo/api.py` | What an agent's app (AskFST) uses: `LocalMemory` runs the memory's calls (`memory_context`, `memory_learn`, `memory_undo`, `show_memory`, `explain_term`, `forget`, ...) in the app's process, and `memory_tools` gives the model show / explain / forget. Installed as the `shs-memory` wheel (`pyproject.toml`). See `INTEGRATION.md` |
+| `deploy/data_description.example.txt` | Example of the table description another assistant gives the memory (`DATA_DESCRIPTION_FILE`) |
+| `memory_demo/middleware.py` | `MemoryMiddleware` for `create_agent`: retrieve once per turn, inject into every model call, learn after the answer; answers without memory if memory fails (FR17) |
 | `memory_demo/agent.py` | `build_agent`: SQL agent (`SQLDatabaseToolkit` + `create_agent`, Hub SQL prompt inlined, answer-first rule). `build_supervisor`: supervisor → casebook search + SQL sub-agent; memory is looked up and learned once on the supervisor and passed to the sub-agent |
 | `memory_demo/casebook.py` | Questions answered well before, with their SQL. Saved after each answer that ran SQL (unless it used someone's own meaning), withdrawn when the answer is corrected or rejected; visible to the author and their team, without names |
 | `memory_demo/ontology.py` | Ontology built from the data, no human review (A9): rack → midplane → node card → card, alert families by component, example messages. Summary in the SQL prompt plus a `describe_bgl_entity` tool |
@@ -65,7 +64,7 @@ answer) but never applied unless the user picks one with **Use this**. A team's 
   target from the model never replaces another item; saved text is one bounded line and a filter is kept only if it
   is one plain condition; matching works for non-English text (German, Chinese) and never treats a one-character
   difference there as a typo; timestamps always increase, so "latest wins" has no ties; the directory is not re-read
-  for every unknown caller, and a server on a real directory never fills or wipes it (`ORG_SEED=0`).
+  for every unknown caller, and an agent on a real directory never fills or wipes it (`ORG_SEED=0`).
 - **Storage under load (17 Nov, `tests/test_store.py`).** Warehouse requests go through a pool of connections, so
   users do not queue behind one another. Every change is one unit of work (`MemoryStore.commit`): a transaction on
   SQLite, and on the warehouse one MERGE that adds the new meaning and retires the old ones together (signals follow
@@ -137,8 +136,7 @@ department items are rows with `origin = 'team'` / `'department'`, so the memory
 | `LLM_TEMPERATURE` | unset (model default). Reasoning models reject any other value | same |
 | `MEMORY_CATALOG`, `MEMORY_SCHEMA` | – | where the memory tables live when not next to the demo data (default: `DEMO_CATALOG` / `DEMO_SCHEMA`) |
 | `MEMORY_DB_CONNECTIONS` | – | `4`: warehouse connections the memory layer uses side by side |
-| `ORG_SEED` | `1` | `1` for the demo; `0` for a service on a real directory (never fills or wipes `org_people`) |
-| `MEMORY_ALLOW_ANONYMOUS` | – | unset. `1` only for a local MCP server: callers without a Databricks identity are believed |
+| `ORG_SEED` | `1` | `1` for the demo; `0` in an agent on a real directory (never fills or wipes `org_people`) |
 | `ORG_CSV`, `ORG_REFRESH_S` | `seed/org.csv` (fills the directory table when it is empty), `300` (seconds between re-reads of the directory) | same |
 | `DEMO_TODAY` | `2005-12-01` | same. The demo clock starts here ("last month" = November 2005); the sidebar's **+1 month** moves it to 2006-01-01 |
 | `JOKE_FILTER` | `1` | `1` |
