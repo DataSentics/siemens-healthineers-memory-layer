@@ -1,5 +1,4 @@
-# Secrets and local settings: never commit. `.env.example` (the template) is ignored too, so it is only ever added
-# on purpose: git add -f .env.example
+# Secrets and local settings: never commit. The settings template is `example.env` (tracked, no secrets).
 .env
 .env.*
 .streamlit/secrets.toml

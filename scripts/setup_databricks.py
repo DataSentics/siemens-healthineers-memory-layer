@@ -7,9 +7,11 @@ create the memory tables and the org directory table. Needs only a SQL warehouse
 
 --only-org: only create the org directory table and grant the app MODIFY on it (for an existing deployment). The
 app fills it from seed/org.csv on its first start.
---only-memory: only the memory tables and the org directory table, with the grants (no demo data). For a memory
-service on real data, e.g. --catalog <AskFST's catalog> --schema shs_memory. Run by someone who may create a schema
-in that catalog and grant on it.
+--only-memory: only the memory tables and the org directory table, with the grants (no demo data). For the memory
+app on real data, e.g. --catalog <AskFST's catalog> --schema shs_memory. The app may then only read org_people (the
+HR sync, or scripts/pilot_admin.py for a pilot, fills it); it writes the memory tables and the casebook (a team's
+earlier answers are withdrawn there when the team's meaning changes). Run by someone who may create a schema in that
+catalog and grant on it.
 """
 
 import argparse
@@ -73,12 +75,12 @@ def main() -> None:
 
     if a.app_sp:
         sp = f"`{a.app_sp}`"
+        writes = ["memory_items", "memory_signals", "casebook"]
+        if not a.only_memory:  # the demo's Admin tab and reset write the directory
+            writes.append("org_people")
         for g in (f"GRANT USE CATALOG ON CATALOG `{a.catalog}` TO {sp}",
                   f"GRANT USE SCHEMA, SELECT ON SCHEMA {fq} TO {sp}",
-                  f"GRANT MODIFY ON TABLE {fq}.memory_items TO {sp}",
-                  f"GRANT MODIFY ON TABLE {fq}.memory_signals TO {sp}",
-                  f"GRANT MODIFY ON TABLE {fq}.casebook TO {sp}",
-                  f"GRANT MODIFY ON TABLE {fq}.org_people TO {sp}"):
+                  *(f"GRANT MODIFY ON TABLE {fq}.{t} TO {sp}" for t in writes)):
             sql(w, a.warehouse_id, g)
     print("done")
 

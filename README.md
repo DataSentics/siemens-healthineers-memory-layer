@@ -30,7 +30,9 @@ Compare them with his code once it is handed over (K1).
 | `memory_demo/store.py` | Tables `memory_items`, `memory_signals`, `casebook`, `org_people`; same SQL on SQLite and a Databricks SQL warehouse |
 | `seed/` | Mocked org chart (41 fictional people, emails on `shs-demo.example`; loaded into the directory table once), gold glossary, the pilot month of teams and departments |
 | `app.py` | Streamlit demo: chat, memory drop-down, "I remembered" notice with undo, memory viewer, internal signals page |
-| `scripts/` | Local SQLite ingest, Parquet export, Databricks setup, org generator, ontology builder |
+| `scripts/` | Local SQLite ingest, Parquet export, Databricks setup, org generator, ontology builder, evals; for the memory app: `stage_memory_app.py` (its deploy folder) and `pilot_admin.py` (people and consent for a pilot) |
+| `deploy/mcp/app.yaml` | The memory app's Databricks App definition (steps: `INTEGRATION.md`, "Deploying it") |
+| `example.env` | Settings template: copy to `.env` |
 
 ## How memory levels work
 
@@ -127,6 +129,8 @@ department items are rows with `origin = 'team'` / `'department'`, so the memory
 
 ## Configuration
 
+Locally from `.env` (copy `example.env`), on Databricks from `app.yaml`.
+
 | Variable | Local default | Databricks App |
 | --- | --- | --- |
 | `BACKEND` | `sqlite` | `databricks` |
@@ -152,12 +156,15 @@ keeps `PERSONAL_MEMORY=store` there for now.
 
 ## Run locally
 
+The data: download `BGL.zip` (57.5 MB) from https://zenodo.org/records/8196385 (Loghub, CC BY 4.0; cite Loghub as
+the record asks) and unzip it into `data/` to get `data/BGL.log` (743 MB). `data/` is never committed.
+
 ```bash
 python -m venv .venv && .venv/Scripts/pip install -r requirements.txt
-.venv/Scripts/python scripts/ingest_sqlite.py ../data/raw/bgl/BGL.log data/bgl.db
+.venv/Scripts/python scripts/ingest_sqlite.py data/BGL.log data/bgl.db   # a few minutes; 4,747,963 rows
 .venv/Scripts/python scripts/build_ontology.py data/bgl.db   # only if the data changes; seed/ontology.json is checked in
 .venv/Scripts/python -m pytest -q
-cp .env.example .env   # then fill in the Azure OpenAI values yourself
+cp example.env .env    # then fill in the Azure OpenAI values yourself
 .venv/Scripts/streamlit run app.py
 ```
 
@@ -181,6 +188,8 @@ test.
 
 ## Deploy to Databricks
 
+This deploys the demo app. The memory app on its own (for AskFST): `INTEGRATION.md`, "Deploying it".
+
 Deployed on 4 Nov 2026 to `adb-2052394040785539.19.azuredatabricks.net`:
 
 | Thing | Value |
@@ -197,8 +206,10 @@ Steps (the CLI is `databricks`, v0.295+; in Git Bash set `MSYS_NO_PATHCONV=1` so
 2. `python scripts/export_parquet.py data/bgl.db data/bgl_events.parquet`
 3. `python scripts/setup_databricks.py --profile siemens --catalog askar --schema shs_memory_demo --warehouse-id <id>`
    builds `bgl_events` (with table and column comments) and the memory tables.
-4. Create the app with two resources: the SQL warehouse under the key `sql-warehouse` (Can use) and the serving
-   endpoint `databricks-claude-sonnet-5-5` (Can query).
+4. Set `DEMO_CATALOG` and `DEMO_SCHEMA` in `app.yaml` to yours (it holds ours: `askar`, `shs_memory_demo`).
+   Create the app with three resources: the SQL warehouse under the key `sql-warehouse` (Can use) and the serving
+   endpoints `databricks-claude-sonnet-5-5` and `databricks-gte-large-en` (Can query; the second finds terms by
+   meaning).
 5. Grant the app's service principal `USE CATALOG` on the catalog, `USE SCHEMA` and `SELECT` on the schema, and
    `MODIFY` on the memory tables and `org_people` (`setup_databricks.py --app-sp <application id>` runs these grants).
    On an existing deployment, `setup_databricks.py ... --app-sp <application id> --only-org` creates only

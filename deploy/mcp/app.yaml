@@ -1,6 +1,7 @@
 # Databricks App definition of the memory MCP server (app name must start with "mcp-", e.g. mcp-shs-memory).
-# Deploy the project folder with this file as its app.yaml (see INTEGRATION.md). Resources: the SQL warehouse under
-# the key `sql-warehouse` (Can use), the model endpoint and the embedding endpoint (Can query).
+# scripts/stage_memory_app.py puts the app's folder together with this file as its app.yaml (steps in INTEGRATION.md,
+# "Deploying it"). Resources: the SQL warehouse under the key `sql-warehouse` (Can use), the model endpoint and the
+# embedding endpoint (Can query).
 command: ["python", "-m", "memory_demo.mcp_server"]
 env:
   - name: BACKEND
@@ -15,7 +16,8 @@ env:
   - name: MEMORY_SCHEMA
     value: shs_memory
   # No DEMO_TODAY: the server works with the real date.
-  # The server only reads the org directory: the HR / Entra sync fills it; nothing here seeds or wipes it.
+  # The server only reads the org directory: the HR / Entra sync fills it (for a pilot: scripts/pilot_admin.py people);
+  # nothing here seeds or wipes it.
   - name: ORG_SEED
     value: "0"
   - name: MEMORY_DB_CONNECTIONS
@@ -34,7 +36,7 @@ env:
     value: databricks-gte-large-en
   - name: EMBEDDING_DIMS
     value: "1024"
-  # Service principals (application ids) of agent apps that call for their users, comma-separated: AskFST's
-  # text-to-SQL agent. Call the `health` tool as that app to see the ids the platform reports for it.
+  # Service principals (application ids) that call for their users, comma-separated: the one AskFST's text-to-SQL
+  # agent signs in as. Call the `health` tool as that principal to see the ids the platform reports for it.
   - name: MEMORY_TRUSTED_CALLERS
     value: ""

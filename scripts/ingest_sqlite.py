@@ -1,8 +1,8 @@
 """Load BGL.log into a local SQLite table for offline development.
 
-    python scripts/ingest_sqlite.py ../data/raw/bgl/BGL.log data/bgl.db
+    python scripts/ingest_sqlite.py data/BGL.log data/bgl.db   # BGL.zip from https://zenodo.org/records/8196385
 
-On Databricks use databricks/ingest_bgl.py instead (same parsing, Delta table with comments).
+On Databricks: scripts/export_parquet.py, then scripts/setup_databricks.py (the same table as Delta, with comments).
 """
 
 import sqlite3

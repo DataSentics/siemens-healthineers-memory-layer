@@ -60,14 +60,13 @@ Mem0 index (about 7 s for the demo's terms). Learning is one model call after th
 | --- | --- |
 | The user | `user_of(runtime)`: the signed-in user's email, passed to the SQL agent with each request, never from the model. It must match an email in the org directory (people → team → department); case and spaces do not matter. |
 | The user's own words (recommended) | `user_message` in the context (or `user_message_of=`), so learning reads the user and not the main agent's rewording. |
-| Its identity | The SQL agent app's service principal gets **Can use** on the memory app, and its id goes into the memory app's `MEMORY_TRUSTED_CALLERS`: only listed callers may name a user. The `health` tool shows the ids the platform reports for a caller. |
+| Its identity | The service principal the SQL agent signs in as gets **Can use** on the memory app, and its id goes into the memory app's `MEMORY_TRUSTED_CALLERS`: only listed callers may name a user. The `health` tool shows the ids the platform reports for a caller. |
 | The SQL that ran (optional) | `sql_from(messages)`: the SQL statements of this turn. Default: `sql_db_query` tool calls and tool messages whose artifact is `{"sql": [...]}`. It only helps word a definition exactly. |
 
 ## The memory app
 
-Deploy the project folder as a Databricks App whose name starts with `mcp-`, with `deploy/mcp/app.yaml` as its
-`app.yaml` (it runs `python -m memory_demo.mcp_server`; dependencies from `requirements.txt`, or
-`pip install .[server]`). Its settings:
+A Databricks App whose name starts with `mcp-`, running `python -m memory_demo.mcp_server` with the settings in
+`deploy/mcp/app.yaml`:
 
 | Variable | Value |
 | --- | --- |
@@ -79,12 +78,46 @@ Deploy the project folder as a Databricks App whose name starts with `mcp-`, wit
 | `LLM_PROVIDER`, `DATABRICKS_LLM_ENDPOINT` | `databricks`, the model that decides what to remember (`databricks-claude-sonnet-5-5` in the demo) |
 | `PERSONAL_MEMORY` | `store` (preferences and facts stay in the tables, not in Mem0's local files) |
 | `DATABRICKS_EMBEDDING_ENDPOINT`, `EMBEDDING_DIMS` | `databricks-gte-large-en`, `1024`: Mem0's embeddings (the match thresholds were set on this model) |
-| `MEMORY_TRUSTED_CALLERS` | the SQL agent app's service principal id |
+| `MEMORY_TRUSTED_CALLERS` | the id of the service principal the SQL agent signs in as |
 
 The memory app's service principal needs `USE CATALOG`, `USE SCHEMA`, `SELECT` and `MODIFY` on the memory tables
-(`memory_items`, `memory_signals`, `casebook`), `SELECT` on `org_people`, Can use on the SQL warehouse, and Can query on
-the model endpoint and the embedding endpoint. `scripts/setup_databricks.py --only-memory --app-sp <id>` creates the
-tables and grants them on the tables (it also grants `MODIFY` on `org_people`, which only the demo's Admin tab needs).
+(`memory_items`, `memory_signals`, `casebook`; the casebook is written when a team's meaning changes), only `SELECT` on
+`org_people`, Can use on the SQL warehouse, and Can query on the model endpoint and the embedding endpoint.
+
+### Deploying it
+
+Run by someone who may create a schema in AskFST's catalog and grant on it, from a clone of this repository with
+`pip install -r requirements.txt` (the CLI is `databricks` v0.295+; in Git Bash set `MSYS_NO_PATHCONV=1` first so
+`/Workspace/...` paths survive):
+
+1. **Sign in:** `databricks auth login --host https://<workspace> --profile <profile>`.
+2. **Create the app** `mcp-shs-memory` (Compute → Apps → Create app → Custom) with three app resources: the SQL
+   warehouse under the key `sql-warehouse` (Can use), and the serving endpoints `databricks-claude-sonnet-5-5` and
+   `databricks-gte-large-en` (Can query).
+3. **Tables and grants:** `databricks apps get mcp-shs-memory --profile <profile>` shows the app's
+   `service_principal_client_id`; then
+   `python scripts/setup_databricks.py --profile <profile> --catalog <catalog> --schema shs_memory --warehouse-id <id> --only-memory --app-sp <service_principal_client_id>`
+   creates `memory_items`, `memory_signals`, `casebook` and `org_people` and runs the grants above.
+4. **People:** until the HR / Entra ID sync writes `org_people`, load the pilot's people from a CSV with the columns of
+   `seed/org.csv`:
+   `python scripts/pilot_admin.py --profile <profile> --warehouse-id <id> --catalog <catalog> people pilot_people.csv`
+   shows what would change, and `--yes` writes it (the CSV becomes the whole directory). Keep the file out of this
+   repository. The memory app refuses anyone it cannot find there.
+5. **Settings:** set `MEMORY_CATALOG` in `deploy/mcp/app.yaml`; `MEMORY_TRUSTED_CALLERS` comes in step 7.
+6. **Deploy:** `python scripts/stage_memory_app.py --profile <profile> --workspace-path /Workspace/Users/<you>/mcp-shs-memory`
+   puts the app's folder together outside the repository (`app.yaml`, `requirements.txt`, `memory_demo/`; never data
+   or `.env`) and prints the two commands to run: `databricks sync <folder> <workspace path> --full` and
+   `databricks apps deploy mcp-shs-memory --source-code-path <workspace path>`. (Synced from inside the repository,
+   nothing would be uploaded: `databricks sync` skips what git ignores, and `build/` is ignored.) Repeat this step
+   after every change to the code or the settings.
+7. **Trust the SQL agent:** give the service principal the SQL agent signs in as **Can use** on the memory app. The
+   `health` tool, called as that principal, lists the ids the platform reports for it (`caller_ids`); put its
+   application id into `MEMORY_TRUSTED_CALLERS` and deploy again (step 6).
+8. **Consent:** `python scripts/pilot_admin.py <same options as step 4> consent <email> <email> ... [--share]` switches
+   memory on for the pilot users (nothing is remembered before); `--off` switches it off.
+9. **Check:** from your machine,
+   `MemoryClient("https://mcp-shs-memory-<id>.azure.databricksapps.com/mcp", WorkspaceClient(profile="<profile>")).call("health")`
+   shows `people` (the directory's size) and today's date.
 
 **Where things live.** The memories are Delta tables in AskFST's catalog. Mem0 holds no memories: its index of term
 names sits in the memory app's temp folder and is rebuilt from the tables after each start. The memory app runs as one
@@ -133,7 +166,7 @@ Memory tab and the other way round.
 | 6 | Where memory lives | **In AskFST's catalog, in its own schema** (`shs_memory`). Never the demo's tables. |
 | 7 | Finding terms by meaning | **On by default (Mem0)**, in the memory app. A phrase with the same head word and another modifier ("quiet rack" vs "noisy rack") is never taken for a term. |
 | 8 | Showing memory to the user | **In the answer text** (`note_in_answer`), as Tomáš suggested: bold "Memory used" / "Remembered" lines. |
-| 9 | Consent | Nothing is saved before a user opts in. For the pilot, switch it on for the pilot users with `set_consent`, or change the default. |
+| 9 | Consent | Nothing is saved before a user opts in. For the pilot, switch it on for the pilot users (`scripts/pilot_admin.py consent`); users can change it themselves with `set_consent`. |
 
 ## Questions for Tomáš
 
@@ -143,6 +176,8 @@ Memory tab and the other way round.
 3. **The agent:** is the SQL agent built with `create_agent` (the middleware as is) or its own graph (then the two
    calls go into its code)?
 4. **Answer text:** does the SQL agent's answer reach the user as it is, so the "Memory used" line is seen?
-5. **Access:** the SQL agent app's service principal id, the catalog for the memory schema, and who runs the grants.
-6. **People:** where people, teams and departments come from (HR or Entra ID), and who writes them into `org_people`.
+5. **Access:** the service principal the SQL agent signs in as, the catalog for the memory schema, and who runs the
+   grants.
+6. **People:** where people, teams and departments come from (HR or Entra ID), and who writes them into `org_people`
+   (for the pilot, `scripts/pilot_admin.py people` loads a CSV).
 7. **Official glossary:** should the hand-kept list of about 100 terms in the planner prompt become the official level?

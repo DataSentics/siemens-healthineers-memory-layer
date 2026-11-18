@@ -35,6 +35,7 @@ class Person:
 
 ORG_COLS = ["email", "name", "department", "team", "manager_email", "is_manager", "joined"]
 DOMAIN = "shs-demo.example"
+INSERT_ROWS = 40  # people per INSERT (280 parameters), so a long list never becomes one huge statement
 
 
 class Org:
@@ -109,8 +110,10 @@ def new_team(org: Org, department: str, team: str, names: list[str], joined: str
 
 
 def read_csv(path: str | Path) -> list[Person]:
-    with open(path, newline="", encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
+    """People from a CSV with the columns ORG_COLS (`is_manager`: true / false; `joined`: an ISO date, or empty for
+    always). A byte-order mark (Excel's "CSV UTF-8") and spaces around values are ignored."""
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        rows = [{c: (r.get(c) or "").strip() for c in ORG_COLS} for r in csv.DictReader(f)]
     return [Person(r["email"], r["name"], r["department"], r["team"], r["manager_email"],
                    r["is_manager"].lower() == "true", r["joined"]) for r in rows]
 
@@ -186,20 +189,25 @@ class Directory:
     def people(self) -> list[Person]:
         return self.snapshot().people()
 
-    # ---- writing (the sync; the demo's Admin tab and reset) -------------------------------------------------
+    # ---- writing (the demo's Admin tab and reset; scripts/pilot_admin.py until the HR sync exists) -----------
     def add_people(self, people: list[Person]) -> None:
         if not people:
             return
-        values, params = [], {}
-        for n, p in enumerate(people):
-            values.append("(" + ", ".join(f":{c}{n}" for c in ORG_COLS) + ")")
-            params.update({f"{c}{n}": v for c, v in asdict(p).items()})
-        self.ex.run(f"INSERT INTO org_people ({', '.join(ORG_COLS)}) VALUES {', '.join(values)}", params)
+        for start in range(0, len(people), INSERT_ROWS):
+            values, params = [], {}
+            for n, p in enumerate(people[start:start + INSERT_ROWS]):
+                values.append("(" + ", ".join(f":{c}{n}" for c in ORG_COLS) + ")")
+                params.update({f"{c}{n}": v for c, v in asdict(p).items()})
+            self.ex.run(f"INSERT INTO org_people ({', '.join(ORG_COLS)}) VALUES {', '.join(values)}", params)
         self.refresh()
+
+    def replace(self, people: list[Person]) -> None:
+        """The directory becomes exactly these people. Memories of people no longer listed stay in the tables."""
+        self.ex.run("DELETE FROM org_people")
+        self.add_people(people)
 
     def load_seed(self) -> None:
         """Back to the seed org chart (demo reset): teams added since are removed."""
         if not self.seed_csv:
             raise RuntimeError("this directory has no seed: it is filled by the HR sync and never wiped here")
-        self.ex.run("DELETE FROM org_people")
-        self.add_people(read_csv(self.seed_csv))
+        self.replace(read_csv(self.seed_csv))
