@@ -114,3 +114,15 @@ def test_false_friends_found_by_meaning_are_not_applied(svc):
     assert "the noisy rack" not in terms(svc, "How many events on the quiet rack?")
     assert "the noisy rack" not in terms(svc, "Which rack logged the most?")
     assert "the noisy rack" in terms(svc, "How many events on the noisy rack?")  # its own wording still works
+
+
+def test_a_typo_must_hold_word_by_word():
+    """Eval 18 Nov: "card problems" (inside "node card problems") matched the alias "linkcard problems", and
+    "non-fatal events" matched "fatal events", both by spelling of the whole phrase."""
+    link = MemoryItem(item_type="term", term="link card problems", aliases=["linkcard problems"], meaning="x",
+                      owner_email=None, owner_team=None, owner_department=None)
+    fatal = MemoryItem(item_type="term", term="fatal events", meaning="x", owner_email=None, owner_team=None,
+                       owner_department=None)
+    assert not spelling_matches("Node card problems on R37 last month?", [link])
+    assert not spelling_matches("How many non-fatal events in November?", [fatal])
+    assert spelling_matches("How many fatal evnets in November?", [fatal])["fatal events"].how == "spelling"

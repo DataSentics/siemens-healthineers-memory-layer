@@ -26,6 +26,7 @@ from .models import SHAREABLE_TYPES, MemoryItem
 
 MEANING_MIN = 0.88  # below this, near-misses like "memory usage" ~ memory errors (0.84) would match
 SPELLING_MIN = 0.85
+WORD_MIN = 0.75  # every word on its own must be a typo of the term's word: "non-fatal" is not "fatal" (0.71)
 NAMESPACE = "term-index"  # Mem0 user_id under which the term keys are stored
 _STOP = set("a an and are as at by did do does for from had has have how i i'm in is it last many me month of on or "
             "our show tell that the there this to us was we were what when which who with you new here week about any "
@@ -90,9 +91,19 @@ def spelling_matches(question: str, items: list[MemoryItem]) -> dict[str, Match]
                 if len(g.split()) != n or g == key:
                     continue
                 score = max(SequenceMatcher(None, g, key).ratio(), SequenceMatcher(None, g.rstrip("s"), key.rstrip("s")).ratio())
-                if score >= SPELLING_MIN and score > getattr(out.get(it.term), "score", 0):
+                if (score >= SPELLING_MIN and _typo_of(g, key)
+                        and score > getattr(out.get(it.term), "score", 0)):
                     out[it.term] = Match(it.term, "spelling", g, key, round(score, 2))
     return out
+
+
+def _typo_of(gram: str, key: str) -> bool:
+    """Word by word, each word is a typo of the term's word ("memroy errors", "noisy rak"). The phrase as a whole can
+    look close while one word is another word: "card problems" vs "linkcard problems", "non-fatal" vs "fatal"."""
+    def close(a: str, b: str) -> bool:
+        return max(SequenceMatcher(None, a, b).ratio(),
+                   SequenceMatcher(None, a.rstrip("s"), b.rstrip("s")).ratio()) >= WORD_MIN
+    return all(close(a, b) for a, b in zip(gram.split(), key.split()))
 
 
 class TermIndex:

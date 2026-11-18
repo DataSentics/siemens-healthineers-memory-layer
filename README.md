@@ -165,6 +165,10 @@ The memory as an MCP server, locally (no Databricks sign-in, so `user_email` is 
 host): `MEMORY_ALLOW_ANONYMOUS=1 .venv/Scripts/python -m memory_demo.mcp_server`, then
 `MemoryClient("http://127.0.0.1:8000/mcp")`.
 
+**How well it works.** `evals/REPORT.md` (18 Nov 2026): exact answers, what gets saved, finding terms, behaviour
+scenarios and unit tests, against baselines without memory and with the official glossary in the prompt, with the
+weak spots and what the tests do not show.
+
 **What gets remembered, measured.** `scripts/eval_capture.py` runs the 43 labelled messages in
 `evals/capture_cases.json` (definitions, standing wishes, work facts, and things that must not be saved: plain and
 one-off questions, hypotheticals, other people's views and plans, small talk, likes and opinions that change no

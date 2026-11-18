@@ -1,0 +1,1211 @@
+{
+ "mode": "glossary",
+ "runs": [
+  {
+   "seeded": [
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS7gYKEggTEAEYAjgBQgh0aGlua2luZxIM+gsfqrqMSzNZEVilGgy8qTs/1USWnky1VqYiMGmkA4OWpdLHluo/y7yull9rfB+byxFOEPtDaUcl/QWzto/YVfDOMPxcVIwBCR0PBSqJBjXEtV6zJ5ZuQ7b8OIG/OFD2woLMJznBzMbqD/6LNVSWq1FMGRcFnKdLQVYZa1JzOpn8PmxFqDjAjRRwBbpT/YSJTerNvRAZcQCsy6jce66GopAZChFdqwke/QkuulnX6gY18bxNpGm8kFi1colTPVyhgPVj6/9pNBmelYa9YWo+peSn6e6mbVrv7L5xWJEuEitL43ADnBWQVoSvCk8luibRe0jdOXyq6BrPbp6Z4ImpuRHQdbS67T9x2okQOf5ftnRfJySPvt3jt6uSNaCcj4KJtACqkp6eNFXtvR/Dx/sxwzfKdNtQ9IMbyQDBfWxhdpZDQsvORHqO9GMCG/ZFrltOHKkSkBTT1hEL2Ovu6kP/sB9aKkbdjAu34uXhjLUfncEVplnzSeOni0M6FSikt2mjkCzNsfDpeDM8kn1Y4b6TVNfKLeFQIEzn7LFbA8iMrtPB8VhAFTNCQ/ljuSsdpkiCaTtl7n10kl3x/YSfF+IoZ4JsNIO2gL/Hvwj5X4zoIoH0iOhji3vvuBkpI1krxJpRdXZTCknamcTJ/0sm6hDa8mznUh+FES0IIxj1tnOqWr+lCDRMwM8Ct+wDfZEUdqiE4RFuYQgpAOELjjcbQ8izUNe+fV4EWf0Q5IRXi/tfCWDAWOCn1rO8+kFiSbS6dtcdyJrLBrxjbZE4RybBBVOidu12pvQlBQuZFkyR7PeyPaftk0KtOZbn+bF+KOUkAENjhiXGAz+t1sCUsg7kDCk/Z+FBpdv40yAQ9wKZ1U697/Kfd4bxVsXJclkJQ5kgVFtwliAzuv5iyTd5x93bLoXG2hiIxJD1MqUWWCwI+o3tiQk+QEx+KoBVrWonkD12o7u0j07ZgoE6nIj7Ij3gXBJe4ZeokE0yAbXyd/o/VHYtDrZ7DvTaA2PW3ehQSEo3ay+LkHZR5YwHL9UUbwiiphU9ZVgeQhNOqcwto2j3WOPIv1EdN7FEXOhUdEJ2zoNW9hArWOg7Dedhwdjd3Gc7bKBKkB3wBC8GdEYk/Cy2vaP8tFZH1vt2cl9f7RgB\"}]}, {\"type\": \"text\", \"text\": \"December 2005 had **31,211 memory errors**.\\n\\nI counted three kinds of event as memory errors:\\n- DDR memory errors detected and corrected, including the \\\"total of \\u2026 ddr error(s)\\\" summaries.\\n- \\\"CE sym\\\" correctable-error events.\\n- EDRAM errors, both the corrected and the uncorrectable ones.\\n\\nI left out cache parity errors. I also left out the \\\"microseconds spent in the rbs signal handler\\\" statistics lines, which are timing summaries and not error reports. If you want cache parity errors counted too, the number would be higher.\"}]",
+     "seconds": 11.4,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr%' OR message LIKE '%memory%' OR message LIKE '%parity%' OR message LIKE '%EDRAM%' OR message LIKE '%CE sym%') GROUP BY event_template, level ORDER BY c DESC LIMIT 20",
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (event_template LIKE '%ddr error(s) detected and corrected%' OR event_template LIKE 'CE sym%' OR event_template LIKE '%EDRAM%error%' OR event_template LIKE '%ddr errors(s) detected and corrected%')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 64077,
+     "ok": false,
+     "level": "team"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS6wUKEggTEAEYAjgBQgh0aGlua2luZxIMjAamno0JDYKXoiVMGgwOgDitRtTiR/qwBQYiMAyEmqzLUzoeOQ0PTgsfV+RwJwgy/mIhsPRT7AFG5LVqss4YTNN5gwjfA6A+T7yotSqGBSsu/S4ACw7C6JKB1J+K649Yu6LJIMDbol7h0slExy+IknqyZDGXOW2nkORcNtv7aHC5bYvQSlK3dpznymUUurhR1T8GGgqRFLVH+mQnEozou+UqO/GdeLnRPdSF6l3L3Hq7U+ofxI6+1aSYcC4LRHD7J6Zgekn2C5ufrbwWfKlACpSCldvcp3lrg0SoRTzNTvKBqedFLOZVK2WOYKHvFaAaWiHg8+BGEZpXlUKxA/VS4kDp5ZRBYZK8BgTJE7NYyimyMyqjeB0949Aq32Na72OpJqbfdaLCExMro5BFhX07VXW1WZpU2c3B/KnGyWuhy/3yKJxIf3UTeMBZkV8uIckahFlGi6tbHa/boqqpE1Jdaf0cVr0luUrYJ5Al0xCBXn0ZbV/r6NQZ3fzsgYi7u4i+Bx9wHmS3P5ge/5M9POKsXpuB3tgQO9lZxI7R4FhTZc2+gBoiS5p+sk0mOWz45skGMt1PTeDTga1YpnjtUqaFqUjhO8GL6pVSXawf7dtYTuSdLCVi2wwr3isVqelZ2a0SHNO3HWUSmh4N34Os/r1gUjvqENNbY27B4Gvro/fZUc/6PqVfl0MzqwYXXXj1tlubW13wdB2NcqFvOlHqjbyYG452HOWkPCWl5YU7d9dY1IN+p+p+Sej6koBNQZmA35F/UpbSIun4Bv873iRyu0JlYIfNfBP+EbVGb+Yg9gBCJbrMfCBPdjFnwuAWtAR6rXgWFj1Y1/+MF8Hta1+jbKM55vU6p3fEaHPLUrD2CfEG6Hc2R2038nNx84I4AGPJGchwdHHja4cPtJDGgAAjA/ZoxH0HlYDvDMjPfwcxUQoqcQFy8qcx7f92Q6w+F2+MMmsVJle0jQgYAQ==\"}]}, {\"type\": \"text\", \"text\": \"There were **60,220 communication errors** in total.\\n\\n\\\"Comms errors\\\" isn't a defined term, so I counted events whose messages show a lost or broken communication link. These are the CioStream socket errors (link severed, connection reset, timed out, failed read), plus \\\"socket closed\\\" and \\\"connection lost\\\" errors.\\n\\n| Alert label | Events |\\n|---|---|\\n| APPSEV | 49,651 |\\n| APPREAD | 5,983 |\\n| APPRES | 2,370 |\\n| APPTO | 1,991 |\\n| KERNSOCK | 209 |\\n| KERNCON | 16 |\\n\\nIf you meant a narrower set, such as only the CioStream errors, I can recount.\"}]",
+     "seconds": 9.5,
+     "sql": [
+      "SELECT alert_label, COUNT(*) c, MIN(event_template) t FROM bgl_events WHERE alert_label IS NOT NULL AND (message LIKE '%communicat%' OR message LIKE '%Link has been severed%' OR message LIKE '%socket%' OR message LIKE '%connection%' OR message LIKE '%comm%') GROUP BY alert_label ORDER BY c DESC LIMIT 10",
+      "SELECT alert_label, COUNT(*) c FROM bgl_events WHERE message LIKE '%CioStream socket%' OR message LIKE '%socket closed%' OR message LIKE '%connection lost%' GROUP BY alert_label ORDER BY c DESC LIMIT 10"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many comms errors were there in total?",
+     "reference": 59995,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSiggKEggTEAEYAjgBQgh0aGlua2luZxIMWEgaYAcnKeFcWT6bGgyRNZcWmC0oue0thIUiMF2Adz5ytDKFEQ8Z0xh7LLzgwnpZjGHeZymW0fxByA9R6f+aqAtIUaaK98tDE6iMmyqlB1vUmih+bW/GIX5/CrNeDg6RM7CvwzfBcQCWTTjxReRgN9Ed6kHcRezBfYiUGsShylWaqU3VCBNP5Z4MiFHBPPxCFBjfz8j6VlBwpW3/o+EAOji1KZURqy0duxyE+PmUTam16Vj/BgAdxDhI8oOVy4YMeNwaVnQc9Vs92vsngn0Ivd5gusHAr3aH2mJBfYvPkjimSthATd4ZHMSAIEApmH/j63v9NaLwg8JbH8R13E5xRG0xfyn6/Vq5eurTcsoS/gc6fmWad1uEni1l/W8c1gvfGV1xbV9N+vFo1JejMdNntNg6CF2jBpuaIWDQAL+JGvDkjXB75rUVpt8jjLigoh7rYjhQBKMqX71zPK0br7DSRZ3Ozp/yBxDZtP4c9EcHsWTYhw75snc3Dyj1S8rmFkXHd0E+zCGM13ZCDLXyoY8zogT+7nw8RgQ2x4rmhV1StRQFY/SONEVlUuRxiPpyhu+M1vm/2bOVInfrg22Lod57BQfKF+XHQYUazlhDlRDa82vVISOp6JCHm9yH9kZhYvuivAkaZVLlH4pMSk21iI3EpbcHnsEgNvNljkI43RvDJIQr7dw5m4eANt18i5Vj0ymqXpGjSO2DYCdSrXztz40CjGddgwhcxofYXjdLlD0okUMUP4LvZKlS73jhT1LgJUlEOuRKsbzV2MVgb6uxvdhE8UAO1By0SVgG5A7jkcCNgUAkWuvwWDQ5mzSRNuJ1/A+J3oQZrQESoinImExRt1rwkyplSWuxemKPfmR96IWoSYgtZjZzeRpbN/cR834IW4/iivxfPklSyTK983kZBhDeti5jb/muSIfYHtCa+TTlNcEETzhCLRVprt46H7MytqiWpk2Eml2XJe+i64t+d8swVB8QUHLY/p/e4UezhTh/WiNM2rlamJHvvx+rzydUT8wPDj8VeV7H9tOSEFsYHV7v/DUcqbp3mmKNa8S0M97rLJSK0duNSfpItFtc43WKQPkx/s1q08RGH84bCnQi6Tb4kAzA1sfEwr6IVX7262/WLCwztBFPKEDoysI6h6XOW1gu7hTIe3H5JfwjD3bm6Z3MZV0MsNkWv0HlMJYR4WmNcvbko86398OvNdj8yOvyyybHuPl5o1OZrlLLHd4W7ipk9SJdUa7PfmlzwjrMGqctFDf5sXn/1/4jh8l089PYmFcqi0CaL/uFRg22TJHBtuKn1XZIp7ni7vxUJEWJ35Y1qpDKgrvlpXL9cGJ6zkCg1GmWgvIAzhgB\"}]}, {\"type\": \"text\", \"text\": \"November 2005 had **27,973 node card problems**.\\n\\nI counted every event tagged as an alert (an incident) that was reported by a node card or by any card on one, with an event date from 2005-11-01 to 2005-11-30. This follows the ontology, where a node card's problems include those of the cards on it. All 27,973 of these events were level FATAL or FAILURE. Only 4 came from the node card itself, and the rest came from the cards on it.\\n\\nI read \\\"problems\\\" as alert-tagged events. If you meant all non-INFO events or only fatal ones, the number would be different.\"}]",
+     "seconds": 9.5,
+     "sql": [
+      "SELECT COUNT(*) AS alerts, SUM(card_type='NODE_CARD') AS on_node_card_itself, SUM(level IN ('FATAL','FAILURE')) AS fatal FROM bgl_events WHERE node_card IS NOT NULL AND is_alert AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many node card problems were there in November 2005?",
+     "reference": 50538,
+     "ok": false,
+     "level": "team relation"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSgAcKEggTEAEYAjgBQgh0aGlua2luZxIMYh3h2yxLfHRV8hu7GgweqT0GNW1h2jNqKVAiMJle5KGK9O55LJ5yF/yaa1mW3/vof4TD+v4GNxTxiW4wvFvZCDYKp4lEv/NQsXgf/iqbBh40kYPMqjnsuXNHwmLy4qb890lLivq8NldhDsn/Rq+0TZtIv9WI8aTj1M9qucdvbkyODaW8Owb0ji37xhwvFJgpRPfC+Nw65tciQosxX6LsYYwJ+/0bc6hIyOAZkGQq1HOpnA3n9zq56jKQ1/x6PUSRhDkx63zfrEpB+JQA8GfR0F53IrCOrLXCG1G2ZG18nOnPoqGjFM0mcqIPvR070BtkJEthSfNg6qrjVwIvtnagrhytigFYOB4lsnaniFuq0Rlg57fDkhgtmniCWDqAIylt+CJ2wndkCfDJ23WyWxinTItVI/QHjN5xhEUbxP8Q6tor7OLSmbLEd+7hlxitjPqvgEVezb6VvBtl/zrbbyN1WLF/qjylOqDvyoVzk+Mx6iLQEBsO2rJs3C2y3e2G9jtr59RYyzINCaoW/Rp4WImjN/hFNcuXOktYtwiMKnjrsDwb3dN2fXj+7dtAoSBoQMSRIO7oaZebp6p9jV4Q8BBXT722KjClC52JEGVg/N9PO3YY2wIX32gT5NZIaxlCjMEL6vg7qcd3z9XDc+kiZzxG/1Va3QIwc09Fsnq4qUI+QKgMtHtiK1lDowxdEQmgozofn6WcGQ6jEP3h2YlC5PGiJjmKtjR+H0YARMzgyBlEFw2r8vlmJJ4iqophHwcPvJtW3UxFgQwV6XypcBPkYSuUhGG7uCKEITXisuny9uOZl7/1vs9hqiavCqEhRNJbnTK3fKp9mn4HEhpdnaT4dpsJ+D2Vz7hnAWisl9l4vE+Hck4L2hciosGV9JfFOLhhppQQPD5ahLq4yt7ylEqHP5hiquokusHBFa07x+AfXFDPyranZArObFYZzvAmzV9I/VM3TuAqlVtyNNrbo2+fne1XtHO6HIuLPJKQllmnQKUrv7sldk3J30idpRxnCUOESA7pApF8jvvYcUCHan2TGVelznBtYeFh4xGB7AvqVIxn2s02igxr8Yq6JMQwc5TZ2jFiH4ObS15aHNLUuI/1Bf4hRYONi4rCGMLYshCdraCWxzwKeA0CKzGOGViC2VeyRrOyp6QL+N0EwmMbghgB\"}]}, {\"type\": \"text\", \"text\": \"R30 had 7,532 memory errors in total.\\n\\nI took \\\"noisy rack\\\" to mean the rack with the most logged events. That is R30, with 259,341 events. I counted these as memory errors:\\n- DDR error messages, which include the \\\"CE sym\\\" correctable-error events: 7,491.\\n- Parity error messages, such as instruction cache and data cache parity errors: the other 41.\\n\\nIf you meant a different measure of noisy, such as the most alerts or the most fatal events, tell me and I'll rerun it. The other racks with many events were R62, R26, R20 and R24. R20 had more memory errors than R30 (7,916).\"}]",
+     "seconds": 12.1,
+     "sql": [
+      "SELECT rack, COUNT(*) AS total_events, SUM(CASE WHEN event_template LIKE '%ddr error%' OR event_template LIKE 'CE sym%' OR event_template LIKE '%parity error%' THEN 1 ELSE 0 END) AS mem_errors, SUM(CASE WHEN event_template LIKE '%ddr error%' OR event_template LIKE 'CE sym%' THEN 1 ELSE 0 END) AS ddr_only FROM bgl_events WHERE rack IS NOT NULL GROUP BY rack ORDER BY total_events DESC LIMIT 5"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many memory errors did the noisy rack have in total?",
+     "reference": 38442,
+     "ok": false,
+     "level": "team + team"
+    },
+    {
+     "answer": "December 2005 had **17,797 incidents**. I counted every event with an alert label, which is how incidents are defined, and used event dates from 2005-12-01 through 2005-12-31.",
+     "seconds": 3.6,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 44873,
+     "ok": false,
+     "level": "team"
+    },
+    {
+     "answer": "December 2005 had **17,797 incidents**. I counted incidents as events with an alert label, using event dates from 2005-12-01 through 2005-12-31.",
+     "seconds": 3.6,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "vera.wolf",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 8785,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "December 2005 had **17,797 incidents**. I counted incidents as events with an alert label, which is the glossary definition.",
+     "seconds": 3.5,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 17797,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSnAcKEggTEAEYAjgBQgh0aGlua2luZxIMma1n2aIoaZYVg6IAGgxkyczi+9yTWM05jnwiMG40YQR4FOP+6XKvy+n+wZ3v06IMiui/fVt2utpcQE4ZpdHIw5p0x3RQrw0lE5i57Sq3Br/BD/FugLnGgHbx7gqyIDEJjh+EZ0o3wJ+oTiqSrQBd/hjGhXA3oSSqEDHCqQcthnlUL41Ie7U7O2D6TN8sYj/nmXkJ+F3JeWoKgRA5uP1Udiof0heSA/vS9M1GvhhBQKYY5k2gOVzAJHuMud2sdaPha03C5y3m1AS9nrfjyt7FoJm1VdcmtDLlG/J5SeVVPLyuU4vThEn+zhg8490sMaa6vemvVeO7Zb7aU0qeekYhEqRahwy0NQXBiyKNn860OGUmiGyB/QPCPxXWFgErcJg7OUVc9mNnAPpuIaAkIdrS8FpXj8WwXYycJV3r4P62DWJxbW4g6+Fdn6jWJuuHA1xAO1j59VPMpWue7r/uFdnmMlVA02w1JtU6xuFlzQa7+qEJqyxwmZKendReH7i28i6/3EEWEKgGOMcXWd6dnNmqp+WzJ4hHOiS3pEqSYOeGJnsRKsUk17rQR79RcfD3wL5tR8dm7I5BBepGdhYOOqNltDFaNfge1K67Z+sKVNROkbxLOWB02g/gdPAJ0i4nOUgMSSb6D5W4HE3azHPBljT071P9/fEYLZo/2fcv7bjJjdrID87qYXcUCEqVn3i/Er+GKGa3BUCsf7XmEPrLyk6mApATMPwfcYsy6d5sqw6Q8GNNst7HAfo9DNhghVlvzkK7FvBGMEPU/rblck6SMOO/mSMVrcuEkwkHRdFRoNwRsJZjgSUXf04bS7Q66Sih3qaEo6W4MgYIE1ZCF4xNSnhU/7SZzlE1+YlJO3AiJomYvNdQqOMTUvbyXKrETx+p464R5S8nwDNBsJoIIry6k/iUVBCo37T0pGN88TlWN1mbkOUhEF8Ul568VabIuw3AsPsnbHt6/0kBxgZni6hXk1PClLKPtyudZ2FzxSibE6vmWEcDD7LmntKdedSN/y9Bz9DXRY7JGxV3+dBo2oa+JT9AzOzyX+PJTu2SejSC8GFKGJ5+mMDop15kwdSZH+JBsSqrAMJ1sXGLiKfMTQ6Hui7ywj5SU5fZI5HzpMWMm1wjjFRfprSnKvLjgssurvWMMvbixKQA2jzEnmgee3pnOLREGEpJyeyKOIEqVUXQUyoplSMS7VIpOskYAQ==\"}]}, {\"type\": \"text\", \"text\": \"There were **63,845 job failures** in total.\\n\\n\\\"Job failures\\\" isn't defined in the glossary, so I counted every event with an application alert label (`APP*`). These are alerts logged by the APP component.\\n\\n| Alert label | Events |\\n|---|---|\\n| APPSEV | 49,651 |\\n| APPREAD | 5,983 |\\n| APPRES | 2,370 |\\n| APPUNAV | 2,048 |\\n| APPTO | 1,991 |\\n| APPOUT | 816 |\\n| APPBUSY | 512 |\\n| APPCHILD | 320 |\\n| APPALLOC | 144 |\\n| APPTORUS | 10 |\\n\\nAPPSEV accounts for most of them. If you meant something narrower, such as only APPSEV, or the FATAL `ciod` errors, tell me and I'll recount.\"}]",
+     "seconds": 5.0,
+     "sql": [
+      "SELECT alert_label, COUNT(*) FROM bgl_events WHERE alert_label LIKE 'APP%' GROUP BY alert_label"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "quinn.nemec",
+     "question": "How many job failures were there in total?",
+     "reference": 1734072,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "November 2005 had **49,307** fatal events. I counted events with level FATAL or FAILURE, dated 2005-11-01 through 2005-11-30.",
+     "seconds": 3.7,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE level IN ('FATAL','FAILURE') AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many fatal events were there in November 2005?",
+     "reference": 49307,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **32,251** Lustre problems in total. I counted events with alert label KERNMNTF or KERNMNT, which is how the glossary defines \"lustre problems\".",
+     "seconds": 4.0,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IN ('KERNMNTF','KERNMNT')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many lustre problems were there in total?",
+     "reference": 32251,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **11** TLB errors in November 2005. I counted events with alert label KERNDTLB, which is how the glossary defines TLB errors, and with an event date from 2005-11-01 to 2005-11-30.",
+     "seconds": 9.2,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label = 'KERNDTLB' AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many TLB errors were there in November 2005?",
+     "reference": 11,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321** rts crashes in total. I counted events with the alert label KERNRTSP or KERNTERM, which is the glossary's definition of rts crashes.",
+     "seconds": 3.0,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many rts crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **0 core dumps in December 2005**. I counted events whose template starts with \"generating core\".\n\nThe log has core dumps only in June 2005 (419,795) and July 2005 (1,286,956). It has none in any later month.",
+     "seconds": 7.3,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_template LIKE 'generating core%' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'",
+      "SELECT substr(event_date,1,7) m, COUNT(*) FROM bgl_events WHERE event_template LIKE 'generating core%' GROUP BY m"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many core dumps were there in December 2005?",
+     "reference": 0,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "I/O nodes (events with card type IO) reported **47,529 events** in December 2005.",
+     "seconds": 3.3,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE card_type = 'IO' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many events did the io nodes report in December 2005?",
+     "reference": 47529,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321** kernel crashes in total.\n\nI read \"kernel crashes\" as the glossary's \"rts crashes\". These are compute-node kernel panics and terminations, meaning events with alert label KERNRTSP or KERNTERM.",
+     "seconds": 4.2,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many kernel crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official, by alias"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS4gUKEggTEAEYAjgBQgh0aGlua2luZxIMLoRPADG9JbmSejckGgxsxUBarsG74NyRQ88iMHYTpb6lyXfinZ2Pqu0GeVDddHQxGy7PehyOW75GGkeJ1lnCeOcOBBjhQkzui8oZNCr9BOb6WdLfJnUM8a6aIbkf23UM6kEGCpMVjjop0dCU38fvJIa6Q8YgfFbfT0+7k9LLi1TfZxJuOFYxXfM1aFIPdrfiO6BXjqSBWa7abSHk7qtWhjGoBIHtYGU0CxFoU0d4KlccGTVZme0MbaecHfsHg21ibe30aNNj+eXBy//4pHKtlpBjW3HhQ2VsKNJcPNLi0+pCbVfvf5zOVyJbUrLBwvdPzUplN6Z39k0Pk1w1JXvhHchqlOXjLNKJwdeaqcdZsYca9AxR7ArwX0qH9CpRA4rdADUgEfqS0iHBi7eZBALufgh3PyKlGkRPp8GNTlv1qq8i677RswPBVB1+7eAdAXoS0PWhjuwl5fBOpZ2fcZ889qGA9lVe+zaaEKCsG60HsT52JasKFGbgWkz08LlVAp3G3q+Ky2F1vZmhNxGbgBCFpoDQhqExFSA50vVGewGRl9Enjh7TMeW5iwscfvF1Ihz9RLlm6ILaCXIFJAKVYWO9ne3okAzrud5Bt+WUUH/WEC5LbxP51Xzn8fHrMMQ/BMZYqDqZkfKq+uu1pTWipFQOcmjWbil4uO8GCR4diBTNbX3yb0QxsoQjQkMs8rKRXuCgKUiNliZdSbDI8d8l7AuvDQC1+NDppGUwRuytiF+49SPFL5iNNSBXr6S7mVZ1VafxTI/Xz9NMoaWXikbSoZYjUBsbpp3AE1nfJz8T4DRXBbeE6H1d3rUaGUHQkDb18STYCPHhZi94cE6dQiyIC8dwrtrKBeUfMwObZPXgieGrvO1dE2gMFv+8pR+Awg1dUD9hVmRm9l5Qw/i84EjnnsPEkEp2xGEyRXwcGJyjgfzla9FJ7kZMplpzsyJMBNUYAQ==\"}]}, {\"type\": \"text\", \"text\": \"Memory (DDR) errors in November 2005: **10,423**.\\n\\nI counted events whose message contains \\\"ddr error\\\". These are the \\\"ddr error(s) detected and corrected\\\" messages and their \\\"total of\\u2026\\\" summaries. All of them are INFO-level corrected errors.\\n\\nI left out other memory-related messages, such as \\\"CE sym\\\" lines (41,516), EDRAM corrections (about 800) and cache parity errors. Tell me if you want any of those included.\"}]",
+     "seconds": 9.4,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND (LOWER(message) LIKE '%ddr%' OR LOWER(message) LIKE '%memory%' OR LOWER(message) LIKE '%parity%' OR LOWER(message) LIKE '%ce sym%' OR LOWER(message) LIKE '%edram%' OR LOWER(message) LIKE '%cache%') GROUP BY event_template, level ORDER BY c DESC LIMIT 25",
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND LOWER(message) LIKE '%ddr error%'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memroy errors were there in November 2005?",
+     "reference": 55337,
+     "ok": false,
+     "level": "team, typo"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSrAgKEggTEAEYAjgBQgh0aGlua2luZxIM2hiop0+QZ7TdoeRmGgxf8OQ9uYDHqtazUE4iMJRY2m+4wKrL7xsx8boKY5IYB/IQdZUMBonT89bajI9aPjkmAckwYt2lheu1rYNTAyrHB+rGnFCzg5aBO+Kl7vdLc6pOPVw17fApHGg8qd5OyAkR/+8SlEq2Opmxdn75FIqfMpNEBj+d/YeABo0L+y7VEQ/yFm3+bXBvJ6ibshMQpCVQioNVyc4rQjx71KaJ8EdHllWz7VZwcoKykSv/THu6aPyl53OmhtsQwXC739kggggTpJtYZu+nDUVdgpI2DlDbEoY589bT7ph9y1wR7s77rrsMPjRltgIb/aa6o0nMkoLLm2fC4oCsM93BCBOi8ItY4bfRZWcd15svN/wDkP0bzzZGYmjpezAHV7q8fDLoGHSJAh4fTFYZgI1eWMtum0Gx9VWDt6jHeeXPoCf1kl2td+j4OktDGWrHiVlNXNO9fCebYZVeLLBgb4+RgCbDZRI2uUuBxxLpRVgPQpSQl6qkam/PpDcxNoOuTITNpPmWZ+SDFkzBJmnVhLN0e49rtmCx1eVWG7eIqDMRp166RGShyxcciTFtIu0WKtu5bdifFLBMwf6VkY5FYp3EVpoWtYuWhD9RozxMHjYKzHhPBjXRsQ1yO4GZYUXMxl6h4vqPz56380EjJE8CPOUWM6G0JYyN7bXjEDHBej6NNG8PRv/89XCXRZZ8t+SiamWgcNj2J9az3NZUhhPzuOEZkjPkmTVg06hi/cd9oRqE+lh+YzfufEXoWopWrFWPB2MpYXPrtx8kOTIENQo2krbDyh/eXC0QzqaF9bWfh2m6gYwsmFH2zKxvb7niKCV71ZiSJm23NVz5KKrQ2sgbVL8R4Sp20BsFofxWyA3TOicXM9CRQkqI1doHlad+WKOJWJF+2eLudZDtajcOnIdsIawsxO4//q/mdwS4KFjEbz8R8cL+qpLpCau+0PpfgMP3O6uOCpKVOSDott3ayjIpoa1UIY7i393cARgrKpnV8j+69r+hPghklKIhxpo8RP7RWnNC8GgFAUUl9bdIT+hbl9q+rWO53jzGWh/AfzULNVY7eQVt0Kt7rgSpNAunN82jvBkUTVNlPThB8usvnIXy/cNaJyYiKYnvOMdDbHbXGuRrJ6YKrQKuOTf7ffWOi2K815/0WsSJqmxcfp1Ib6GDumvzSCxywnvIfyLUcv53yc2lFnwvijg9iohVkKZR8MBUA/SpPX/0IE38gnf2NRnFWPIv3kQNlnu0n6by90yREztSMkX9SM+WUaiUysFBAr/sVySG71LxoDakQaeo5LZgXoPH0geXTgBvLYGSBA8YpLtkHnClkX/lhPEl+LAIppqcKRcNkM/cgDFNxT+NVt5BGsaynvPj5zf1UyNS0IqDNboYAQ==\"}]}, {\"type\": \"text\", \"text\": \"I found **153,997 DDR/EDRAM memory events in December 2005**. That total includes 135,096 \\\"rbs signal handler\\\" summary lines. Without them, the count is **18,901**.\\n\\nThe glossary has no definition of \\\"RAM problems\\\", so I took it to mean events whose message mentions DDR or EDRAM memory. I excluded the `taddriver` program-load errors, which only match on the letters \\\"ddr\\\".\\n\\n- **Fatal or failure events:** 708 of the 153,997 were FATAL or FAILURE. Examples are uncorrectable EDRAM or DDR errors and DDR failing-address registers.\\n- **Most of the rest:** These are INFO-level corrected-error reports, such as \\\"ddr error(s) detected and corrected\\\" and \\\"L3 EDRAM error(s) detected and corrected\\\".\\n- **Summary lines:** The 135,096 \\\"rbs signal handler\\\" lines are INFO statistics about correctable DDR errors, not separate faults. That is why I also gave the count without them.\\n\\nIf you only want serious problems, the 708 fatal events are the better number.\"}]",
+     "seconds": 12.6,
+     "sql": [
+      "SELECT alert_label, level, event_template, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (LOWER(message) LIKE '%ddr%' OR LOWER(message) LIKE '%memory%' OR LOWER(message) LIKE '%dram%' OR LOWER(message) LIKE '%sdram%' OR LOWER(message) LIKE '% ram %' OR LOWER(message) LIKE '%edram%') GROUP BY 1,2,3 ORDER BY c DESC LIMIT 20",
+      "SELECT COUNT(*) total, SUM(level IN ('FATAL','FAILURE')) fatal, SUM(message LIKE '%rbs signal handler%') rbs, SUM(message NOT LIKE '%rbs signal handler%') excl_rbs FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (LOWER(message) LIKE '%ddr%' OR LOWER(message) LIKE '%edram%') AND message NOT LIKE '%taddriver%'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many RAM problems were there in December 2005?",
+     "reference": 64077,
+     "ok": false,
+     "level": "team, synonym (Mem0)"
+    }
+   ],
+   "taught": [
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSsQcKEggTEAEYAjgBQgh0aGlua2luZxIMImjneWDQgztOTZd/GgzKJhGx/noU+HmoHMMiMCrYRA3JZFvkWI+Q/mYsf/hBFTGWNTmexKjjw+C0r0DspQH1buAXBMhR2uVvOCyYTSrMBlZI4vA8zQV8tKCK9u1NAN7sl0vXxOX+2yCJhSDMFmu8FKvgn6G+R6PoRS4BX/qk9I4xu5iu4BB25P2wfu6gbEU5gh5Myfvdw2HHQMkrIFoWteaI7SwEtFfPWmFU99qYCmWHG6I0vhMUOuAqL1o8xYq83s/xqSDJxO9chSA+ur6HGza24k6U7SwUNVPVZAROJ3FoWKO07NJwTWxqyZlkchuCeufsX1WCPpHUgaRW3ufbgYu67IgXH1ZodIHJRdczD9Cxgm56rnAzydjCDCpbQ31T5MwWlcmzpZIYL3sbE2XvqHHJhY4skv91/yLN+fIGYqlOsQmHTjyMlLqoV1Bd+ebIA3UPRf/Z07oBpYTVDE3HOHYDTce3T+feU5G8rC7uRHHyMueh3slRp5Ce1O3jrYm4gHjvoMa4Vb3GOZ0++/kHklBD51smC7FoTZa2r6iXYdDPhUwsPq+HkcKoAYNVLmai9tM5Gk02rUMf7UlI0kELUBDr1+0v0B1elcGcvJhuI5wsX8FEL7jOMBmkR4WYnM3QBFLAQdYWrXQ1t1EnCblIe4b9RQj3jhSy/ETLeBp8bWfFgMf0SFZUTDpDtwVnzZObjDGT1a5OiArbrx/av4AVAKHpS1oMuXRK7vvgMMSlG0/zLN742FuatIzCkggSOKFvYMG9j7GdpNMQK3czuJsnLczxccPGRFZvbI43Jk+mYC5GyqcsRGM6cnOQT9emrVn15y59JMCtqb3/FdbWNFnQfnmt1dPU+AbG3pXulzpL5Okk7hNHWXF70Ror2rsbClOoYoSAvM2Y1/oy3v7MTwG0Ony99+j6kWtOsizCVpWsd1seQQXjQH7AzGFvzvbGIAnW3zJjMFCKSBLQ2J/gcfmsE0CffR/JEFTVyW+Ky/PaT9OE4b0uQkxLyZ0/gMTdoEiMh9n1OyOS5TH7C0jjvEbLjcvtu1IVmcRdX1b05yvF6SYuZiH8mjSFELEJiUKa6X95TwyTW3wDinKVi/eTa4kFm+B9A4qsgI2x2Q6ubHukZzJlElsNyOx8/m5PtpEI2nh62N+XcIn7QMWGRIMLc/00zOGVRIKrTvlvatVfSCRwOSGqtTMl6Dc91cv1ytgX/9I3RZEVaVrmdouIfj0YAQ==\"}]}, {\"type\": \"text\", \"text\": \"R75 had 5,227 events in December 2005.\\n\\nI took \\\"the quiet rack\\\" to mean the rack with the fewest events over the whole log. That is R75, with 15,994 events in total. If you meant the rack with the fewest events in December alone, the answer could differ. I didn't check that. Among the five racks with the fewest events overall, R50 had fewer in December (5,007).\"}]",
+     "seconds": 7.7,
+     "sql": [
+      "SELECT rack, COUNT(*) AS total, SUM(event_date >= '2005-12-01' AND event_date < '2006-01-01') AS dec_events FROM bgl_events WHERE rack IS NOT NULL GROUP BY rack ORDER BY total ASC LIMIT 5"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many events did the quiet rack have in December 2005?",
+     "reference": 7138,
+     "ok": false,
+     "term": "the quiet rack",
+     "style": "in passing",
+     "teacher": "eva.horak",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSyAUKEggTEAEYAjgBQgh0aGlua2luZxIM62CTnZVMPdZFUu1ZGgx0g7EvCsd9ofsqND0iMImxLf6TVb+Vx+Q+zdYw0MpAI2f41WQMLLItFOg7pDjd48JM1OLMdG6aUMp8NPIdRCrjBBJBkYpYFwsP/9AMrvERrDqdCWQWZ+clVdAcmWp/tN8EA+mlAE4sMkwxEmAfoZtrBQYqjk4k+s2sZF/i+Oo8KeLlS+cLz1PFzyngYkaFtM6eW2SCTZ3JW9/+O1o7Tq/CCs8parH4mCTV0KCURsJQHEMpo1JMja3LmMgR/jgOmH6Dpx7h//3Sde+LqWQhpZiilQZ3aZMeIL1GDXSy3ASrwPOQxRJ7qeXtrvAqTe0+HoE2RstrZcAA/e3YSMVfaHozKLWBi+WUhADEj1GiqsV/Um6LsnSGml95GMhT8aYuIx9dHe1rMU4nK4pFo4f/zLRBpYbw+Q+oSx9fkuCs6eh9LxSWgcn+mX6DublO0dmWgSerYV+qee7i/TrQyupFcIOVaW2k6YI1h4HrR09espBFMh/agdGZBszOzDt9iP5/BVetkwVTMSO48M/HwkZ41y9OYjxf/kB21ZsgTDCZL9Y3NJ2sido+CWJqOJ2ZduJ1C0vuzSRpPJ9h+R71iUKfnSrWNENagS1wFz8RHEC7IQxXE/XLqRfTDONg5u7d1LeBRPf+bjFrKEnsLrKq8McyxxUrHTQ3Zmh08XRjzMHCTN+Hu5JNLUFPqchzqr2hMbXmrUwE/ZCyE7VaOs64ojYFEVna1I1B/kldUeSUnacvypgPrr2crz9FD8XdMAuc+nVCf/jOetJWl9mYDYM4w4nrYNyh7fGJxoUQDUPEAtyJnxRfJ9AP84L6+ay838kXb11rP2RSScEeITUjwpgpXcTfPJU45JZua5Z/FOTrFJx4S1U42VrjVIkmMWTF9NhIcyAE5NCIYxnCGAE=\"}]}, {\"type\": \"text\", \"text\": \"There were **585,666** alignment exception events in total. I counted every event whose message template contains \\\"alignment exceptions\\\".\\n\\n| Type | Events |\\n|---|---|\\n| Double-hummer alignment exceptions | 295,764 |\\n| Floating point alignment exceptions | 267,725 |\\n| Integer alignment exceptions | 22,177 |\\n\\nI took \\\"alignment exceptions\\\" to mean all three types. If you only meant one type, use that row's count.\"}]",
+     "seconds": 8.1,
+     "sql": [
+      "SELECT CASE WHEN event_template LIKE '%double-hummer%' THEN 'double-hummer' WHEN event_template LIKE '%floating point alignment%' THEN 'floating point' WHEN event_template LIKE '%integer alignment%' THEN 'integer' ELSE 'other' END AS kind, COUNT(*) AS n FROM bgl_events WHERE event_template LIKE '%alignment exceptions%' GROUP BY kind"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many alignment exceptions were there in total?",
+     "reference": 563489,
+     "ok": false,
+     "term": "alignment exceptions",
+     "style": "stated",
+     "teacher": "tomas.vrba",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSoQYKEggTEAEYAjgBQgh0aGlua2luZxIMsK0a/AXVea6iF4/EGgw2StrsEFm+oOe4ICUiMM6rPyqUMe9uA5JKLBzGqytwLY6QbTCmBxheeNswg2otyhfIAUd+Lnk+Xd9iUoQ6Iiq8BeTSaqeHYN1BK6K7EStcaxB7xwakd46O5NOo+Nf+UxeZ8HKIOMnjHNrSpeGJtGJMIlA6dJFZgXK6nLvPVPeRPUpo4URcIbpq2FnCH9hMreVtzNio7vFL+ygt1pgJQD2ViazSjl9ZqFNdZ+ksXn4fweQYOh666YNFad9qAbHHNL9vIgffClnlgA4GzSRTonrzG646t/TEJ76DaAzyY0WtY9Hdv5EnyzmBH7kTG+dJLhYd9RUIdkzQoibuZUxo7hT6c81xUvGMGDuxpprdlTpQQ0ZI0VBeEzjVV02Ayq7QF9HuaTlHK1ffBSzqHYZGlTPL6oWL5I+hy9U79VxdUrNCR8l163L0ydnCXvIura9FBmfXvl5YLcOgQzD1y+FVYqfjJCrvATRWIygGb+3GsMxIPUjf0FR0OJ51GJAoDWU/XAXICY1jp0sq37J7vQH1n/BVO4GVZFvR0Xeppqa9pGtnAXSkgB1+92tvH4qEDuldw9qrmuYnceCYR9VPwP1teNswVACr7Z0jYKHx6ff1PAMEzh+UNVV0ZrzT8NEL1UxdJP9AdjKlL6pOMOQWUcLYVyOMLoAgD3haGhAZs/5W3Rf09wOKhcfH3T7zTNBBSIiOm6c16xHxi+j5ZuqljxRDPf4J2fwnBM0sPVw2uisL9IB5Vy3AXMjStnqwV5ZagOUlZ7roVU+1kzFSma85Nio0I6nvjkc3bzkitlPhIS8fneDMrvBMqFomVKjzPYzeDusmLYqKCt+k5QXzMFIcVX9dH5f/Co6yNsOwUaeG5Q+QdsPOUcovsDjRLEn1dtLFhoDvs/9vleyyNNu4/9a4baGTdyJlBgH6nHTktUniyZvhYKg7tl1LRjdl/WbKfT5QMQ25LF2bL/09Mx/LwmMOYqVVAyZQXWJ5ivqBBicy3m2rTsG3+dnkTNZ1oXGzlj9ORAEYAQ==\"}]}, {\"type\": \"text\", \"text\": \"December 2005 had **1,296 login failures**.\\n\\nI counted the FATAL `ciod: LOGIN chdir(...) failed` events. These happen when a job's login can't change into its working directory. The causes were \\\"Input/output error\\\" (816) and \\\"No such file or directory\\\" (480).\\n\\nI left out 208 FATAL events with the message \\\"Error reading message prefix after LOGIN_MESSAGE\\u2026 Link has been severed\\\". They are connection drops during login rather than login failures. Counting them too would give 1,504.\"}]",
+     "seconds": 4.4,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND message LIKE '%LOGIN%' GROUP BY event_template, level ORDER BY c DESC LIMIT 10"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many login failures were there in December 2005?",
+     "reference": 1296,
+     "ok": true,
+     "term": "login failures",
+     "style": "correction",
+     "teacher": "jana.kral",
+     "saved": []
+    },
+    {
+     "answer": "In November 2005 there were **3,358** cache parity error events. I counted every event whose message template contains both \"cache\" and \"parity\".\n\n| Message template | Events |\n|---|---|\n| instruction cache parity error corrected | 3,206 |\n| i-cache parity error | 39 |\n| d-cache search parity error | 39 |\n| d-cache flush parity error | 39 |\n| data cache flush parity error detected. attempting to correct | 14 |\n\nThe five templates sum to 3,358, so nothing outside them was counted. Almost all of the events (3,206) are corrected instruction cache errors.",
+     "seconds": 7.5,
+     "sql": [
+      "SELECT event_template, COUNT(*) AS n FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND event_template LIKE '%cache%parity%' GROUP BY event_template ORDER BY n DESC LIMIT 5",
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND event_template LIKE '%cache%parity%'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "jana.kral",
+     "question": "How many cache parity errors were there in November 2005?",
+     "reference": 3213,
+     "ok": false,
+     "term": "cache parity errors",
+     "style": "stated",
+     "teacher": "lukas.brandt",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS0wgKEggTEAEYAjgBQgh0aGlua2luZxIMnR7Zqfmc1UYupNvZGgwu7ujp1polYALHEm8iMJK+GBAQVdFK24SpcClr5rIYRJO7sVAj4JC4zhFcLnA5ZdZ/XkBJTMrZqNv1l2FsIiruB1UjRCf70hk94hvEhJcrSj8tZwuml8mcj553lGmUDCvH+EOJUxw8Kl79Pyrmm8MCx7kkjAaRmyVs5JBV7JLZ0gmbg1KoVegjMEmVyFwZrc1Vem78AvC7HVZEXyl5lWMkWRTQAxPZk97ORFQHCuZtniUIGDKYI8rjh7YNpnyYD2eMTlA9WEbzS9/zD/dTrmjfJk/pahV+VGDonfBXkBKGjHO0q/bCkbzvfBokqlIIV6FHTJO+ERiBzCchx08ZatK/DKR1WwwIvSJH6oWxa1r4Uv2rX0TCF5wj/lJ0pO4ChHSC9kYlMNR/pLAEy/IvxMF3B2d7Tqr/8+i2HW0Bmy1jIdFLHoiMZy8a3ZJKbQwkJ/bpO+RBLxueXfM7Woe3MdAUKnyb/lle1wBU5aUZz1ohw/42Xj6jYoR7m7Ac6H/MxfuF5RQecMB+cYx5YD6SrBIRM1oqc6qf7SBn07kF7mQQpFWpkHTFPlti2eCG5TyeFmYg1wEQUWNKm3HBDmbOAyJ/IwH5mkDV63X+sMFqcJjfsyZ/EhUCiZ9QIUUfbKZP6sxZjVnt1j/0zkcTebC68JECbQ4Aimkv3O7AxH8mEtNCwly4gHScF88EofziE/Yo45OlSfY90y1mhL4aXFCPcCFt6bNic/du7bjawTGfGl6xxn4PdxPRULqwe4CCBRmCkIu3Dt4CLABvux0hNYjmBzPB7bkNSTA2BmewbPzWN0sJBeIUiGFt/B9iVTvt+AQMD77CNDQDYfINphHiCwlMLMokjdKSnKc8q7Yy4QTsCZxVGGvv7VigJ+t+cvh4hFaOwG1wpPNZcT/G8fKR01Of9CBjecMhHblE03bz7zMzjVvPGbpQxUJ8BXveMEeYFcqvW/Ji/PwtnZ5Dqo3uWGFROjrMexDlWxgxrCn6rTw7i7a7LI4JmZsafRYFYbl4M5VgEaTPjuOzx48ErBtQBUczq/fjeNpNRPNISUVdjqYPsHM5Aj1Co6k3wJJadsZf+6VGy/A6v0l2Tfqa0O78FR/Z6nW3+DBDWhiSTIEygWLQagxbfiexIPw5FCQJNvxQW18pJU66NoWyZYLneSmlCblBbGQ/OAbOVyPcb2L0WZb2pX5Qzx3IvL0xLEXICSVlDsftX36B8GEUZ70UbHveruE9fqyiwGEjMgYMcNneOIhtuPy8VzaahHe2+TDs6UdA+igqkbZUPr1DP8yeM5XuLxueqnyP0CTKz+A+7BgIbhSgSVrp7EYvvff+S9MpqpvLXRB7Y4UTIiiK866Ba5lXujchyl+u+CqREXglYd1aFKcZYfA7UGId1gdlxyRTfu7hS/e2Y/GKfNIUPjIXufc4rjX8yrcYAQ==\"}]}, {\"type\": \"text\", \"text\": \"Im Dezember 2005 gab es **17.983 Speicherfehler-Ereignisse**.\\n\\n- **DDR-Fehler:** 16.718 Ereignisse. Das sind die Meldungen \\u201eddr error(s) detected and corrected\\u201c und \\u201etotal of \\u2026 ddr error(s) detected and corrected\\u201c.\\n- **L3-EDRAM-Fehler:** 1.265 Ereignisse. Das sind die Meldungen \\u201eEDRAM error(s) detected and corrected\\u201c sowie die FATAL-Meldungen zu EDRAM-B\\u00e4nken.\\n\\nSo habe ich \\u201eSpeicherfehler\\u201c ausgelegt: als Meldungen \\u00fcber DDR- und EDRAM-Fehler. Nicht mitgez\\u00e4hlt habe ich die Meldungen zu Instruction-Cache-Parit\\u00e4tsfehlern (33.518). Ebenfalls nicht mitgez\\u00e4hlt habe ich die 135.096 Zusammenfassungsmeldungen \\u201emicroseconds spent in the rbs signal handler \\u2026 correctable ddr\\u201c. Das sind periodische Statusmeldungen und keine einzelnen Fehler. Mit diesen Zusammenfassungen w\\u00e4ren es 153.079 Ereignisse.\"}]",
+     "seconds": 11.1,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr%' OR message LIKE '%memory%' OR message LIKE '%parity%' OR message LIKE '%edram%' OR message LIKE '%cache%') GROUP BY event_template, level ORDER BY c DESC LIMIT 20",
+      "SELECT SUM(message LIKE '%ddr error%') AS ddr_err, SUM(message LIKE '%correctable ddr%') AS rbs_ddr, SUM(message LIKE '%EDRAM%') AS edram, COUNT(*) AS total FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr error%' OR message LIKE '%correctable ddr%' OR message LIKE '%EDRAM%')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "tomas.vrba",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 16718,
+     "ok": false,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSlAkKEggTEAEYAjgBQgh0aGlua2luZxIM0s9Ppv4n7dxjrKpRGgxKYmllULrZWxHEZQ4iMKrS3143BLHxFHEhGTDvm3SAmakEZcvMuUBA1JgD3oA6sTK6uBDNOSNUzONp/rTnMSqvCNW24rcntj5ASU/LhrqE4ypyLE5ZBrQ+h92TrDX7ig1Sx1872sWAMXATk6yGXUE7bGqHa3kL809r/ceA8vtGmUEeAQ7blIYcjD0AIid1K3tftbecA+DG+B1l/YEz1DpC71xSGb+OEp3mWo/ZdyyR8efBt+xAAGogwr9fyamvzSMAmjra8azrh6wAZyBC9/Vc0ElJJHu/ZZ+h3lWK2XINaUgLiKceTRyw0sCVnHlZNnexJpvTSEJfld0tKri/7ahj0sKnv1Omx7Jdiv0TvO2lwL45yd/RcJep76NE2KmRGT0oQFgk7QVEVHB8AfN3sND/oDWDg9SQG4FELGhblAYHHdoK4QB84agcU28nNBZr55BJmQhKRU8RGY49IePaVBWYWzh2NE9oYF4+buc2o+l3eAJU9YBmPPlYk7us+0tc7P6MNiZL6L1I3zvMX+jPF4b4WcA3N4vrGHpLL8zvVGE+GIpw7ezSKSAvCAJxBvbVjU3wNo0gsBItGpZ4Snkpw4byVsCXR7J/aSDvSFRzsw6yApDcM4XaIzg7c7srMi3YZBxXJiAAXKtcU3s1Id70Z+EkeF93z6Fy9dXj/SUzO05bmCYhIPR5BDXw5hS8P8akKJD8V1jXkp9664XP+JFvJNCceXzkDq8WbbMw0G7DFyKCx/ZKvIXAPTe94xuHxMerOpZa6miraOFOFhxt+0hikuvB4/ktfArwCp6dIYLhJAtshv45QAIJQck/Rm7YaxMeOv6oETMCcqjGM1uf/3nqiV7B8oYq3AtdZvhQ0p40VqkZe9DgmtoCOSWImPDDCLWWxqPMRKao57tO40pth0YVnSyJpFCb3WuXxnEsH4e3LObellJfLKOMzJv68KOPmImZsodLook+cgkkzWF2HwdwRQ4ZWAIYDUhC3VW/KhwhtqAQJjU+rljmEopCtEVT4uJqs7QSDIXj0f0F93e1yubZ2yp7Tu7APPudhI5uCr4nf950pK6VLVXNAMwmwXYv3eoDYP8MshQ7rW1WxuIknfOk+4ENgOar4RLW1MR227Z9BIUIhcw+HVqkr2RDCCnw3SXwjb52tJxo9Tlv0qn8Et3itpM/MR+/GJ6MjTeQyHIPo2asoRdtoBxu9yS4WzgZ1gaU4BQnqGnO2QM363iS4ylZfyodTWhEerDRd4esO88nPb8sugLYIAIXyPbNEg2XUsMa3kYyBuuQXX2ZPleKu2zBCGGwfDSVJbZTfp5bO6dEz81LFIoI9lzy7NY5KqJOczQrt9gcUvsTeb06AxKkV7uLI+llQ+ow9QpeW1ERjM/iGRok1wb2nyGr78pZIkPBXlQrfifEY11HUNaaGA2AEq8ia3Ejuz73qa2Jg0kN/WcpvZ42CjWShvjbpVobAT3Sys1RGcQa1Wq4Nc2opXYNScJe+EFNzjKg+O6cKWumEfvh464iuxgB\"}]}, {\"type\": \"text\", \"text\": \"There were about **33,522 memory-error events in October 2005**.\\n\\nThe data has no \\\"memory error\\\" category, so I counted events whose message mentions a DDR error, an EDRAM error or a parity error:\\n\\n- **DDR errors:** 16,324. These are mostly corrected errors, such as \\\"ddr error(s) detected and corrected\\\".\\n- **EDRAM errors:** 876.\\n- **Parity errors:** 16,322. These are mainly data-cache and instruction-cache parity errors.\\n\\nIf you only want DDR and EDRAM main-memory errors, the count is 17,200. Most of these events are INFO-level corrected errors, not failures.\"}]",
+     "seconds": 10.5,
+     "sql": [
+      "SELECT event_template, level, alert_label, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-10-01' AND event_date < '2005-11-01' AND (LOWER(message) LIKE '%ddr%' OR LOWER(message) LIKE '%memory%' OR LOWER(message) LIKE '%parity%' OR LOWER(message) LIKE '%edram%' OR LOWER(message) LIKE '%cache%') GROUP BY event_template, level, alert_label ORDER BY c DESC LIMIT 30",
+      "SELECT CASE WHEN LOWER(message) LIKE '%ddr error%' THEN 'ddr' WHEN LOWER(message) LIKE '%edram%' THEN 'edram' ELSE 'parity' END cat, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-10-01' AND event_date < '2005-11-01' AND (LOWER(message) LIKE '%ddr error%' OR LOWER(message) LIKE '%edram%' OR LOWER(message) LIKE '%parity error%') GROUP BY cat"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in October 2005?",
+     "reference": 76963,
+     "ok": false,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": []
+    }
+   ]
+  },
+  {
+   "seeded": [
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS7wUKEggTEAEYAjgBQgh0aGlua2luZxIMb1LPdwnD2XarCpbWGgz9RtWV1rrBJe08waQiMDodt8ksOdMMlX2/ZOTgEFeTAtTckhhJaHLuy2tVgNWwKwxOM0i06dSKdF4quGyBSiqKBeYphBSjf1crU+9LdiIzXdcnZk7X0sFQ7C6ect4vD5fTXSeX8f/6S6kDXpB0xLyvCP+tyDc66FTeFSPOJ0v32UbM8OKJ9DG5rVDhYOsTy/IUTDSkgrTelzXsUiYXDWkgJ5mUKmBqxqEt8KEovca6AboADjcIcPi0N7qnbPrI9Q+sAY/px/DlQHctzznCbQBfLkT7whNYag3s4D4ZXV6ZyVDAJo7xkCaiofQL6Qk3o92yGJEFsJkH45wqvK0MSspw4d1PnlSq6e307Nj9C6ro35EILPUHqeh3byN3AxeTDiDiufGl1BKxp0Lm0aAW/zcaB4kVDdrejcjoc1+nWS1313zz4VAedW0TqvKFyha5qeZw6ymAKotKK3vusZ5Vn9EmMdiua5kCvFXSvqeXs2IMlJuWgLNGbUEBVrXE/Z7Cb+Hrb6dW3924AAYi7i2FyiRWk8D2174Lpi7ONnXQc5gkN9wX7KXmyQi8DqxTQhP9n8AE2VqWAKlNAMYTM758+elkSKeDY05nKnI0b5A3/8haVs/wb7OZSDVHV0VeMSPPzPosuMU2/+RUE55/asctcm2Whr/4UDBGze7VOlHGPTt7gGfMfE6zT/1bLvL5+K5BmMUV1QK6JND9nfrYI+l72Zgexh4ZEfflmq8G3oPTnOEuNNBEBacHfrQUmh1DRkD4gX1m74m3th1iLNEFWhdehk6xMVpJXoT2bh10Y9CBafPFitl2zobg4HcsATrki7kNoIK+9XBRjwIbPHVcNiUpICxdjCfk/CTs21NX9LhL7V/2PVRtKhX75XvNGQE0B/M3yyoGa5h27Oe8ZwnL+GtaYWUE/dyoYBfAKDLyT1cagsXX/fN+qFV33vfXBKbOGAE=\"}]}, {\"type\": \"text\", \"text\": \"Memory errors in December 2005: **16,718 events**.\\n\\nI counted events whose message contains \\\"ddr error\\\". These are the correctable DDR memory error reports, such as \\\"N ddr error(s) detected and corrected on rank\\u2026\\\" and \\\"total of N ddr error(s) detected and corrected\\u2026\\\". The count covers 2005-12-01 to 2005-12-31.\\n\\nI left out other memory-related messages: instruction cache parity errors (about 33,500), L3 EDRAM errors (about 1,000) and the rbs signal handler summary lines. If you want any of those counted too, tell me and I'll rerun it.\"}]",
+     "seconds": 8.8,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (LOWER(message) LIKE '%ddr%' OR LOWER(message) LIKE '%parity%' OR LOWER(message) LIKE '%memory%' OR LOWER(message) LIKE '%edram%' OR LOWER(message) LIKE '%cache%') GROUP BY event_template, level ORDER BY c DESC LIMIT 20",
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND LOWER(message) LIKE '%ddr error%'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 64077,
+     "ok": false,
+     "level": "team"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSgQUKEggTEAEYAjgBQgh0aGlua2luZxIM5hxuUDNulRoqnV6XGgycQLZUrwYIeJwLrrkiMGJbGFtzF6wGLdSJUcsig6tPqRAuIgpuNwsgsuXODmCkGLKZTXUAREHhxoa8fwepViqcBDkEg6ZZIsPZEJte1SpXBrymKAkobiY5ikC9ce0XUsRImDWbyhD6mUAaZTLiTsMxrBHb8UYB9BAsc4tXzy4OWltKPCPvkUCzE0hhir+SxHHJmO3tpY2oTesOpPIFD2DrJWelhUBWDfBPptaWoCdOQ9NDNIOX+o6S2nu0G8oq26qDdXs2zxOnXeBnOAPlo+0TLR0RhJjY2xFbW8Vacl9ljjr0624CnNCz4ZMjSd+1sU4/uV11JGxl6WAA5y15JT1FSoY+EaW9GjV0iaSC6oaDstouyu6xcPVEbjdtzAx5ANEfSwa1vT7FFb48sdT2zJBcVliy8Gqdih+/AMFO4zIMYOh95kqxo6evtesos7ckDuCMohycN1H5+LgYFSUGYL/PyaKsfUImA+wlReML/4Y2VuP5553cZj+mS0hJPN05VbS9/9oMjNWDcUvS8QpDBg8yWgdKoJyDZ+RSHJCg7DOmkeey8au+JqbNaTb2IWsB8PlzTyjirW4UluGK6xU0tx7OL68xSCWuhDZwzZ6UTjaLEnhaQ+DY98WwCOG5vls2MHLRgHgrlqpPY1oz9FD+qaqLjlqD9y3Z9QWcVfpf8qLHHI/Jkualtlddn68VKr6EF57ZRdxGglAzhaRdj+Q3OG8syxAr4olz1KR3Hfn/FpuKoJGzTmvkZ3VOy20BN0DFMu3uKqdZv9UzHa1h9WWFncsuZ5RoHHQ67EPwuEXqSBgB\"}]}, {\"type\": \"text\", \"text\": \"There were **60,234 comms errors** in total.\\n\\n\\\"Comms errors\\\" isn't a defined term, so I read it as alert events about communication or connection failures. That covers two groups:\\n- **ciod CioStream socket errors:** 59,995 events, labelled APPSEV, APPREAD, APPRES or APPTO. These are link severed, connection reset, connection timed out, and failed reads on the control stream.\\n- **Other connection alerts:** 239 events. These are KERNSOCK (209, socket closed), KERNCON (16, connection lost to node, link or service card) and KERNNOETH (14, no ethernet link).\\n\\nI left out one alert label, MONPOW. Its 6 events matched my search only because the message mentions a link card, and they are power-module alerts, not communication failures.\\n\\nIf you meant a narrower set, such as only the ciod socket errors, the number would be 59,995.\"}]",
+     "seconds": 9.4,
+     "sql": [
+      "SELECT alert_label, COUNT(*) c, MIN(event_template) t FROM bgl_events WHERE is_alert AND (message LIKE '%socket%' OR message LIKE '%link%' OR message LIKE '%communicat%' OR message LIKE '%connection%') GROUP BY alert_label ORDER BY c DESC LIMIT 15",
+      "SELECT COUNT(*) FROM bgl_events WHERE is_alert AND (message LIKE '%CioStream socket%' OR alert_label IN ('KERNSOCK','KERNCON','KERNNOETH'))"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many comms errors were there in total?",
+     "reference": 59995,
+     "ok": true,
+     "level": "department"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSqgoKEggTEAEYAjgBQgh0aGlua2luZxIMZPjN+RbHqrYUkL0+GgyNniAo+ir+JC3btuYiMOk2+xqxw/63a8pMhkQBSR7cKzLRPXhiorWj5uLvPtTiUqpP/2l15+byZCBSOeykvyrFCVdO998m2LKkDYIXhqRr4kshBd7q19xCip/ka9+RmzPl/VT2w8BQLGYUvKiz5XH9oqWuXj5itLrvfXO+AxvLHPBNp3GgLw40m1qPH7+LsbeeGVDqEs2CXvz+3zV7uRaki9EdnJr1Triy4xZHtfvgepDcdO35W5qi3pprlV7xIrt4QZRS17wZYWagJTmq8SVCds7/HRQGIOn/IAqVilTcP0j0Vcnu7ARc4a9CTNAKtdyBO35+KIMiNVwI9JFx8wOEdOQypKSWGjo7Pdg6JVM+xzGO9PHEr2Dn+yZqhNpYQMqRrDXDe2IP0afWIwYhqWT+RSi6a+hRN9KvDkmcsfx1fYPFdsLd8oKaX8vMsV+JoyFZmhHMCWaFA90saORzWMQIzSYoGuItu8LAFTWGx2PyYeqxxqHxAeheSUcn3DgzLBpsoOW5wvDJsvBMkZaWlVF5LEhRxw/8xdUKpF8MrtX69Cb5BHp6Sw5g2l3tn1CPzH2qoE0UJlRyBDZHlao6FPLL8+Fxf35f4h77XB+x5sycforIw3uoZr7e8XqQtNgkp3C8+d94A0Kvj1hZLiF0hMxMWbXIc+U5GruIh+Edext7LQ38Ihb0bTBW+QgIR5MnAh4QsFUpJVCuUKzpJN5sFJURsVbnbO11nBoV5a9yJLMAlueq1DdzhE8lasVb1fEmrEC1QN5vauncJ2x4DvGwgll+p+W8pi27CvRSLCI52I3U2BXnC9x10nePotISl4SUjuwmgxkYF1UmtVRa6z4ec/p+XyCpzzY+elqIbqbz7/EW3TUJd4AQMb74Lbzr7yUd9TGv3fL5cF9Aetae99mJTBygnZh2UkTFVN0r2PIdX5x8zLZplahAk6I2gwFVsk+AiRB0zus/BTwLdfH1RbYKZZ3vx/xciVBIUVGe0rs6bzatGr7/ugZ7HNL0NA8lnNlAkMEH0nEaGBnKvwC6M4efUk9X3qkDLrvKPC9YvK7pGlWgqKkiJ9DhyHeA5OAtGytjBRK9YmXzLw/my8CMRQrYXa3DffneMFpcWUm/AkB0oiisS/Rliy3+pe8eEfkQLXU0YnPVtJ7nEtRwagdFT5WwqufDFSMhWjFE4r2EeGUNKhSxIHSbnfrLiXl7lXYRJbMYKLiJQ/LnoJaFdfak9jFdgw1+ToeKkvk+4Qqq+aD4MVgA0w3fakkPfYnsPgG1/qwVPovWJpfVgruuGSTK+TQhEB8Sq1Pld08tXeMUwKWkULl/lwb6n3YAzUEBCv2mNXI+2auegBejnomVoXCM2DkqH8J/hhPjXgrOivlC+m+F9Pzmvwasw9P8Sd5h1eVI4HPnFlcxKfCIXvjTqDOrFqF3PWGESizkf0CTdS98r4limuxzss4RIuSlBPZmvrA6fh8IxDZ/JDYt/opUPMvJW6CN2wNDUJayDzGHq6+hvbKqu/9gyVpraIS4zK+deJ/AdskitXSWIRJ03PefzynaWMy6NDWQbxmkI0N2DuGIIaICptQHlBWQkRomzA1RnF02gbo4BtfjYkCkecBl+Hnn12rIHTz0BUn02px2mPkRCHcJN/hS3iBAhIH121qrQLRocdnbCHSqyaiVLxfraSQsd5QVQ0Ph77MvtTRR/ul0DYNBoLA/uSi6RV6plxgB\"}]}, {\"type\": \"text\", \"text\": \"Im November 2005 there were **27,973 node card problems**.\\n\\nI counted problems as events with an alert label that were reported by a node card or by a card on it (compute, I/O or link). Events with no node card, such as those with an unknown location, are left out.\\n\\nIf you meant something broader, the counts for November 2005 are:\\n- **All events on node cards:** 635,869. Most of these are INFO messages.\\n- **ERROR, SEVERE, FATAL or FAILURE events:** 49,074.\\n\\nI can redo the count with one of those if you prefer.\"}]",
+     "seconds": 10.0,
+     "sql": [
+      "SELECT COUNT(*) AS all_events, SUM(card_type='NODE_CARD') AS on_node_card_itself, SUM(level IN ('ERROR','SEVERE','FATAL','FAILURE')) AS serious, SUM(is_alert) AS alerts FROM bgl_events WHERE node_card IS NOT NULL AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many node card problems were there in November 2005?",
+     "reference": 50538,
+     "ok": false,
+     "level": "team relation"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS+wUKEggTEAEYAjgBQgh0aGlua2luZxIMYo44gArHuBtQCJcyGgyX63rB8Luvujw8tlYiMEKqo1+YarPXKXxQguvoRno5iWchwA8pxGKTSuBvKQCYn+vlRTyXMp+3g0Dz2ZX5zCqWBbLH1jgBo7udWCVC9/fXdPk5ijgg5Ai2e4V87Cei11vWMHkYAZhucR9RPalrDk8EfSyOIgjMOjJKT9g5w5DUM6yHp1tIGtOKj4J8Yd/8NuEIDIm/iY12SoKIkeu3onKUA+ABibcb1+lE7HvxRAAsWvL7peWkqCer0VuiJ6LeKFC+xylblAbYf9yEP92hRvzEpJ9LNPsvU/P7z13eL7HiiSYvJB9c4JwNu9meX7A068AKivDVFTJL1AP2cLlHd82Y4m7sQUmKiA18n5xGjK92mjGSGws4ZAIffSqnZbiG1dZg7AlYlnmIcsGad5Q/zbQeZ9Io6foZ1u4YpIs/LgsJFx2LLkCPIV08I7LBaZelV8r1zXdqUuJZ8DoE35AdGsLOcRrr4ywUZAvoT/vqG0ehM+WL865ZpvQYD60O8qg059A+lqagrdlSXvaD5widFyrFiTHThOw9eyKB1co+ENEWnhFXmNJ7ooHSi4Aay/9uR8v9ohFbLyCZZUyqXyw3VJPUIVoNKfJI/15/e+iOdmX2XxpdPUNtNoSJmhiblkDgXTu3g2nM1Wpq6n3yPyDxA0SDzaQWcEEo7ezmzY4syG8zaN6GXyObcXrIacLam1noxqVBgo7O01o2E++W7LEcsMMJVKqqRiiKCrjeFkQnpwEWM1b9gxAXHKAkFtwznNHV3QSlQN0audqWwnlI7Hct/7IW5XL0NjqZZPuUACbtP6FtJbO9/ouXTS38ShBKx4Etv8wfBTYvIct+nbjx0VJOPgUbk1Mtv4KFV3QkEkDeErqw4DkcIbElHqKyaVl39YYN2t21A2NmI/G7lklH2JtCsStqNW8LZBZyt4Q/Tv1Svhv2upamrdRKBRz7rUkaazZuuXO/XF9v/Y3uGAE=\"}]}, {\"type\": \"text\", \"text\": \"R30, the noisiest rack, had **10,580 memory-error events** in total.\\n\\nI took \\\"noisy rack\\\" to mean the rack with the most events overall, which was R30. I counted an event as a memory error if its message matched any of these:\\n- \\\"ddr\\\", which covers the correctable DDR error messages\\n- \\\"parity\\\", which covers the cache parity errors\\n- \\\"CE sym\\\", which covers the correctable-error symbol messages\\n- \\\"memory\\\"\\n\\nEach event is counted once, even if it matched more than one pattern. The \\\"ddr\\\" messages made up 6,710 of the total, \\\"CE sym\\\" 3,801, and \\\"parity\\\" 47.\\n\\nI didn't run the query through the checker tool first.\"}]",
+     "seconds": 6.3,
+     "sql": [
+      "WITH noisy AS (SELECT rack FROM bgl_events WHERE rack IS NOT NULL GROUP BY rack ORDER BY COUNT(*) DESC LIMIT 1)\nSELECT n.rack, COUNT(*) AS total_mem,\nSUM(message LIKE '%ddr%') AS ddr, SUM(message LIKE '%parity%') AS parity, SUM(message LIKE 'CE sym%') AS ce_sym\nFROM bgl_events e JOIN noisy n ON e.rack=n.rack\nWHERE message LIKE '%ddr%' OR message LIKE '%parity%' OR message LIKE 'CE sym%' OR message LIKE '%memory%'\nGROUP BY n.rack"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many memory errors did the noisy rack have in total?",
+     "reference": 38442,
+     "ok": false,
+     "level": "team + team"
+    },
+    {
+     "answer": "December 2005 had **17,797 incidents**. I counted incidents as events that have an alert label, as the glossary defines them.",
+     "seconds": 3.4,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 44873,
+     "ok": false,
+     "level": "team"
+    },
+    {
+     "answer": "December 2005 had **17,797 incidents**. I counted every event with an alert label (the admin-tagged real alerts) and a date from 2005-12-01 through 2005-12-31.",
+     "seconds": 3.7,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "vera.wolf",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 8785,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "December 2005 had **17,797 incidents**. I counted incidents as events with an alert label, which is how the glossary defines them.",
+     "seconds": 3.9,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 17797,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS0AcKEggTEAEYAjgBQgh0aGlua2luZxIMIXoPdhu3HpiZRPecGgw600u9ugiMXg7gjX8iMPq1we4B3s8WZmKgmJ1IsojlS9u2m/G5KmJX8IM+BSwnMSd0HigKx9f/jJLlNnK6ICrrBiAsjRe0mKzCSQlH91zK2Hb9gsnGnQiDg37ukqRx81WQbMp+ODK9y/cMH8heOv32x9QubAENoTAAwuTGhmRTn+WgoBfLFGziv5ZWbGCGdIcujn/Wvs3lGnMcsxdXdJnosYxUNTqdbPAoVqETAgO0OyhR1+zCikV+S0OUYTAhLENrZ0XY+1bqb2Pp0/AGNPu39s/QQuougnerm0LBXG0/Hy3zacj287RtdZfbvfiuh8XZViKuiitHmbm4rVu3Ba3XjJrOZRlQC14S60oW7soob+z9h+BWVfvcSC/1EpGSstqjp2USDhOcLmUd54x9Lmzvuk/Sg5c3TDXDJDsJCjq15EiKGgVU0jUL092PxAYYAwen5laa8vdZGc7puON2alN/CVk2PijI9kcjfBJVjV0PDc9d+XIrPi54J1tEQfbbj544RZ/+Em+EayUaqMbe+Y/ufBI1NE2c0f4NKm6ZtBa2r0BjiQTAS8xRHUR+C21tb91Fbk6kWlaWCGZDy0NE1689YlIq30XNgSTo+Egf+B6ytqFOTfA83Yk+dXi/XmJLNPEpMWRfhh56n92LZEoeA6Jz+rqXGDNNJsErQgviiu7RxYFTo+kcctGxJ1pHpQ7IkLjX9VStiPtNOboxhcugUkv9/nNyQGwut6HuuP0ySQVNjZcv3ZrkP2/DMsYvN4zul7NgaqJCY8kTCx0BJ4UdtB2ZYYonn5sVXELfin5M6qow7DnntjWEhH6qyXiT6Jjo5v+KdQcjN4qnwc62FcuHczaUZAW9XCKatr6rdP72h+VcMxD+dTdtMKNl/+WrTT1zoHEtb5m313dziGoX3nz2wQ456uv6CxT6Jw7oGgCg7fRRfKvueKKlq4pFeU02gYZ/ysCKJAR32ZucakpYuRCVcsEDjHCWtRdfJNz2m8c1RhIW5bA9NkizBj5AW4U+n+jr49XRf9O+JVSGg1iycsD7fwXQmL5NJGXrZDgA+CDIPgGzY6xHboeegl+uWUWrpMaV3Imz0MxI1+EOollgi1ZUCmwgx0kv0GvnKXotOZlQdVi39nH4ZBpu8BcE5HGy2jxVKOwil/oZqVVMYbL/p9ZuQvxrFntxSPZhumjHRcDtaMNeOExUEZd2acbvP0zRcAsXFoHaoIIGAbsHQ/ECaMcO8nYS/Eh0caXzLJ6OSXAyGAE=\"}]}, {\"type\": \"text\", \"text\": \"There were **63,845** job failures in total.\\n\\n\\\"Job failures\\\" isn't defined in the glossary, so I counted every event whose alert label starts with `APP`. These are the application-level alerts. The count by label:\\n\\n| Alert label | Events |\\n|---|---|\\n| APPSEV | 49,651 |\\n| APPREAD | 5,983 |\\n| APPRES | 2,370 |\\n| APPUNAV | 2,048 |\\n| APPTO | 1,991 |\\n| APPOUT | 816 |\\n| APPBUSY | 512 |\\n| APPCHILD | 320 |\\n| APPALLOC | 144 |\\n| APPTORUS | 10 |\\n\\nIf you meant something else, such as fatal events or rts crashes, tell me and I'll re-run it.\"}]",
+     "seconds": 4.8,
+     "sql": [
+      "SELECT alert_label, COUNT(*) FROM bgl_events WHERE alert_label LIKE 'APP%' GROUP BY alert_label ORDER BY 2 DESC"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "quinn.nemec",
+     "question": "How many job failures were there in total?",
+     "reference": 1734072,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "There were **49,307 fatal events** in November 2005. I counted events with level FATAL or FAILURE, using event dates from 2005-11-01 through 2005-11-30.",
+     "seconds": 3.7,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE level IN ('FATAL','FAILURE') AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many fatal events were there in November 2005?",
+     "reference": 49307,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **32,251** Lustre problems in total. I counted events with the alert label KERNMNTF or KERNMNT, which is how the glossary defines Lustre problems (failed Lustre or filesystem mounts on compute nodes).",
+     "seconds": 3.2,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IN ('KERNMNTF','KERNMNT')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many lustre problems were there in total?",
+     "reference": 32251,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "November 2005 had **11** TLB errors. I counted events with alert label KERNDTLB, which is how TLB errors are defined, and with an event date from 2005-11-01 through 2005-11-30.",
+     "seconds": 3.8,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label = 'KERNDTLB' AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many TLB errors were there in November 2005?",
+     "reference": 11,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321** rts crashes in total. I counted events with the alert label KERNRTSP or KERNTERM, which is how the glossary defines \"rts crashes\".",
+     "seconds": 3.0,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many rts crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **0 core dumps in December 2005**.\n\nI counted events whose message template starts with \"generating core\". All of them fall in June 2005 (419,795) and July 2005 (1,286,956). The table has no core dump events in any other month, including December.",
+     "seconds": 7.0,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_template LIKE 'generating core%' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'",
+      "SELECT substr(event_date,1,7) m, COUNT(*) FROM bgl_events WHERE event_template LIKE 'generating core%' GROUP BY m ORDER BY m"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many core dumps were there in December 2005?",
+     "reference": 0,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "I/O cards reported **47,529 events** in December 2005. I counted events with card type IO and an event date from 2005-12-01 through 2005-12-31.",
+     "seconds": 3.5,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE card_type = 'IO' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many events did the io nodes report in December 2005?",
+     "reference": 47529,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321** kernel crashes in total.\n\nI took \"kernel crashes\" to mean the \"rts crashes\" defined in the glossary. Those are compute-node kernel panics and terminations, which carry the alert label KERNRTSP or KERNTERM. If you meant something broader, such as all fatal events, tell me and I'll rerun it.",
+     "seconds": 4.0,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many kernel crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official, by alias"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSsgYKEggTEAEYAjgBQgh0aGlua2luZxIMRPZpzSsw1a7Gk67AGgwN/PYnevA3s757aqgiMHJIUZhwobciV1miKBDag3yxGnrhE3aTNmwmw77ySLEmNU0x8s7AXfv4o8CkZKG8sSrNBV0BMCpbMX7vDtyAvrCIV9qyNdfEbhAf+4j62+gXfVS5ExvNEX8BY+4ceXyMTrr/1Cv9nFdx2+mRcCzi6kkaCmzqfatun5HOdPzOiDEsOaULatoijymyqFO2arzFxp9kPdau8jkP6keYriFPUFK+lp4dM/bkPjwSaWJ47K1wGTNLcjC88IXyvqqs9ncmir6xDeWoW+FKS3G/STGHDyJxAxfoyv+TKvIZ86z2K2NRZbjA7z/+VtPlfiFt0uczeIfbjbdw42hGltqlCXwIIQ90c+Aj87eX2bZ1PeIf1ifM02AP7JxW999uXhbydQbcGCJU+ryw2zwDwI1XjDArpfSft3qJOoL7akfWX/6q0+pGfFUeUVEwYPS1VDxusPBiTd1Pd9006dm0JWEsqU1IkAq5jzk7fyIQM1Hx5kD8B9eEtYhd/MhP5rfu/TjRNriD3DaeYdU+/Le/bN4WA3v5/V6pauCe2Vz+sTfcACCOc79EoeysBShYkSFRkhc3Tgf5Gnu70u9/yPJdeJk937la88CJW7jPl8fPPXl/1HDQ4Ya7+1XY0Qr4fmok4JwIVyqpxZw+Rv52Vdw4JtCM3O9Hb3J/WP1zQkGlFGR5ytz0KC/MIdJpZ68DnxUHa3JP+YtSYROh4F28485Xvf2LxsNIZL/2uUHcXe3fzTbHFbGTMx4fOrhI2xdqHdeJLaABARxmRBsSYHiGrYVsVjn/yDzhrOD38OAtbG7DslWu2TlqH5MrxTcxy/2rS7zcHCUJ28ia+KsM72nAeZ+zq9VD+o6iI394s0joEfZWiEhzo8IZcMw+tDdda4kMESj+Jq8bLpYxrRtMmyt7I31J5QP2JlplRIfns25SqvXEEpVuJNvxhAW9CUuRKX0q8kkSD+GQjmIQm3O5Cbwer1bDcwtQlJ4dSC/GKlCea1rj2SO2AAlsK845pDhD+5DXxNWt2dJJ3v+nVxgB\"}]}, {\"type\": \"text\", \"text\": \"There were **51,939 memory-error events in November 2005**. The log has no \\\"memory error\\\" category, so I counted these events:\\n\\n- **CE sym** (correctable-error symbol) messages: 41,516.\\n- **DDR error** messages, such as \\\"ddr error(s) detected and corrected on rank\\u2026\\\" and \\\"total of \\u2026 ddr error(s) detected and corrected\\\": 10,423.\\n\\nAll of these are INFO-level, corrected errors. I left out other possible memory-related messages:\\n\\n- **L3 EDRAM corrected errors:** about 800 events.\\n- **Cache parity errors:** about 3,200 instruction-cache events, plus a few dozen FATAL parity errors.\\n\\nIf you want those counted too, the total would be higher.\"}]",
+     "seconds": 9.4,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND (LOWER(message) LIKE '%ddr%' OR LOWER(message) LIKE '%memory%' OR LOWER(message) LIKE '%parity%' OR LOWER(message) LIKE '%cache%' OR LOWER(message) LIKE '%edram%' OR LOWER(message) LIKE '%ce sym%') GROUP BY event_template, level ORDER BY c DESC LIMIT 30",
+      "SELECT COUNT(*) total, SUM(LOWER(message) LIKE '%ddr error%') ddr_msgs, SUM(LOWER(message) LIKE 'ce sym%') ce_sym FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND (LOWER(message) LIKE '%ddr error%' OR LOWER(message) LIKE 'ce sym%')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memroy errors were there in November 2005?",
+     "reference": 55337,
+     "ok": false,
+     "level": "team, typo"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSwAgKEggTEAEYAjgBQgh0aGlua2luZxIMCTNUfRfQrRZ2QYE5Ggy9KNFkIzrFjcHNEUIiMHI5zPr/47zhaHod0zyOgcdkQv5v3ofYWMg83H8MNA3uFLMKUVa+bRvInSEjShGDJSrbBz7CuIkIbZACokkWzrP0n370xjx8LX20QwNF/JGsvX9ZjBo6CtT6XlXPQeTmb/BB1e5nQvUnKMOehmTwbCXc6hL/6LF0nNd3ov2cWHZQEKuokMTBVXDJ8XBcXKjU2G2mq3ZnMfC6MciFoQryCQg8FYLaPSsPfpK28qnuOxK2gErD0PsRMkEoNsz7Duj/r/eC1jhtgPfNIZ3MAiDcUiOvB14RDN+IWs74YPUuSA+kQXv5xLgS438tjeb2OyN0H1u+EcySphRrH10LIvlNKUgpC/b7l7sSTQjDmI3sjIk4fhPOBUwQuIyRm8GPt7kkbyZeC8jRjGDpu/d398suOdXK0SNbk29vkngm8DJKu7aaLniGmAYt/GKQKIgxPU6e/TyMPY1WSW7f8F4nsyTQrCbHSr9OMbYpTdEn6v0OEt6QVsByLJSd69AXIF3rFwauqbFE50Qp2QQtEGB60AeF7kIYIlsgLdWuhFQ4IwKuLjZHQfgjqnsseT7lp2P+9UiID/nZw6y4u5n4qakOhuVhvuqEGgHNIENz3UJIRG6wS+8gJqTRlo+H0hnlGGK5ogwy7cbBHHCwI6NSIaFE6fg3EB8EN6t3wjaBAAJSU0/eUbQ5VizvVhR95gihUHQDiDTBW9/otTgSN8NCzpTt/VoJjGmWSlabqSNQH8BE0KbrkkHv7gRNNeISjOX6a8BNYNfhyS36+22w4E4JDE4lKeu623WE9+zAFN2H5by+/ndyhLZQWe5ek3h38mXGVQL4lfkP2X+7MrYgk7GSfYvJvw80oajquC1FH4j0ouPRoAGM/3uqJFwdXqhw7phGSFWwMW+VaZEfAgMf2pMKdvwT486f68wk59FEnFA4IFnpE4cQCTpcaulMa9dJIZw5//klFZjbYgzAoDZUUFNN2vDkc/iRWB5HA3ukfXaUVHk532o6OqZ732Ewvo6+UZGlMo5FBCOOaUc3rgVvwRFicFfyHXY9UiKv7yPinxsh9zX7NRExRQoCvzaWLdSx65jNUh/lOPP9/Yl79CK4lOlyU04W6ge8IFonBjdvQhtV5xSvkYvGNxdMdqqRv/ddwCT7M9FbX5lR6hw5CQXyRKpkoDxWFGGZaUHGhabdjLz9stPXsEeIFvqiSr6w8LxIyaVbpjEp+RLD1qMjE+pOA/h2DZObYvVFCGIABVFYgeLiDIJB14yJFWWl88xicyMxSSQgeFjGN9G4lG2MBWg/kbC0VTLrrQEWqjPTjCqTjfBxABcYPhpfzPRm5M2dT/HB2J2L67bZGX5Bp1biwLThpUB4CpWSxTikhHJfPzOvnqj1DIpPiX5H8RgB\"}]}, {\"type\": \"text\", \"text\": \"There were **16,718 RAM problems in December 2005**. That is 8,369 events of \\\"ddr error(s) detected and corrected on rank \\u2026, symbol \\u2026 over \\u2026 seconds\\\" and 8,349 events of \\\"total of \\u2026 ddr error(s) detected and corrected over \\u2026 seconds\\\".\\n\\nI took \\\"RAM problems\\\" to mean the correctable DDR memory error messages, which are all INFO level. I did not count instruction-cache parity errors, EDRAM errors, or the \\\"microseconds spent in the rbs signal handler\\\" messages. The \\\"total of \\u2026\\\" events may be summary lines for the same errors, so the count of distinct incidents could be lower.\"}]",
+     "seconds": 9.1,
+     "sql": [
+      "SELECT alert_label, level, event_template, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (LOWER(message) LIKE '%ddr%' OR LOWER(message) LIKE '%ram %' OR LOWER(message) LIKE '%memory%' OR LOWER(message) LIKE '%parity%' OR alert_label='KERNSTOR') GROUP BY 1,2,3 ORDER BY c DESC LIMIT 20",
+      "SELECT event_template, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND LOWER(message) LIKE '%ddr error%' GROUP BY 1"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many RAM problems were there in December 2005?",
+     "reference": 64077,
+     "ok": false,
+     "level": "team, synonym (Mem0)"
+    }
+   ],
+   "taught": [
+    {
+     "answer": "The quiet rack in December 2005 was **R50**, with **5,007 events**.\n\nI took \"quiet rack\" to mean the rack with the fewest logged events that month. All 64 racks reported events in December, so no rack had zero. The next quietest were R77 (5,069), R16 (5,070) and R42 (5,087).",
+     "seconds": 7.3,
+     "sql": [
+      "SELECT rack, COUNT(*) AS n FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND rack IS NOT NULL GROUP BY rack ORDER BY n ASC LIMIT 5",
+      "SELECT COUNT(DISTINCT rack) FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01'",
+      "SELECT COUNT(DISTINCT rack) FROM bgl_events"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many events did the quiet rack have in December 2005?",
+     "reference": 7138,
+     "ok": false,
+     "term": "the quiet rack",
+     "style": "in passing",
+     "teacher": "eva.horak",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSggUKEggTEAEYAjgBQgh0aGlua2luZxIMrMswiQU6QXkhgSYQGgzNNu6IGCCk50s+UfsiMEJbLqc8pt6JzaXMoHiNXAWyp0gK/OumOqcHte9UARhvoOyd+wispalZgjo0PeyfUyqdBMSJRmQA8p8efpLZbfYMhhofvzWQ9FpLFTlCpQ2UyFdHmqdwsN2xcM6vHhPJCjOd04EuIiN2/fA5dvv7M5gTB5Y24YWHRObW15jYuq+pfg+CH2ZBxdbUdTaNLeDlHN0GM8AbJyWk27f4EFintL/9lH+Dtpg1amG7wAFkYzIK3cNVgRqbnLpWcQ3ib3EXuFFOHwRYGYvnhLZUANw2m79Vge0KNBrPDB3J6hn8POj2koBmfu1nphu7hzytS1IuxFB4aRTuInm3Fan95HJQjxM+xxGU0UU215t3awNQnLgZlKg+osf6xkIarqoQTGGLlUvwChCBfDraWQe6k51shmgJ013x3uFVvZMQjpfGA41lAMc5Ha2+ralRIwN9RFBDrfUVwB8b5IWRTRqIJZnVBwfehs+E2GT7EndNWeLfLxWuA7MmgMt+sJzsban4T2GZQ6yhL4rU6OGqjltVh9s+Hmw5DVj80qqkIAiSde/NSGKOADSBdlGFbmlDXVvOk45Oqqmh4tgDr65mfDKLWMI2crMJf3zlJxpZAwIYgjD5vjcn6EPYiHz0gzyGTnDgxkHslvGaufod5tzhylI0IETh+X9CVF+aXpqnvUX9ZJ1gYmSBs0R5PyBj3KWQF/7CqtpFspCUblcaIhzPgUXIyGYtzc0PlDj7+48DhhMEhLmgF0epSPzlN/I1HfmIx6ngpysaRa/vZK5nXcwzJpDO+XF4H28YAQ==\"}]}, {\"type\": \"text\", \"text\": \"There were **585,666** alignment exception events in total. I counted every event whose message contains \\\"alignment exceptions\\\".\\n\\n| Type | Events |\\n|---|---|\\n| Double-hummer alignment exceptions | 295,764 |\\n| Floating point alignment exceptions | 267,725 |\\n| Integer alignment exceptions (\\\"Kernel detected\\u2026\\\") | 22,175 |\\n| Integer alignment exceptions (2 malformed \\\"dear\\u2026\\\" variant lines) | 2 |\\n\\nI read \\\"alignment exceptions\\\" as all three types. This counts log events, not the number of exceptions inside each message.\"}]",
+     "seconds": 8.6,
+     "sql": [
+      "SELECT event_template, COUNT(*) AS n FROM bgl_events WHERE message LIKE '%alignment exceptions%' GROUP BY event_template ORDER BY n DESC LIMIT 10"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many alignment exceptions were there in total?",
+     "reference": 563489,
+     "ok": false,
+     "term": "alignment exceptions",
+     "style": "stated",
+     "teacher": "tomas.vrba",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS/wYKEggTEAEYAjgBQgh0aGlua2luZxIMAGyAFiNfBy5RPvioGgySE6YWUl321oqXVXIiMMRw6LaSIR039zpoXp0Ld1sOeIkqUC4aqKr3VuYxsNf6Vlftq+lkfhel7V9blkL5VSqaBi5yJVU99pXEosI4TqlqLJypUGplcJnCU+H6iydSL+CMQ6bEOrA2+atuQ9CREhQ9S3JimLin1zoKwMGzzi9or7VN/3ZjLvs4XoLa2jjTvSQHVsynpYBnMZWXT7aGqrtXqdyy+ntwgkowwBvO1RQhTzlSo72iptt+ki6G4L2VsJumBHwF/mnd6QBRQfxjAq3mhaNE3nCuT7+PT3pR1UcLkT7gbfwHshKr3cRrTGzLtQv8YyOtaHF+irSMY5r7OtisRfcZA3++Qy6AmID20RiwFiT2d+WHdWf5PUK0Dr/au5NhIoVFo+6brsRPHIxNaCpX98sb/TucpGPOMKDAJAHF6/a1Sfw/Da4lchjHcHrX9zI7ggQCu/f+u/y7nE5pZvhnfXiQAF5/fBK3DUhbwYfDFfMoYUa6GQ9il7sJC8IQ1BmaqDuJHcCLSKpUcPGYqMMNIWdLGIQDV7rI0xG36Bkaz1eNsM6mFMgrcRTLa5sah9yiDqWeuaWwORM4TriRTx5Npmazl6AYgCiJrujCBJAUqZTcOjpF+U+7NJkWmeHC1PP7fBoLIlA6QKUe9WpO8PWrmidtXamA50hOWnRNhBs7gK6XfdwSmyWa44f32VqyCHDz9DFW9V8T//2JbeUCp6U8+lPScUldFsAjqGz7mW+SAE+oyl1BzaSIO2iMEh0Tmv1bjlUihwQ8EPReKGhhfbgLNIrd91koivjrQsJgRlcKx1CzhsAvRHYGe6IARiSOX96WZAYuGvxVlY7pgW6hESO6zOJyu6QB6saaUQ+sP99mvOcKIWTu8eaHgc3W9tkccU2sEkGzBoOMshTPFi5GTdDRdoWKIT/kQD/kK74WKzSFsZuh4nPDKDvRhSDVznJ71lV1gLCyREWzhCkMfygwjLH+CHxyChEOCDQnGovQukqXlXIpHk7NAUopbgdg+vQDK1Xa7xWCGBhWXaM6tWWXAgrXxr4uVR2A0P0SuYWNdDlf1QCXsm0ZV2RUQqi2OB9+8yi0RZ1PA25aK7wrgDGUnnm6MXCFzTIbiRdunMhlJfFewEC62p+INOJrZiQAGAE=\"}]}, {\"type\": \"text\", \"text\": \"December 2005 had **1,296 login failures**. I counted the FATAL `ciod: LOGIN chdir(...) failed` events. These happen when a job can't change into its working directory during login.\\n\\n- 816 were `Input/output error` on a `/p/gb\\u2026` path.\\n- 432 were `No such file or directory`. These came from several paths: 256 for `/p/gb/rfisher/\\u2026`, 128 for `/p/gb\\u2026/glosli/\\u2026`, and 48 for `/home/loewe/romio_tests`. Another 32 were for `/g/g\\u2026/loewe/romio_tests`, and 16 for `/home/loewe/romio_testsuite`.\\n- That adds up to 1,296.\\n\\nI left out 208 `Error reading message prefix after LOGIN_MESSAGE \\u2026 Link has been severed` events. They are connection errors that happen during login, so they could arguably count too. If you include them, the total is 1,504.\"}]",
+     "seconds": 5.7,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) c FROM bgl_events WHERE event_date BETWEEN '2005-12-01' AND '2005-12-31' AND (message LIKE '%LOGIN%' OR message LIKE '%login%') GROUP BY event_template, level ORDER BY c DESC LIMIT 10"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many login failures were there in December 2005?",
+     "reference": 1296,
+     "ok": true,
+     "term": "login failures",
+     "style": "correction",
+     "teacher": "jana.kral",
+     "saved": []
+    },
+    {
+     "answer": "There were **3,358** cache parity error events in November 2005.\n\nI counted every event from 2005-11-01 to 2005-11-30 whose message contains \"cache\" followed by \"parity error\". That covers 9 message types, including instruction cache, data cache, i-cache and d-cache.\n\nMost of them, 3,206, were \"instruction cache parity error corrected\". The rest were smaller groups. For example, the i-cache, d-cache search and d-cache flush messages had 39 events each.\n\nIf you only want the instruction cache errors, the number is 3,206.",
+     "seconds": 5.1,
+     "sql": [
+      "SELECT event_template, COUNT(*) AS n FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND message LIKE '%cache%parity error%' GROUP BY event_template ORDER BY n DESC LIMIT 5",
+      "SELECT COUNT(*) AS total, COUNT(DISTINCT event_template) AS templates FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND message LIKE '%cache%parity error%'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "jana.kral",
+     "question": "How many cache parity errors were there in November 2005?",
+     "reference": 3213,
+     "ok": false,
+     "term": "cache parity errors",
+     "style": "stated",
+     "teacher": "lukas.brandt",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSzAUKEggTEAEYAjgBQgh0aGlua2luZxIM48odIP9IA09MUXyiGgzVeqfP8GBejUo4S5EiMBhSAHe4saS5CyoYLNKZRRx0VjbbtM5+Ue1MOX+lbk3k5oY8wCg0ZzhgQpIqk/4HJSrnBArNE+DLNlqOXFSzXm+cXA26NnWtDpGt4ggxg0+nx0NBvkrIqqVnZhlZ3xKstjupL2XVlBud7LBTHCrkgDXNrt/ZLpDJu+C4pUkEIQk27JTF8iV/x+/4MuAf9EOTyeSIBWjUIOANIceyErP28G0yWcPBK7xWtbfs/yzoce+WQcbKL36X576r9VoLvaiOBqbS6cDhwm3/fH14c99f8qhhdx+gKevAjWA6bhHgEnEuhdY8NSvapuhW70RWpbk35YD2pnCOUnsjUI8iQtQgyGNFJtCwFuHXA/vBqMreWGQC4W6h+lp9WtUq54pltN3dG3b4ox5v0aTcIWCdqHHgAd450JyFTjA9Q3yQZqHjmZd9aNWYcwhkOXNOxbO0SFnv7ePebthCWP2LMnSnBnxtoenoHpxI0Vt41qzhU+9Mgj/11oTC4ZAV0z4Eyke0AC9nQQISqW6OLeoVwz1c6OO45vdZhfclKY6IpTo2THjpg1kABjIw+lzmLDP2b6Xf/K5FpArQEAbP+ETkECG3HcadX9OHOBD6tK7HjPuZb1PhbccODRLANT95gMfHvyO2zC81q3xjva2HGtUxx2EXbX6EQiuG+mDTxeFdy63+0sIo1tvtHZlcOAsg85KwE+HgncCUJe+MSJktlgxNVxuf83HkmNcgGLqJ3gqYjQNXk9X+wIEVDj9N50zrlU1IfW7iu+C7Ifiyj65SNFiHeYac9j9RFyIfegydjLVAwQRrQOO+o4zcdaLeEdWCee7VyRGlsiu63l43VEQwPVu/mm0gz6q2pmVcOBfDWTZ403TnDygAnFDyWB9wXOclgJo5PhgB\"}]}, {\"type\": \"text\", \"text\": \"December 2005 had **31,361 memory error events**.\\n\\nI counted events whose message template matches one of these:\\n- DDR errors detected and corrected, including the \\\"total of \\u2026 ddr error(s)\\\" lines.\\n- \\\"CE sym \\u2026\\\" correctable-error lines.\\n- L3 EDRAM errors, both correctable and uncorrectable.\\n- Parity errors in a bank or read queue.\\n\\nI left out cache parity errors, such as \\\"instruction cache parity error corrected\\\". I also left out the \\\"rbs signal handler\\\" summary lines (135,092 events in December), which only report timing for correctable DDR errors. Counting the cache parity errors would raise the total.\"}]",
+     "seconds": 12.3,
+     "sql": [
+      "SELECT event_template, level, alert_label, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (LOWER(message) LIKE '%memory%' OR LOWER(message) LIKE '%ddr%' OR LOWER(message) LIKE '%parity%' OR LOWER(message) LIKE '%CE sym%' OR LOWER(message) LIKE '%edram%' OR LOWER(message) LIKE '%cache%') GROUP BY 1,2,3 ORDER BY c DESC LIMIT 25",
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (event_template LIKE '%ddr error(s) detected and corrected%' OR event_template LIKE 'CE sym%' OR event_template LIKE '%EDRAM error%' OR event_template LIKE '%error detected in EDRAM bank%' OR event_template LIKE 'parity error in bank%' OR event_template LIKE 'parity error in read queue%')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "tomas.vrba",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 16718,
+     "ok": false,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS3wYKEggTEAEYAjgBQgh0aGlua2luZxIM7hb9H2YV6F5y60zlGgzAMD002knYrx+qbgUiMAjc2A0ZA7GcXvcL8dtFRZr8L0aqNg4dMqaLvt48obU1aH0bTkS/kWQ5hdVa7DX2Yyr6BYcAXXCzEXF79ZZVIRBKo0/PloqN/XCmxNQGybu7TFN525Rf3hZWTmXqilqhVCb1Mm4cKo3Le+Dnp1+l/8L5kpWQZBiz55D+qeQAQ6jU7tKyslDoWP6S6YL6X4frFST1JlHeuLyIU2WBfBu+BeoQqUEzuWisQEsZt9Ywy3Yy50CWlyO+fcdGOXpupnqrVxCZJgXFS5lWh7KMxVRGZ0teU9jB4owONjUOn2cYniswvKTJ4V2dE9cYnhqtLBVm9LsXu0LKGY+hImCOF/usBQeFK57u/+veQXBl6BvUvYQmFcP9PVXKyABb87bm8DTez9J2HSZf/fTfH9KBeioxQLWHiwKhuFeyNdsiwUtOG2CxZTZtUS182gn5nSlewqQ0YAw5Taw3ov3a/0sWbhl1doKrMcA3duL7Bpq5UWLzI803F3jALGNP1KzSUPBinIWfmeR3zQgmZy01DgDashTmGz61ZLjEzwVDTYi1rNVaxt0PMH3Pxgyc5iiGFVhd+mT1hDQLs1ui1z7rFVf9kO+uBaWaYJfG+akM8Vs8ovCwr+wIkAsF/Vy5mkUWDE3AEhJ/qIOQH6atX5hOFXNs/XLcZZek649dTYFvpZmAm2xxOu9nL5VtS873xSzI8NNuZHx2T0YaQidqU8yEja/ySZr6r8vru7tB/SDAennKoGg2fEuVOz85lwsnuBa/A5NhdQgUg8+plPGvL8/0HwVn+Y1upBwbnREyM8aH4YxmlMiz2nSa1IZIjFsqDyeyEgEK4s6IUMyfJDjJ1S9ByYTyxai6sGXdBq65nY4B2uS5XwQ1UHOZU/n6JXhbMTheOR6TLK7KLZzY6IRQPSvFN4qgOjMF9fUTatPe1vHQFiNv26L2q2oXeSLP2yqJMcP53EW3xVgzDPZl0wytjjeoCDWQ4gsen58XNfiHANsnZPypZeJgpZwMdIkW18MPu6hyQ0sIu2DPGjp3zvMRbxXJ83WL6Am6RiI0mN34lzVM4XY32fyAZXjnFt/Nd83VeLOp2MKBzxgB\"}]}, {\"type\": \"text\", \"text\": \"Memory errors in October 2005: **16,324**.\\n\\nI counted them as DDR memory errors, meaning events whose message contains \\\"ddr error\\\". In October these were 9,157 \\\"ddr errors(s) detected and corrected on rank\\u2026, symbol\\u2026, bit\\u2026\\\" events and 7,167 \\\"total of \\u2026 ddr error(s) detected and corrected\\\" events.\\n\\nI left out cache parity errors (about 16,000 more, mostly INFO) and L3 EDRAM errors (836). If you count those as memory errors too, the total will be higher, so tell me if you want them included.\"}]",
+     "seconds": 7.8,
+     "sql": [
+      "SELECT event_template, level, alert_label, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-10-01' AND event_date < '2005-11-01' AND (LOWER(message) LIKE '%ddr%' OR LOWER(message) LIKE '%memory%' OR LOWER(message) LIKE '%parity%' OR LOWER(message) LIKE '%edram%' OR LOWER(message) LIKE '%cache%') GROUP BY 1,2,3 ORDER BY c DESC LIMIT 20",
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-10-01' AND event_date < '2005-11-01' AND LOWER(message) LIKE '%ddr error%'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in October 2005?",
+     "reference": 76963,
+     "ok": false,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": []
+    }
+   ]
+  },
+  {
+   "seeded": [
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS+wcKEggTEAEYAjgBQgh0aGlua2luZxIMn9Gl7dblW1wW/JlXGgz5OXQQ4f/48q0m+2IiMLJRrcE4y+IoUoFQ86BrANQTQgAe5378cVi09k1XjjyZaK4lAGQIRgUd/0VxVW3TgCqWB8Opa0AfqcObwptTy84UFvY/PHcRwLKGXWzP/ZFNEWmIVPuGOcC7H4pLolydtGWWzeaxKpV5ibag/XPStuRYiX2P0dNRBd0iUXU38PMQd60rTyvBm/UMaSNRj+y4j/Xes7qybdNBzk0qPA0SsLhmDSLC566ZO6cCclsazEZS6omGp/Wsy+g2OROSfcLHfSBBY9Cxs8MgM2U67h4RbkEqqBfIOubJdAJaGSO9gohx/MQdUwwfMRkLQczq8NDX5kIvON+5VIGKt24S878efbnjAiU+6f7NGzlkW9znyFQP9OMR6CSWVLnHmvFSc6JR2CYUYxKwsBXJMMzH0oC9Ixk4ZjysoCaN9z8GIS8zMegwZNeGyeoC1bTt7pw6OVxxrVyba1KuZB1VJg8sTPZVIGyPv4RnHtPmbKdHn1U0NzsD3X4gguXoPCWHxawOOWCjI7+3hc1DDKa8PIHJRdVVyA5quxo4VA/6ucgRkMMMWSbLtXWnUOJBfrA0/aaM/H4XusHBpTh64vcKno2fDHl6voAidQgaZ15GSm56QQRr6k+IYtCSb8K+j0NHYTrzsS02U9ROQNNV7Wj4NIOCnETz+UstzUTzFq2CFDrCGVBtCYz+tX88a7Lp+lHIR2HQY5KtlQStykwH+qpI2BOY16IG1Z+o3mip1+PEm55QmDf8UzGd0NvGkRF+VwNJ3O7syZpVa3WSTRrmr51EMba+dUkZ3mKWVk57AEIDgwv6KyOmTWwDSeTbJjyX+U3W58+kNENFe9wmE6oj/n9nKD9zkgFNPaAAnBnIuVBI9CfSJ0y8oVc+oVpRvppCKFeLwtlqGDQtA6TPPLarDluZei3EphFl5XpevRMps+NsMulMNXoQyNWwHNUVq2IR+1PK3f5ldreQ9k2aocV0x7tIjMiSzra/N/pvn/eYIk6beANNIoRojVW9Fnp3NG6ofeEgvfoxqCJDqpMXf7A8tltBrPDjLhPS+MMebW1MPOlJLw+I5fJwTtmjxrcaMOc+SXiD/pYrgKHLGN7qMNd7hoBw1pF0lNmOYldjzj2jDFD+BH2kZhMn9E6DWHaqTSskKg+XG7SEPhiBgm8GxrcouFFBqbuo2SHMOfyzhqnBSQh6mlaLapOTa63YzU2ohqX6loxR+u1n/byGjxd9i8+yu31Z6CVMxnESPdU6yimxvOkU7YCg+Xw99ySjHfJJYykA5ahwDJkYW9w7mNCIQdm7OXvoUhgB\"}]}, {\"type\": \"text\", \"text\": \"Dec 2005 had **31,136 memory error events**.\\n\\nI counted three kinds of events:\\n- **DDR errors:** 16,718 events reporting DDR errors detected and corrected.\\n- **CE sym:** 13,403 events. I took these to be correctable-error symbol reports.\\n- **L3 EDRAM errors:** 1,015 events reporting EDRAM errors detected and corrected.\\n\\nThe three groups don't overlap.\\n\\nI read \\\"memory errors\\\" as correctable DDR and EDRAM memory error messages. These are all INFO level, and none carries an alert label.\\n\\nI left out several related events:\\n- Instruction cache parity errors (33,518).\\n- Other cache parity errors (for example, 42 data cache flush parity errors).\\n- The FATAL EDRAM bank and parity-in-bank messages (50 each).\\n- The \\\"rbs signal handler\\\" summary lines (135,092).\\n\\nIf you want any of these counted as memory errors, the total would change.\"}]",
+     "seconds": 10.3,
+     "sql": [
+      "SELECT event_template, level, alert_label, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr%' OR message LIKE '%parity%' OR message LIKE '%memory%' OR message LIKE '%EDRAM%' OR message LIKE '%CE sym%' OR message LIKE '%cache%') GROUP BY 1,2,3 ORDER BY c DESC LIMIT 20",
+      "SELECT COUNT(*) total, SUM(message LIKE '%ddr error%') ddr, SUM(message LIKE 'CE sym%') ce, SUM(message LIKE '%EDRAM error%') edram FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr error%' OR message LIKE 'CE sym%' OR message LIKE '%EDRAM error%')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 64077,
+     "ok": false,
+     "level": "team"
+    },
+    {
+     "answer": "There were **60,204** comms errors in total.\n\n\"Comms errors\" isn't defined in the glossary, so I picked an interpretation. I counted two kinds of events:\n- **CioStream socket errors:** 59,995 events. These are the ciod messages about failing to read from a CioStream socket, such as \"Link has been severed\", \"Connection reset by peer\" and \"Connection timed out\".\n- **Socket-closed errors:** 209 events with alert label KERNSOCK, such as \"socket closed\".\n\nI left out other messages that mention communication, such as \"Problem communicating with service card\" and the Java \"Broken pipe\" monitor failures. If you want those counted too, tell me and I'll rerun it.",
+     "seconds": 10.8,
+     "sql": [
+      "SELECT event_template, level, alert_label, COUNT(*) c FROM bgl_events WHERE message LIKE '%socket%' OR message LIKE '%Link has been severed%' OR message LIKE '%communicat%' OR message LIKE '%CioStream%' GROUP BY 1,2,3 ORDER BY c DESC LIMIT 20",
+      "SELECT COUNT(*) total, SUM(message LIKE '%CioStream%') cio, SUM(alert_label='KERNSOCK') kernsock FROM bgl_events WHERE message LIKE '%CioStream%' OR alert_label='KERNSOCK'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many comms errors were there in total?",
+     "reference": 59995,
+     "ok": true,
+     "level": "department"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSpAcKEggTEAEYAjgBQgh0aGlua2luZxIMO3pG5ovtf9ew0XKuGgym8zm2ey5gl0N94fAiMGnNc0mjHte0caWZUqf/c9WYfS1KF8M83ZG0Eu1nBmQKFVqVqieN5EUBbLQsOprJVCq/BpiYA+xZ4oDTCafoASeUrYmlHEO2CGF1qpXhVb0bfw7DiMwTUYtZ4RsMj0dOa7ujEf4StBTj7slptDwM2OIrtxwdYS7sEo4eSEeaZ+xJyobyKZ0at5r4C+9OOy2nBMwlleHyMSYfRD+y4Q/+KqUaR4pfyuAU1Wt2w3CTygUsKJoExQsZpcewJqwWtl4ZQ5dQfAGOUE+MOr2g5Kg24xnX+VOnpnwtfbukrr0SJTUZc/bzpslGfbycuaNLfGpn6y11D4x76Gq6aKA0KpaTitvglgimz9oZhHcW54p6KVyX1K3kr5m9/SB3zPPfO0aR4VZRmOoUQ59Ch53QFde5yKEmQuVvUgAkkrMfcaCxlwdLbRukSOC7LJQQzEI/6yRqjZsJgXmXQW/sAmdpLXi7vOn1rKBAy72NKMMPprQFiGJ91SB6Nk15voZfnhYt+/KTllb9UU/Ddt31JVU/xUuG1yudR6Y9GC4OUSmbf+DP/LjsGQlyeT8ZX67lGDDhW5fJVQyn7jIv1mFyiV0lQscsKJ21CQUORFCFRMlJt25XsmUqzm3HS5Tb7/4/ZJaXamGLN18/m2CU2emJOaTzz8sNhMp12AiGU/lADA67aoVSp6LWbGALwSL8RFIa0Gzsw4D66XhDImtltrQXULfiKurI6UogBAJDgh2Kq4YSredcvBdG2WL1Yz47qROsEcUqzwgFqeCHADCDDQVrMz+V2bDNnV7nSFJwHASMkJBvaHkvF3/v4cnS4oeDZAcR1tMTquE9ry7uK3bcCSwJXZ/yem5vG5Qv5mua0u6n8YLvKpsCZeuxgklsC1DfdColYnMDG52lCcmV0xFiRRGB0E85uk1d5+MATpqVOxd8eUoIusbmp7f70C3MAYLnqBUBlHNkA9gEQgkCCX8Da0rm+9QjkQbO6Y4DopxTVTYZSRa+lM8KY2iDqI0l26mi5MHEm2yLxQ20pBa0lXQpfUFVVg6yG2yVpA1oFIUZPTHCvFDzzMh2Msq/iFw96RCSj89RZG6ey4Q0RmYZah0TBX3N/dAosy68KsUMNVBfgtB16NsgsXT/x5Jznf/3aaHrpIX7U2BDhIWVndaEdDzK/eoHsOG7fu/CVn5c9hgB\"}]}, {\"type\": \"text\", \"text\": \"November 2005 had **27,973** node card problems.\\n\\nI counted problems as events with an alert label, which the glossary calls incidents. I included events from any card on a node card, because a node card's problems include those of the cards inside it. I counted events where `node_card` is not null.\\n\\nIf you meant fatal events (level FATAL or FAILURE), the count is 47,866. That is the 27,973 alerts plus 19,893 fatal events with no alert label.\"}]",
+     "seconds": 7.4,
+     "sql": [
+      "SELECT is_alert, level IN ('FATAL','FAILURE') AS fatal, COUNT(*) FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND node_card IS NOT NULL GROUP BY 1,2"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many node card problems were there in November 2005?",
+     "reference": 50538,
+     "ok": false,
+     "level": "team relation"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS+wYKEggTEAEYAjgBQgh0aGlua2luZxIMiRK/3mRdJPMqTJbWGgywur5f47gbUKGtw6AiMEJahZSflkaLLLmdbfpPAucnJ8op7VxtKEQRMySZh77myzm02c6BCRF2aYOraieGByqWBkWe9ONsQhB86MIQEzGU+e7J2yb5XJgkGCt389np/xKzKLRXtvztt58erMkwzQE5zqCcREX+JjVfffuEnlqgtTlS9WY4O/E84+uGeMNLwVBf2c+oD/+sSkiU1UUEAivdLIwhEMWPDTMZTZSlEQRIG14uyxUaO8Wfh9Qc8SgKAaAFwRcVI2w7ZA1fz4dHqIozN8lDqupZIoOLD8DlaQw5rTpUKBCgYgfO0YaF4qZN1ebppsfjxUeTDYklQL3NKWdE8fId6E9fntwgPrhUQS7/UF/yF2xK3ZKFRgc9mbB3Inab9bNGHgiUHTEIl7bY/hR+IhB6hRnKF9kvV0TKzePaTSTltqyIMOhvgktkNzJzO/w+ylRm3nf/0MgpxXPDosb4u4rkUhzbT0jCZmWKguXdRj3CCxDRNMtuM9jaOLI9jai7VQNVYq5fyBawYtabgj1Ifmb8R+a668WW+T7kXXmznPW3BJLAQl3/oGKUU6bhTWXNVH0Ur8Ari0t2VnHYe196BvbUZHyXBWtXKCEaoTv0eIUnMsmUW3bivmyHJoC1vUal3tQF0SkTp2luYPr7Fpof7oj1R2XMVfoaj9JK0ca8FPxp5CZjdhPjzdJcF8mPpulxG86q3iTAPnNL2tlaUN0P76vaESrKDKnwIsaESW6UCXaNhnAhQy2OUQexSyJ3c7EmCSRQYE6lCBbt/6OYKQhSfVAHQqlzvBueN6+dhJFUkDzkslFio/HhzQXHA/+iI//XOYhMB4TZqNwBUJmnDElR7gAXGYQsLTx+A0vT8jkSf3oL65DBricmNSX4jOzUo7VtBB2c51hEwK27hznGr63BRuhi0o9Jv0Hs17wfChFM7KPK2hixFWlqZo8Qmc308Enck99rG+hPwG3CQW5KpG+rxf8mSvBE+3s8GoqfEo0DUeWfHPBmzH24xeIbMN1eG7t79CPJlHo3gU4pWG/bqC/2CPDjqb2bWBP4I2l/9XwoGEIseAgW5aiiRzu7/XoGLZzpDd9+nQh4m2Dyw9Qb06SdNhQ52NU6gFqiV2NTb9TwxQUfqdqFiNAYAQ==\"}]}, {\"type\": \"text\", \"text\": \"The noisy rack, R30, had **7,532 memory errors** in total.\\n\\nI took \\\"noisy rack\\\" to mean the rack with the most logged events overall. I counted memory errors as three kinds of event:\\n- **CE sym (correctable error symbol) events:** 3,801\\n- **DDR error messages:** 3,690\\n- **Parity errors:** 41\\n\\nThe \\\"noisy rack\\\" and \\\"memory error\\\" definitions are my own reading. A narrower definition, such as DDR errors only, would give a smaller number.\"}]",
+     "seconds": 7.2,
+     "sql": [
+      "WITH r AS (SELECT rack FROM bgl_events WHERE rack IS NOT NULL GROUP BY rack ORDER BY COUNT(*) DESC LIMIT 1)\nSELECT (SELECT rack FROM r) AS rack, CASE WHEN message LIKE '%ddr error%' OR message LIKE '%ddr errors%' THEN 'ddr' WHEN message LIKE 'CE sym%' THEN 'CE sym' WHEN message LIKE '%parity error%' THEN 'parity' END AS kind, COUNT(*) AS n\nFROM bgl_events WHERE rack=(SELECT rack FROM r) AND (message LIKE '%ddr error%' OR message LIKE 'CE sym%' OR message LIKE '%parity error%')\nGROUP BY kind"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many memory errors did the noisy rack have in total?",
+     "reference": 38442,
+     "ok": false,
+     "level": "team + team"
+    },
+    {
+     "answer": "December 2005 had **17,797 incidents**. I counted incidents as events with an alert label, which is how the glossary defines them.",
+     "seconds": 7.7,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 44873,
+     "ok": false,
+     "level": "team"
+    },
+    {
+     "answer": "December 2005 had **17,797 incidents**. I counted incidents as events with an alert label, which is how the glossary defines them.",
+     "seconds": 3.7,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "vera.wolf",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 8785,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "December 2005 had **17,797 incidents**. I counted incidents as events with an alert label, which is the glossary definition, and used the dates 2005-12-01 through 2005-12-31.",
+     "seconds": 4.6,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 17797,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS3QgKEggTEAEYAjgBQgh0aGlua2luZxIMNLMz7GS+OarvsBqoGgz6B4SAtFI9TphHXo4iMJwxJ15t2EmXi0qLzWUnmOIRHMY7qQjMCzmtQNpnrkHnVpp7H7Lct5inHzeV6bAx+Cr4B0krrRW04NE56MRCWBePgjDAwgwWBzbsJqFEcn+4F5IlD0lmGMTzAQDZiVyNzGNVzsUtz0vYAhmoxIIpgokuXwIEY8fxnunxhpq/EDiOnYunRkkfeUUeRQLth4fUzAT+fGQLB1HQNadpNqbIgPYYN561qMI851aj843U0kbETi11E8mgISUTXBwvwKM5/f8mpWp2IOChSTyKeCpCxFz1JKoetVSlGjvWK1GkQrq4U29HQdasbAWrcOBtFMCoGj4hZxqmjplta2JQQgY7rZvvvvq8poQpo+8ZVlga1O/QB4Uw4ckAZHWnTDDuTZagb94pZZ66ph7wauL/f6reZRNhL6tP58lBSlGt2j1a90qVB1PvRlVlJ3KO/ePoWKZOJnCMKzc7L9UXbXVK1GFGfy7xXL3FTAy6e2MEh14owv14g6sqO9UMd2VEbig1eESAd0XHpFAAn5Y5K3HnjKTv3kPozFZePNsgTUTIGqzMjX5K1y30IiMrOvr3kEFW4/e06SEtZZ4m4ez5xyTWrqhFSiniPPspVGwamnycXgaMXrnieLk48RIE0gxYBLEdjv8kUQK/tXItAWkDnAsFlmQkp1nNW83Bxuv6kCH5UiwF++UYBsYoXikh5nl3JFg4mPrV4l2OmMNEofGSrdJz8uvE9iPgQFFUVLTLKBB41ppLaRwy+hTweWath/pwD7iZp3/uyw9zrnNP8yVmMsRH/PYHmLK9Sssar063T9zD+qOapTyKdGUthw10oMOKR4jSyKqPTWywV0OAuLeqYwx0tps75V/lGeEltAG23jr1pW9bU6h8Q6MFHMEgsAI77GN/ed1ZJ79Eyw5y41t5hM2wN66TpYsua/Bb3maPlef1+RDQ+OMacSmRhnyKoOMvOmMSRzYqdXrfCS3xwBggFWBz+mUx10h1olnryGHt4RmXzjmJZwjpW4Ve4FO1q2SRauznk7G8swbOllmyR0DJvbRH5+fy7fdWk1ROqX1KNgBvvyP713iXK8/bKnECRFfoslSs6mP78gUPtkW0HsYnTWfOaIOeluo9FytErai5kZhH1maQwpwRGGnluzgTcDOAVggY2soMvz7wgv5L+a2FnZbH2H3nFcefD1tLdFWpEA9fImthKhgrHPYXNRHwyN1Eb1mtZrzl/c5lpcKkjhhsif4Syt+QWI91aHEZOmQKTPMqnyJ0pvtQRQo3zplwkbYcITAfpqFRYu6ydFmoAfnlLcfMP+UaLE/e4r8hY4bTxBCYKIjiatNvXlsAaLxYTr8pLII4CaUWMYwJ+DERtBoK+OzrP92A3LsDjOktK/RsnkVcVYR0go97zpq2puDMsSvVaGYSQ+roZEX769dM3BLNrdt6GAE=\"}]}, {\"type\": \"text\", \"text\": \"**There were 63,845 job failures in total.**\\n\\nThe glossary has no definition of \\\"job failures\\\", so I used the closest match. I counted every alert-tagged event from the APP (application) component. These are mostly ciod errors, such as links severed, connection resets and timeouts, plus failures to create node maps and failed login directory changes.\\n\\nThe count by alert label:\\n\\n| Alert label | Events |\\n|---|---|\\n| APPSEV | 49,651 |\\n| APPREAD | 5,983 |\\n| APPRES | 2,370 |\\n| APPUNAV | 2,048 |\\n| APPTO | 1,991 |\\n| APPOUT | 816 |\\n| APPBUSY | 512 |\\n| APPCHILD | 320 |\\n| APPALLOC | 144 |\\n| APPTORUS | 10 |\\n\\nI added these up by hand from the grouped results rather than running a separate total query.\\n\\nIf you meant something else, such as all fatal events or the kernel crash alerts (KERNRTSP and KERNTERM), tell me and I'll recount.\"}]",
+     "seconds": 10.1,
+     "sql": [
+      "SELECT alert_label, component, COUNT(*) n FROM bgl_events WHERE is_alert GROUP BY alert_label, component ORDER BY n DESC LIMIT 40",
+      "SELECT alert_label, event_template, COUNT(*) n FROM bgl_events WHERE component='APP' AND is_alert GROUP BY alert_label, event_template ORDER BY n DESC LIMIT 20"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "quinn.nemec",
+     "question": "How many job failures were there in total?",
+     "reference": 1734072,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "November 2005 had **49,307** fatal events. I counted events with level FATAL or FAILURE and an event date from 2005-11-01 to 2005-11-30.",
+     "seconds": 3.9,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE level IN ('FATAL','FAILURE') AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many fatal events were there in November 2005?",
+     "reference": 49307,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **32,251** Lustre problems in total. I counted events with the alert label KERNMNTF or KERNMNT, which is how the glossary defines Lustre problems (failed Lustre or filesystem mounts on compute nodes).",
+     "seconds": 2.0,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IN ('KERNMNTF','KERNMNT')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many lustre problems were there in total?",
+     "reference": 32251,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "November 2005 had **11** TLB errors. I counted events with alert label KERNDTLB, which is how TLB errors are defined, dated 2005-11-01 through 2005-11-30.",
+     "seconds": 3.5,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label = 'KERNDTLB' AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many TLB errors were there in November 2005?",
+     "reference": 11,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321** rts crashes in total. I counted events with the alert label KERNRTSP or KERNTERM, which is how the glossary defines rts crashes (compute-node kernel panics and terminations).",
+     "seconds": 1.6,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many rts crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were 0 core dumps in December 2005. I counted events whose message template starts with \"generating core\".\n\nThe log has core dumps in only two months: June 2005 (419,795) and July 2005 (1,286,956). Nothing matches in any later month.",
+     "seconds": 6.6,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_template LIKE 'generating core%' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'",
+      "SELECT substr(event_date,1,7) m, COUNT(*) FROM bgl_events WHERE event_template LIKE 'generating core%' GROUP BY m"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many core dumps were there in December 2005?",
+     "reference": 0,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "I/O cards reported **47,529 events** in December 2005. I counted rows with `card_type = 'IO'` and an event date from 2005-12-01 to 2005-12-31.",
+     "seconds": 3.4,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE card_type = 'IO' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many events did the io nodes report in December 2005?",
+     "reference": 47529,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321** kernel crashes in total.\n\n\"Kernel crashes\" isn't a defined term, so I read it as the glossary's \"rts crashes\". That means compute-node kernel panics and terminations, which are events with alert label KERNRTSP or KERNTERM. If you meant something broader, such as all fatal events, tell me and I'll rerun it.",
+     "seconds": 4.3,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many kernel crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official, by alias"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSnAgKEggTEAEYAjgBQgh0aGlua2luZxIMxozsA4A6wZ4ALiStGgw49UwbnpIlxv9gsAoiMIc+/TPcomh+SBfCxbZncMc40y8GcTkwnSR/xCbd/0kZxbmhxUMtzXAUUxT79Y0VCSq3B1BVR/Oh8eppcUIw+LbCUlKS8q06KZ548RYtp1QokQH4bfhiEijVmh0Q950SUMhermuhcHngbGnYcD92Q/19PeM/WsyrEPsmezdip9WQq/M3dttzike1lw0LwgwNXpLhTZVJQ2eGRdQbXtSaP+OlArtVTnsXLRFI1UQd5FnIUCRuUJlFXdDypaEfTv/8edccMwLBctwngK8Op6bys4zv+KrUUnlxlE9ikzSw9daJpmIf4vMn3bl/4NRYnT9kobW4VkAXuW4Myso5XEhYXQAzzlQadFjaNfey7VjNOVqGCFJwJRrwpr/uL6Ub0p9s+cw/EistXkc3QVLP8YZAuLr5EWzmnY43+i7IelUJImPa7rgpyj1FltEtHGP109ZyBF6j5Dmh9Sy4HSXIfwCrrWFK5brx6inPq/BnytG4EtzcmmcZ0wbxHgimCYye7KazaxsbHT9L/WZ/KOrbSykskVyzWx8+I3xxVGzjgFj6Qb3GLI+3dUWT2axCRANM3czLjdIgMwcjugo9db/4E650vaMZLCkPRPCsKp7ejvCsbZbxrKRDTXsjf/lS1RnnEAahTaNnNTtXqe9kVN4fH3Rml2wNw4d0O3FgRrIDkXw0UaOc73wSH0ZKipwur4ICxyfGAtwNvoM0Zt/uYP3QE4Z4099xSqlQljg2NasSgzTcdAuPUnjJ5H8NbiM8302RKT6gdIgoX7HJJ3GUGKoeWjgSIesyWvyJf+exl4Rje/o3xjqsXrnGqxTi+WpqmcW7DLii0sxlVnLOw72Ir/X8CFPG9zWCVCZCW8J7h8hC9bQNqC/iRUM+fW1m0tGq5DS9b2QtSZZsyldLGcp8y5dHz+lCRpVCEqySfFlhzTOpnFt3kPlR8a1MUm27vM8zwXFBQqkrMikBm5jdyJcRI7GO+8BNWpC41lKsphmFDBdwf9RsqQN8Buc/jB6sDld7P73aFuGhsdG/eD2lg0sWK4K04CHtJMZ1AkjCZvhRfb/g1iBD4Tdp1M8UWi0R4G3I1/gCsXwkM/WJc4buHUun5n4ruQZDs/34CoNKbAM2joa5x4btQu68QV0rzaA5DxgIoE+VTnRFLhKWB6C9UwCWENXoFp4Ju0UXP97gyC/Ce3FwckFNEc9FHrDxzH8HLZsbk9KsdKqrDg4ybfNx19zo2LS9wSzWATlIonaSPeS4fqkL2qsmRkT47JP0i29T8PQPN9kQ3kmYV/HFPD6uDbThcjMqO3kBmNVD4AJmd0yXJiKEyPuNeYWkPrVOZJD63iAl5hgB\"}]}, {\"type\": \"text\", \"text\": \"Il y a eu environ **56 141 erreurs m\\u00e9moire en novembre 2005**.\\n\\nLe journal n'a pas de cat\\u00e9gorie \\u00ab erreur m\\u00e9moire \\u00bb. J'ai donc compt\\u00e9 les \\u00e9v\\u00e9nements de novembre 2005 qui concernent la m\\u00e9moire ou les caches. Ce sont les messages `CE sym`, les erreurs DDR d\\u00e9tect\\u00e9es et corrig\\u00e9es, les erreurs EDRAM et les erreurs de parit\\u00e9 (cache d'instructions ou de donn\\u00e9es, files de lecture).\\n\\n`CE sym` repr\\u00e9sente \\u00e0 lui seul environ 41 500 de ces \\u00e9v\\u00e9nements. Presque tous les autres sont des erreurs corrig\\u00e9es de niveau INFO. Seule une petite partie, quelques centaines d'\\u00e9v\\u00e9nements, est de niveau FATAL, par exemple les erreurs de parit\\u00e9 des caches.\\n\\nJe n'ai pas compt\\u00e9 les messages de reconfiguration DDR (`ddr: activating redundant bit steering` et `ddr: Unable to steer`). Je n'ai pas non plus compt\\u00e9 les erreurs EDRAM \\u00ab uncorrectable \\u00bb. Dites-moi si vous voulez une autre d\\u00e9finition, par exemple seulement les erreurs FATAL ou seulement les erreurs DDR.\"}]",
+     "seconds": 12.3,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND (LOWER(message) LIKE '%ddr%' OR LOWER(message) LIKE '%memory%' OR LOWER(message) LIKE '%parity%' OR LOWER(message) LIKE 'CE sym%' OR LOWER(message) LIKE '%edram%' OR LOWER(message) LIKE '%cache%') GROUP BY event_template, level ORDER BY c DESC LIMIT 30",
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND (event_template LIKE 'CE sym%' OR event_template LIKE '%ddr error%' OR event_template LIKE '%ddr errors%' OR event_template LIKE '%EDRAM error%' OR event_template LIKE '%parity error%')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memroy errors were there in November 2005?",
+     "reference": 55337,
+     "ok": false,
+     "level": "team, typo"
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSoAcKEggTEAEYAjgBQgh0aGlua2luZxIMhavK+xUYB7tUMRj5Ggw+5orLDAY85v2pvJ0iMCXis+X66geeLtoeYNcmonWyfJd6fI+qBjYGjuCcctOU5V2ye4jl1BwyKSvBg9cpmiq7BlHtbFIQwebMefAZKwkhDOeZGATSMEIyzoDo1tT9M1arvz3ESSsLCxNKNUeRfsX8yMI7n1JWDd5gYYoQDxkKjRk29eIGEWbX2sGFgDCaYIWUTL1n763t2GYVGkcLOWXo65mWP+JxiwDVYHyivUygm5EkuusDYdC4LrivNIgmylnF45PtJHBZaE8XmxhVUFWFqk88qrl3YTLW5dlSdhTyt3N9I60wPtiZEy5jumgMEGWL+HMhM2ZyLoZ7s/amIADIZvABhwwjFxwoGixEmYlxoQA39EK/F1ykxqaw59qTvBO5vK0DxuBhg23ClNjptzAgZe3VuyP5uEV0hPBLmdIuI9GWeBdDx3SfEEr11eRKlgQIGWD+H6+ueA13T13iMcmGoXZXmq/4XQfg7Zv6abL5Ccug1+f5OGhxKjSdxJJw7jdU98Q8wygHPe+4CHoRe+LkyD32KI/ICZxqfWhBMxH5vKQTx4JP/jAeQ5Io2nw89Nmf3rWSoIHXP83V1FR7xzhWgvH1J9CCPj8sG3sm3RPrGsG4SCOo20waXqZhcvv86DVnMhBulNzKizvK7i6MzV0DsBM6+HGOEKbENmpV8nOGJEI6f5dFCl7xgsbtj9L3ZEcyebtyipGmHSEdfnisksT1L33mp0lpHORAa+u2o/0CAnn7V906/vpeQCpoaWp2sKslsv7mwviZqfsb9vLO66F+u+4+/pO86FsVvwJvo/azLwEFV6Rc4/MspYkHno1loAsox1Fgaa1EEgBTc8twMQLwmTGSrxS7dH3EmXNkE/NpAtg17ncS8ZwoSec/+rJyEz2iytuyZ1qeB1ujiywPMoUTMM2KHIUWT0uDVAs4mJbNIgzkGsvTdpu3TmmzQc+FazIM+EqtxdrQTMYbY8PoGapWcyrcz1u1o0S2PuKRsmc1zKH+mJ73dMNT7mgPs20KiOtQoCz0C59LSe6T/4R/G+mVty2P7OG9Yx9aAeU7BO1B1Rhm2EC13E9HkHRrtv6FcioRAjTudnrwCh6Y9S+Lsb2CmtJBZksRjoBRFAc2W9jSdCgtT+wqZSp8H6dbB3xbMW5OKE5WhSH0hxPbR/FUBq3O7JxdaEU2p7/LXeh0GAE=\"}]}, {\"type\": \"text\", \"text\": \"Blue Gene/L logged about **166,940 RAM-related events in December 2005**.\\n\\nI took \\\"RAM problems\\\" to mean memory error events: DDR memory errors and EDRAM errors. The log has no RAM label, so this is my own filter. I did not count cache parity errors.\\n\\nThe count breaks down roughly like this:\\n- **Correctable DDR \\\"rbs signal handler\\\" messages:** about 135,100\\n- **\\\"CE sym\\u2026\\\" correctable-error messages:** about 13,400\\n- **DDR errors detected and corrected, per rank/symbol and in total:** about 16,700 (8,369 + 8,349)\\n- **L3 EDRAM errors and other EDRAM bank messages:** about 1,300\\n- **DDR \\\"Suppressing further CE interrupts\\\" and redundant bit steering messages:** about 450\\n\\nAlmost all of these are INFO-level corrected errors, so most of the total is routine noise. Only a small number are uncorrectable EDRAM errors (50 in the top-20 breakdown).\"}]",
+     "seconds": 15.2,
+     "sql": [
+      "SELECT event_template, level, alert_label, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr%' OR message LIKE '%ram%' OR message LIKE '%memory%' OR message LIKE '%parity%' OR message LIKE '%EDRAM%') GROUP BY 1,2,3 ORDER BY c DESC LIMIT 30",
+      "SELECT event_template, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr error%' OR message LIKE '%EDRAM%' OR message LIKE 'ddr:%' OR message LIKE 'CE sym%' OR message LIKE '%correctable ddr%' OR message LIKE '%parity error%') GROUP BY 1 ORDER BY c DESC LIMIT 20",
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND component<>'APP' AND (message LIKE '%ddr error%' OR message LIKE 'ddr:%' OR message LIKE 'CE sym%' OR message LIKE '%correctable ddr%' OR message LIKE '%EDRAM%')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many RAM problems were there in December 2005?",
+     "reference": 64077,
+     "ok": false,
+     "level": "team, synonym (Mem0)"
+    }
+   ],
+   "taught": [
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSpggKEggTEAEYAjgBQgh0aGlua2luZxIMqXy2cOyosnMPurYAGgy/5zdUzsQpAlev60oiMGoMFe3uF7pqgLvIJRk/RSoZoJCrgABl9nATZDP+AyDXh7ogNjZBAYRmi+5ncJdbmyrBB8qm6wafzypl8F0Ci5qc1mWWrx0wQDVVueODmeYTPJeHa4iI7h2jp10Nf8X8EMzxlQl9cA4eInajTvEihJg+LAGLCSCVO2pyrrY7A/s/cYOA2f7Hc8SmFHdHbL6Vblm42Gw0Q6rjshwIfOgYeWMTj58CNQ9QQn72aiecCWSOB1ctMjpxZl3aR8zVT4MvQfNrH+PFVfPOcccmDfwRSIlzMIEFxLwF+/O6CJNm3XmT+ipkSGJKimfycwq52v38hleGRdCfzP3KOWHz9GMyOT62F285PlSDsCdv6vHN9M3AEKh8fA+g24p2V66bI+hAb2nE7Lwmov0V72MLgBRriQrfzWbqsCIaJzBcuvMo1bKl84hPl7e6Sxu5HB0eluknh/XIc8vkAgoW8BZP0Lx3JLxA9URzSlTAAyr79J3K1smguSyAFXxnucQiyCBKa65OyP4gL4IYLVBB97D7RN4Na0fXRtPUJOGyn0d2+zJSpfvqmIKtCvEPl5p74Ki9uB6qcAwtZq6r9ZjKOngg7oEkZDDN4HxLs70gJ3gF2pjSZbMb3osmGuoQPjhHd084MaaeQspXUG7XWE815ZQj/440mdod1XE59ATzkfqL72bQ+iFAoPHukDXz4NbrWOpaa9oKJ7Qe/d22udk8Zs/ii+wJPwLG5Mduk1OSIqDizllXnnzhOYEt6Y2daEvzlO1AE5KQBmNzFkiBLH/fX0+CcMrZ+UtmPXmE/B8Uiukb21zilxVSDsykVbjjXoKiMRkXUPgHxoSjzBIMQlegTKWIqcWYe/hQ873TwvsM+LUJLftOtbIQkABV0q9W/Ry8cpKze+UTp2hUbKTq4dhcFoBUuikHSnGyRIz//E5zerq5cnsBo75ocu6blfsRgavoOoiAQ+K3LjgI2sFjXsF2NZT/Q8/Z6U5frgF4DWhIBa+SXynENqkoSuU/mTNOb09A5/3nry6n3wLwEUwmxyHGQ1MySy/pqJZkW/3pQHTXigte8NkQ9mec9JREEWfQ8toxV82+auG5CQKs6mhTso41oIFKNNKc0QZwcVx7eLvur9CWD7AEOQVDSbBnVf+JIxLmTmzah2Y0QsONK8ub3PkMeZyoyfGdhLpxwne3zaf2+VL/SRHameefOJTN3PE1C5dwZHTmEzCe9URkMOWskJ4sj5Md5F+2DXF6xkWYP42+o6yzHs0me1+zK45TlDmgafsq7tjFxV+SjsYbtTr/hnLuf6oYUcJhcnSzKkfsNT4gBb6ltgtDPRYNNGzavCgM0emEU9ynFH0jCSK7M68YAQ==\"}]}, {\"type\": \"text\", \"text\": \"R75, the quiet rack, had **5,227 events** in December 2005.\\n\\nI took \\\"quiet rack\\\" to mean the rack with the fewest events over the whole log. That is R75, with 15,994 events in total. If you meant the rack that was quietest in December itself, that is R50, with 5,007 events.\"}]",
+     "seconds": 9.6,
+     "sql": [
+      "SELECT rack, COUNT(*) AS total, SUM(event_date >= '2005-12-01' AND event_date < '2006-01-01') AS dec_events FROM bgl_events WHERE rack IS NOT NULL GROUP BY rack ORDER BY total ASC LIMIT 5",
+      "SELECT rack, COUNT(*) AS dec_events FROM bgl_events WHERE rack IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01' GROUP BY rack ORDER BY dec_events ASC LIMIT 5"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many events did the quiet rack have in December 2005?",
+     "reference": 7138,
+     "ok": false,
+     "term": "the quiet rack",
+     "style": "in passing",
+     "teacher": "eva.horak",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQStAUKEggTEAEYAjgBQgh0aGlua2luZxIMkZC5nEh1ehMosrBvGgyNqkDtym3Q1KrwgPUiMOctjj0FACmRxnff2Q1yZiTMVHi3oc488V89mV7LY2kY6/pCeibJ+FLaB5DqHdxSSCrPBFt0l1SQ0H0pb2u33+nY9mbcxHNf6RNjZAtJ3v1VxYKXqfPlZIedlGP0kECLiky+06k6GCOtaeDKABlakVU6wZV+zwjyDvXQA7lbDYQ8zFNN+oROm3Y+BexDVehu1rrTUnYN5U3ULqOb4jm0wNO4qsLCylU3N/WXayRqAsFzjIqhP3cTzHClcCisvPxXAbTmuFFnptURL/5fOuYRiUSyggDBX+xqMCFN2D3NCisryHX6M90AwYDiOvguUkYVU7RRfjy03XglV+DliRF6mccPeDHx/BGuYVBHneM/fLK95BtO1CRRCHLKPeJt911+nRRE7gb0TOaWsIknU/5KvOoYMov5SNco4fLjG6OW7cJCkJ55pizdXKwZdhk1pd3xlSfiPxhsRlJ/0llSuvrk4CKuHaQnymFFXEAFS3g8gpsE1THTPE1yH7iBX8hJO6JGJcQcL6NjLp42vnNIr0dwdpbCEZcttRctw1P01BNm15I8xml8fw/uSmosE75B1v6eEG1x/PeJkPKgAo2nVtCuT+nEAJvxotVOUX/y9Gl4IcWrRgJoQoXgXbKKux1b1Tv0BITMJfnB5XtmzqArsKVmfcaISRuQliu00VC2Ge+A6NJhYX1FMUykvoD4DT8Xc7tXtTyQgVCVxzaw918/MqMXhuYzIHfDX5iu+9o60fYAqbK9xvRNo3lm3CKAIP6ap5H6a4mauRNH4ir/NKsdaQLd3qyHBwCdRC5YC1+3ZA6h5zf4Pm/h7XFQnbHw4VImY/i9Lr/7TrcdwkR0CQR/FZD3//W8PRgB\"}]}, {\"type\": \"text\", \"text\": \"There were **585,666** alignment exception events in total. I counted log events whose message contains \\\"alignment exceptions\\\".\\n\\n| Type | Events |\\n|---|---|\\n| Double-hummer alignment exceptions | 295,764 |\\n| Floating point alignment exceptions | 267,725 |\\n| Kernel-detected integer alignment exceptions | 22,175 |\\n| Integer alignment exceptions in a garbled message variant | 2 |\\n\\nThis counts log lines, not the exception counts written inside each message (the `<N>` values). Summing those embedded numbers would give a different total.\"}]",
+     "seconds": 8.7,
+     "sql": [
+      "SELECT event_template, COUNT(*) FROM bgl_events WHERE message LIKE '%alignment exceptions%' GROUP BY event_template ORDER BY 2 DESC LIMIT 5"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many alignment exceptions were there in total?",
+     "reference": 563489,
+     "ok": false,
+     "term": "alignment exceptions",
+     "style": "stated",
+     "teacher": "tomas.vrba",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS9AYKEggTEAEYAjgBQgh0aGlua2luZxIM86dRAZq12y25MhyiGgxYaBbJ2sJ4AO74jE0iML1vofPVNAToUsSq+T+a+CxYjkbjmCb6Swpf+hZ16SeKH1lkEVeu/OK2qOHaqabpzyqPBsVP7D1bIaX/VRdMxChm7HRKGggo8GYWVOziIdAwdnzw8nH59xd1N/9PVpPhSVI16lIaEuK4yhTtif2r1aHPsGjrMReuyJ8f1684Sx8md60BO+Gqe7M4PmeRJNtvqjygaE2k1SucG4T6QpCttGeFnUoCVJPtfM8QuEpgmmvOYzqX5jov7tSxP9d2oFhjsU968PAIa6T1gOxl1IpZpwC9hErZ81vyqWrSdkmaoX9Z74GjeiXBGPXXLRzDhPJJ4zl8eMFTBRFGNPiQfIqQgiZUoCLN3EIHhyfcFqNNgLjbyrNpTdfz/a4VPER8Tt/+Dz2bwOH/PtMP9dOsqrs15XmfW7YZnT+oZDZL7vbcWqJX/hOy3AHyo3Jp/7fN61WAysF5mZP9PDp06v/riBHXhCb3FT44AOufYS9AbEOA3+mJYCTXjCsHNbpJ0MEuejQ1zl4esEfxkhte0NoNw/iQaDnaI9n0gAqIgYEiiQYrdAqPKSeLItRVwwMkbROJzcLHVkZjGpU2pn0IZGS48IA7bXxc7EsVDGMNBpHbRB0VtKbY7mOyXDTRZu/aOecsY8Jpy9GFalcEbOWkL+2bVjs0vKEzPer4fE6J3O0etbCvoIZbck+/ftYUB1TYkiHnqo9JndLl0q0lHY6t9M+lYsovOCWVzCWHeJekbmcDD79ZEjBLZzJZW3NVPRzKhr7GEZzy1RNOZ/CJ1pKAwaPX3ad2b4prcByEBYoSh1Y4NEWoaIRbbzf9vGQeWbPxoTjrXsDB4woqItOG1H9S4wBDZdyciO1qLTzQvnGbR3jyifFqgUc4P+Va4KI8zEhnfllq54XbyHD8EwNAeoKH/GXy/DobpQlakkNp7Vkjwd9X9EksE983Pl0Wilq8M4/D25JVIzseq1Dbd31BAyPOJJpylIL+qUwHzhjgjI6b+dUZaH0A7QQABQkkcv8Jfozr/bvmqb+FiMOJieV7zFHGz3cIusSp2dPBcOQC1ewwnme3VD9ac3/bnLvl+drTsjIn2MbJxSuhEcANefjibTCqk205tomhj5J41hgB\"}]}, {\"type\": \"text\", \"text\": \"December 2005 had **1,296 login failures**.\\n\\nI counted FATAL events whose message reads \\\"ciod: LOGIN chdir(...) failed\\\". In this data, those are the failed logins. Most were \\\"No such file or directory\\\" errors, and 816 were \\\"Input/output error\\\".\\n\\nI left out 208 \\\"Error reading message prefix after LOGIN_MESSAGE \\u2026 Link has been severed\\\" events, because they are socket link failures. If you want them counted too, the total is 1,504.\"}]",
+     "seconds": 5.8,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%LOGIN%' OR message LIKE '%login%') GROUP BY event_template, level ORDER BY c DESC LIMIT 10"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many login failures were there in December 2005?",
+     "reference": 1296,
+     "ok": true,
+     "term": "login failures",
+     "style": "correction",
+     "teacher": "jana.kral",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSnAYKEggTEAEYAjgBQgh0aGlua2luZxIMs4q9lWYU7lvQEFXCGgyuW81wmkms+pUzlkAiMOvB3uorjyvHRjTFSVNfM2qwtvWcj7t/9QRoIhJ8Xg3G35nHrAwVjWlulY8JWnw1/Cq3BYKy/2u3CgMq8mG753CxBvvW5cOVxlSyxHhxyPjlTVnTUbOuQdC2RsR2RpeC0Xv5qBRBfjhXgdT7fAgQ4j8MRt1nBxm+IUyH51sRtNA3csqRc1stiQrP1Sd1Wbj41Sr20wOSWWn+aFZEOes9ufaW9Ty1b3AaZ69zTElJ7ZlCSPjvMDzzd7mc1jsJm+ImOo5P5QfPQGFZUVWoI+NEgbgQTqJTxMt1WX8UltiqJLXgAYOfcjKugqUqIPHyUaXfGQ/MxP8w5QopirxpEJd3JRd5hSPQpoZPEVxiuPwKRIu7WGO1xm/qjafqh3Q8LQagZVcuKdDdkHjEYbVac/QmuZO4jObpd0/o3fC/R1zRo2YF8dv7koPcZllPZedqPQu8Trg6y7vzn1c4JCzjIhs9ucelJD+dkr1n/cCpgCtT08V4lJFaeoLdtkaY9gPi38JDK2MoXdPe+kP5SdUc7w17ttbC+WoShwvydQQ4ZNsdHfN5sAbVjvN9y4V7ZK1jeVrM1k41xzWDwwP4SCZ7PRXFTCUHk7Cfq2DDKdcfrCBRO3npxY59VZPFrFL3NfW3w2z3NA7c4Tns9CJpNNLAVZj3k4vPDHW3UCFW0F2i/tdL09s+vhAdVlzR35jvzq88Wtm1zSswgz6qUPShXHjZQAj+lGDYiRajffYeLJ2aL7vNA2yLtSycDeDqnXWCZYonNYUJy/OdHceOqz3lm0Wk/zrAfcld6FkwLf8t+bJAbg4HlgjVHGXL3VlQJ/+/b/+0IqGOeOt0Clnv5W7bifn5f0k0+r6LNa8FY6O6ysu4z0Nn6mApp7mTfW7e6fEpE3gIF7ZBtNs31w5vD/ZNxet3O4a6L0GlfU0GGZExWTQtikGOtVEqpwz5Of/r12+IHm2GolhXwui//msqYpj3g2l15w4DKmltjqVHt2bh9+8+GAE=\"}]}, {\"type\": \"text\", \"text\": \"There were **3,358 cache parity error events in November 2005**.\\n\\nI counted every event whose message mentions a cache parity error, using all of the following message types:\\n- Instruction cache parity error corrected: 3,206\\n- i-cache parity error: 39\\n- d-cache flush parity error: 39\\n- d-cache search parity error: 39\\n- Data cache flush parity error detected: 14\\n- Data cache search parity error detected: 7\\n- Machine check interrupt for an L3 dcache unit parity error (data, read return and write data): 14\\n\\nThe instruction cache messages make up most of the total. Excluding the machine check messages would give 3,344.\"}]",
+     "seconds": 4.5,
+     "sql": [
+      "SELECT event_template, COUNT(*) AS n FROM bgl_events WHERE event_template LIKE '%cache%parity error%' AND event_date >= '2005-11-01' AND event_date < '2005-12-01' GROUP BY event_template"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "jana.kral",
+     "question": "How many cache parity errors were there in November 2005?",
+     "reference": 3213,
+     "ok": false,
+     "term": "cache parity errors",
+     "style": "stated",
+     "teacher": "lukas.brandt",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQS9AUKEggTEAEYAjgBQgh0aGlua2luZxIMfDcUhmxsKGDE9McdGgxZhKsPNdtgyuF036YiMCS63/JHpyxOOOFOVBnnviKJeNz7W3aAre8d8izvaWoq0GstgCYgm5jDZIzgBaNchCqPBcvsgdSQ/UizNxZgZD0GLujgy6/li8GOjnzIoE7jY+1BflCh6+CAtGMgPSWJgLxzc2g0kex6hWP41yxGqeE3R3ebJLT99uN6E8ZnJ6aryh8Ceh9N7Qz1hnNtVdrKPz3y+CKxxM5+n2kbl5RvZw3bgv29pvtP9KDUZJSo0hh86lxhgrk1LqG1a5GpY9P+ywoAwk53xMIXjzkdVouB3pFuL43tjvv2nKZLCbnIkZzX4nTrz3oOoTU1RxkJslOTvww798aER4oJlm6g5wfOXc+pL3476pb4omR2khkH2obSVXZypm0+KN4B5xUYH9MnHNF9JqORDOVz9eJb5S0Oev/czfnAooWo+vKzBK4ZLXY7o+zTChiu/5q7GaOm3Ju/XG0sZSS4ZKYEBBxUQe8IDz8FF1OZtf1ijKaqqfrlc8OhGAdch41Zgr39UXSzF/+b0jmiM+P7D+m+HTsrD6tVL1F5U8MT1ioqnZ/PSwMbAbS/j52cAt3G7LuolriNbhEdD/JwgoOt0Jlr//z5C3Dsp+7jWUkeOqCln6Ar0EzG4G9VjX16QcfAR9ZRSCVGMgKA0DhUdboe0+MHVlaYqJxNzJwc23Ex7mqi/YL2eX0jwzWlEJx7Ta42XWuD7oaBKtJbkST5trLOx59wRIvSSM1Ku3Af3EYCK1Kkzhc5ft2I0QB06G6P0V/M+zAjCu+gBoB7LK9uppWztzw+cCOFLMBaBkLu+FYiwY6RV/oBWVLzzTgrBpA0XsIkX4j+Et49Qzvol4eOnHVCc/TuRSIk3vrygZBT7X/Um/XHmLPBgepuoeVTTG9wYxh0aW1wvmHH6rEc00fFrely4rHl0pRWQf0c5H2+pGU6zf9Qolxn6yRM8DB/wOoYAQ==\"}]}, {\"type\": \"text\", \"text\": \"December 2005 had **31,386 memory error events**.\\n\\nI counted events whose message mentions DDR errors (for example \\\"ddr error(s) detected and corrected\\\"), EDRAM errors, or \\\"CE sym\\\" correctable-error symbols. Each event is counted once.\\n\\nI left out cache parity errors, such as \\\"instruction cache parity error corrected\\\", because I treated them as processor-cache errors rather than memory errors. I also left out the \\\"microseconds spent in the rbs signal handler\\\" summary lines. If you want cache parity errors included, the count would be much larger. In December there were about 34,000 events with \\\"parity error\\\" in the message.\"}]",
+     "seconds": 14.6,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr%' OR message LIKE '%memory%' OR message LIKE '%parity%' OR message LIKE '%EDRAM%' OR message LIKE '%cache%') GROUP BY event_template, level ORDER BY c DESC LIMIT 20",
+      "SELECT SUM(message LIKE '%ddr error%') ddr_err, SUM(message LIKE '%EDRAM%') edram, SUM(message LIKE 'CE sym%') ce_sym, SUM(message LIKE '%parity error%') parity, COUNT(*) total FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr error%' OR message LIKE '%EDRAM%' OR message LIKE 'CE sym%' OR message LIKE '%parity error%')",
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr error%' OR message LIKE '%EDRAM%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "tomas.vrba",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 16718,
+     "ok": false,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": []
+    },
+    {
+     "answer": "[{\"type\": \"reasoning\", \"summary\": [{\"type\": \"summary_text\", \"text\": \"\", \"signature\": \"CAQSoQUKEggTEAEYAjgBQgh0aGlua2luZxIMCzVkc11E4yhy4RWeGgwzK1cjJdFjlX5vIeYiMLI5IgPQCpMJI72QoMFaGL8X+8E8S/1ZgtjgcJwMdowjo9HSKn539kH02UnB6XaqUCq8BDdNnxf9Ky8BCDr2Vag1IfLchJRhhhMwygXDaBNUB50xeIaHsfFdWgI3EFGoM3dWIu1a9JDLK57txqCzdMAkpplkx+lTGUAIDBB7hSwgElppI9lfPxx8KaDv79SlXsY1eZPNjREG4sV59j0vCqQDXQkPMrgdhSNrzFOxaxLI0ODUqXQhrBL+Dyv5Zyb32uW34iLv6n4gKW4HzPYCxaPtdmSv9Ti7CVfE3atCcMi5dda7mCS3QRkQz4SnaKvCT+v9x/v7/+B7jPY2jJKHkNJogJ7EZz1q6zppWR4SO7Xp6v9hz0JGK+LqrDYeaYNUoXPsKQAuhQu1r8yL8ZzcJP1T63AwHSPskegRn6s+OZUEN8VaZtK1OVO0LNRpBj7zTpvYn/UGbm6VJv2NFtBP/Vu414+1mDRJ3qRLZChOE1s6w1vkhK4yh81tZhT56m/GCchz1hdJ8iQI66ZTeoBvjbUHpKb5q3iUjhavaUITIofGX+ysDF9zcCmtV3oWDHEc2gUdOniWQJ57tEojK/lRv12vVOkOiAPAbw9TdW0fJUt6wV/UXeSxIGdTl1NxiJum1jvM+bUuG4Q1VvpeTkaQBYVv3UIdJom2FDGCyeL76LgF9Qch+SrKlN/zn7zgqAJaOq4/ohqX75H9W1RpzOSxjYMJznRWJ3ioj+zvvJGjd3YDm3BIDsvFXtan8EBa5puoNmbvnt8eHKWju3fiJyKcjGxkSLdSedhcSaE15h9SMMAAM9KfXkexJ9LfMhqmEcDWGAE=\"}]}, {\"type\": \"text\", \"text\": \"October 2005 had **16,324 memory errors**.\\n\\nI counted DDR memory errors that were detected and corrected. These are the events whose message contains \\\"ddr error\\\", such as \\\"N ddr errors(s) detected and corrected on rank\\u2026\\\" and \\\"total of N ddr error(s) detected and corrected\\\". That is 9,157 per-rank events and 7,167 \\\"total of\\\" events.\\n\\nI left out cache parity errors and L3 EDRAM errors. Counting those would add about 13,900 data-cache, 2,200 instruction-cache and 840 EDRAM events for the month. I can give a count on that wider definition if you want it.\"}]",
+     "seconds": 8.1,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) c FROM bgl_events WHERE event_date >= '2005-10-01' AND event_date < '2005-11-01' AND (LOWER(message) LIKE '%ddr%' OR LOWER(message) LIKE '%parity%' OR LOWER(message) LIKE '%memory%' OR LOWER(message) LIKE '%edram%' OR LOWER(message) LIKE '%cache%') GROUP BY event_template, level ORDER BY c DESC LIMIT 20",
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-10-01' AND event_date < '2005-11-01' AND LOWER(message) LIKE '%ddr error%'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in October 2005?",
+     "reference": 76963,
+     "ok": false,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": []
+    }
+   ]
+  }
+ ],
+ "minutes": 10.5
+}

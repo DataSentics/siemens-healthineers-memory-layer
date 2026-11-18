@@ -1,0 +1,1812 @@
+{
+ "mode": "mcp",
+ "runs": [
+  {
+   "seeded": [
+    {
+     "answer": "December 2005 had **64,077** memory errors.\n\nI counted events with a message that contains \"ddr error\" or \"parity error\", or that starts with \"CE sym\". These are correctable DDR errors, cache parity errors and CE sym events.\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team)",
+     "seconds": 12.0,
+     "sql": [
+      "SELECT COUNT(*) AS n FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 4302,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 64077,
+     "ok": true,
+     "level": "team"
+    },
+    {
+     "answer": "There were **59,995** comms errors in total.\n\nI counted them as ciod socket errors between compute and I/O nodes. These are events whose message starts with \"ciod: Error reading message prefix\" or \"ciod: failed to read message prefix\". The count covers the whole log, with no date filter.\n\n**Memory used:** \u201ccomms errors\u201d = ciod socket errors between compute and I/O nodes: messages that start with 'ciod: Error reading message prefix' or 'ciod: failed to read me\u2026 (your department)",
+     "seconds": 7.9,
+     "sql": [
+      "SELECT COUNT(*) AS n FROM bgl_events WHERE message LIKE 'ciod: Error reading message prefix%' OR message LIKE 'ciod: failed to read message prefix%'"
+     ],
+     "lookup_ms": 690,
+     "note": null,
+     "applied": [
+      [
+       "comms errors",
+       "department",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many comms errors were there in total?",
+     "reference": 59995,
+     "ok": true,
+     "level": "department"
+    },
+    {
+     "answer": "November 2005 had **50,538** node card problems.\n\nI counted two kinds of event for 2005-11-01 through 2005-11-30:\n- Events from the DISCOVERY, HARDWARE or MONITOR components whose message mentions \"node card\" in any capitalisation.\n- Events with level FATAL or FAILURE whose location includes a node card, whatever the card type.\n\n**Memory used:** \u201cnode card problems\u201d = a node card contains compute and I/O cards; its problems are events from component DISCOVERY, HARDWARE or MONITOR whose message mentions 'n\u2026 (your team)",
+     "seconds": 10.9,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND ((component IN ('DISCOVERY','HARDWARE','MONITOR') AND lower(message) LIKE '%node card%') OR (level IN ('FATAL','FAILURE') AND node_card IS NOT NULL))"
+     ],
+     "lookup_ms": 713,
+     "note": null,
+     "applied": [
+      [
+       "node card problems",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many node card problems were there in November 2005?",
+     "reference": 50538,
+     "ok": true,
+     "level": "team relation"
+    },
+    {
+     "answer": "The noisy rack (R37) had **38,442** memory errors in total.\n\nI counted events in rack R37 whose message contains \"ddr error\" or \"parity error\", or starts with \"CE sym\".\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team); \u201cthe noisy rack\u201d = rack R37, which produces by far the most events (your team)",
+     "seconds": 4.3,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE rack='R37' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 721,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       null
+      ],
+      [
+       "the noisy rack",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many memory errors did the noisy rack have in total?",
+     "reference": 38442,
+     "ok": true,
+     "level": "team + team"
+    },
+    {
+     "answer": "There were **44,873 incidents** in December 2005. I counted every event with level FATAL or FAILURE, whether or not it has an alert label.\n\n**Memory used:** \u201cincidents\u201d = every event with level FATAL or FAILURE, whether or not it has an alert label (your team)",
+     "seconds": 5.8,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE level IN ('FATAL','FAILURE') AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 863,
+     "note": null,
+     "applied": [
+      [
+       "incidents",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 44873,
+     "ok": true,
+     "level": "team"
+    },
+    {
+     "answer": "December 2005 had **8,785 incidents**. I counted incidents as FATAL-level events from the KERNEL component, dated 2005-12-01 through 2005-12-31.\n\n**Memory used:** \u201cincidents\u201d = FATAL kernel events, the ones that take a node down: level FATAL and component KERNEL (your department)",
+     "seconds": 6.6,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE level='FATAL' AND component='KERNEL' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 698,
+     "note": null,
+     "applied": [
+      [
+       "incidents",
+       "department",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "vera.wolf",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 8785,
+     "ok": true,
+     "level": "department"
+    },
+    {
+     "answer": "December 2005 had **17,797 incidents**. I counted incidents as events that have an alert label, meaning the ones the administrators tagged as real alerts.\n\n**Memory used:** \u201cincidents\u201d = events tagged as real alerts by the administrators: every event that has an alert label (official)",
+     "seconds": 6.2,
+     "sql": [
+      "SELECT COUNT(*) AS incidents FROM bgl_events WHERE alert_label IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 670,
+     "note": null,
+     "applied": [
+      [
+       "incidents",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 17797,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **1,734,072** job failures in total.\n\nI counted three kinds of events as job failures:\n- events with alert label KERNRTSP (compute-node kernel panics);\n- events with alert label KERNTERM (kernel terminations);\n- core dumps, meaning events whose message template starts with \"generating core\".\n\nThe count covers all dates in the log.\n\n**Memory used:** \u201cjob failures\u201d = anything that ended a user's job: compute-node kernel panics and terminations (alert label KERNRTSP or KERNTERM) and core dumps (message te\u2026 (your department)",
+     "seconds": 7.6,
+     "sql": [
+      "SELECT COUNT(*) AS job_failures FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM') OR event_template LIKE 'generating core%'"
+     ],
+     "lookup_ms": 737,
+     "note": null,
+     "applied": [
+      [
+       "job failures",
+       "department",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "quinn.nemec",
+     "question": "How many job failures were there in total?",
+     "reference": 1734072,
+     "ok": true,
+     "level": "department"
+    },
+    {
+     "answer": "In November 2005 there were **49,307** fatal events. I counted events with level FATAL or FAILURE.\n\n**Memory used:** \u201cfatal events\u201d = events with level FATAL or FAILURE (official)",
+     "seconds": 5.8,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE level IN ('FATAL','FAILURE') AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": 782,
+     "note": null,
+     "applied": [
+      [
+       "fatal events",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many fatal events were there in November 2005?",
+     "reference": 49307,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **32,251** Lustre problems in total.\n\nI used your definition of Lustre problems: failed Lustre or filesystem mounts on compute nodes. That means events with the alert label KERNMNTF or KERNMNT.\n\n**Memory used:** \u201clustre problems\u201d = failed Lustre / filesystem mounts on compute nodes: events with alert label KERNMNTF or KERNMNT (official)",
+     "seconds": 4.1,
+     "sql": [
+      "SELECT COUNT(*) AS total FROM bgl_events WHERE alert_label IN ('KERNMNTF','KERNMNT')"
+     ],
+     "lookup_ms": 813,
+     "note": null,
+     "applied": [
+      [
+       "lustre problems",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many lustre problems were there in total?",
+     "reference": 32251,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "November 2005 had **11** TLB errors. I counted them as data TLB error interrupts, meaning events with the alert label KERNDTLB.\n\n**Memory used:** \u201ctlb errors\u201d = data TLB error interrupts: events with alert label KERNDTLB (official)",
+     "seconds": 5.5,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label = 'KERNDTLB' AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": 709,
+     "note": null,
+     "applied": [
+      [
+       "tlb errors",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many TLB errors were there in November 2005?",
+     "reference": 11,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321** rts crashes in total. I counted events with alert label KERNRTSP or KERNTERM, which covers compute-node kernel panics and terminations.\n\n**Memory used:** \u201crts crashes\u201d = compute-node kernel panics and terminations: events with alert label KERNRTSP or KERNTERM (official)",
+     "seconds": 5.3,
+     "sql": [
+      "SELECT COUNT(*) AS total FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM')"
+     ],
+     "lookup_ms": 678,
+     "note": null,
+     "applied": [
+      [
+       "rts crashes",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many rts crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **0** core dumps in December 2005.\n\nI counted core dumps as events whose template starts with \"generating core\". The log only has them for June 2005 (419,795) and July 2005 (1,286,956). It has none for any later month.\n\n**Memory used:** \u201ccore dumps\u201d = core files written by crashing programs: events whose message template starts with 'generating core' (official)",
+     "seconds": 9.8,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_template LIKE 'generating core%' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'",
+      "SELECT substr(event_date,1,7) m, COUNT(*) FROM bgl_events WHERE event_template LIKE 'generating core%' GROUP BY m ORDER BY m"
+     ],
+     "lookup_ms": 717,
+     "note": null,
+     "applied": [
+      [
+       "core dumps",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many core dumps were there in December 2005?",
+     "reference": 0,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "I/O nodes reported **47,529 events** in December 2005.\n\nI took \"io nodes\" to mean events reported by I/O cards (`card_type = 'IO'`). I counted events dated from 2005-12-01 through 2005-12-31.\n\n**Memory used:** \u201cio nodes\u201d = events reported by I/O cards: card type IO (official)",
+     "seconds": 5.9,
+     "sql": [
+      "SELECT COUNT(*) AS cnt FROM bgl_events WHERE card_type = 'IO' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 726,
+     "note": null,
+     "applied": [
+      [
+       "io nodes",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many events did the io nodes report in December 2005?",
+     "reference": 47529,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321** kernel crashes in total.\n\n\"Kernel crashes\" wasn't defined, so I treated it like \"rts crashes\". That means compute-node kernel panics and terminations, which are events with alert label KERNRTSP or KERNTERM.\n\n**Memory used:** \u201crts crashes\u201d = compute-node kernel panics and terminations: events with alert label KERNRTSP or KERNTERM (official)",
+     "seconds": 6.9,
+     "sql": [
+      "SELECT COUNT(*) AS crashes FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM')"
+     ],
+     "lookup_ms": 787,
+     "note": null,
+     "applied": [
+      [
+       "rts crashes",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many kernel crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official, by alias"
+    },
+    {
+     "answer": "November 2005 had **55,337** memory errors.\n\nI counted events with a message containing \"ddr error\" or \"parity error\", or starting with \"CE sym\". That covers correctable DDR errors, cache parity errors and CE sym events.\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team)",
+     "seconds": 7.2,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 698,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       "matched by spelling: \u201cmemroy errors\u201d \u2248 memory errors"
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memroy errors were there in November 2005?",
+     "reference": 55337,
+     "ok": true,
+     "level": "team, typo"
+    },
+    {
+     "answer": "December 2005 had **64,077** RAM problems.\n\nI took \"RAM problems\" to mean memory errors. That covers correctable DDR errors (messages containing \"ddr error\"), cache parity errors (messages containing \"parity error\") and CE sym events (messages starting with \"CE sym\").\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team)",
+     "seconds": 7.6,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 766,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       "matched by meaning with Mem0: \u201cram problems\u201d \u2248 ram errors (0.90)"
+      ]
+     ],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many RAM problems were there in December 2005?",
+     "reference": 64077,
+     "ok": true,
+     "level": "team, synonym (Mem0)"
+    }
+   ],
+   "taught": [
+    {
+     "answer": "The quiet rack (R12) had **7,138 events** in December 2005. I counted every logged event with rack R12 and an event date from 2005-12-01 to 2005-12-31.\n\n**Memory used:** \u201cthe quiet rack\u201d = rack R12 (your team)",
+     "seconds": 6.5,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE rack = 'R12' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 1417,
+     "note": null,
+     "applied": [
+      [
+       "the quiet rack",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many events did the quiet rack have in December 2005?",
+     "reference": 7138,
+     "ok": true,
+     "term": "the quiet rack",
+     "style": "in passing",
+     "teacher": "eva.horak",
+     "saved": [
+      [
+       "add",
+       "the quiet rack",
+       "rack R12",
+       "only you"
+      ],
+      [
+       "team",
+       "the quiet rack",
+       "rack R12",
+       "your team"
+      ]
+     ]
+    },
+    {
+     "answer": "There were **563,489** alignment exceptions in total.\n\nI counted only the \"double-hummer alignment exceptions\" and \"floating point alignment exceptions\" messages. That matches 295,764 plus 267,725 in the common-message list. I left out the integer alignment exception messages.\n\n**Memory used:** \u201calignment exceptions\u201d = Only the log messages about \"double-hummer alignment exceptions\" and \"floating point alignment exceptions\" (event_template containing eithe\u2026 (your team)",
+     "seconds": 7.0,
+     "sql": [
+      "SELECT COUNT(*) AS total FROM bgl_events WHERE event_template LIKE '%double-hummer alignment exceptions%' OR event_template LIKE '%floating point alignment exceptions%'"
+     ],
+     "lookup_ms": 1468,
+     "note": null,
+     "applied": [
+      [
+       "alignment exceptions",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many alignment exceptions were there in total?",
+     "reference": 563489,
+     "ok": true,
+     "term": "alignment exceptions",
+     "style": "stated",
+     "teacher": "tomas.vrba",
+     "saved": [
+      [
+       "add",
+       "alignment exceptions",
+       "Only the log messages about \"double-hummer alignment exceptions\" and \"floating point alignment exceptions\" (event_template containing either text), excluding the integer alignment exceptions.",
+       "only you"
+      ],
+      [
+       "team",
+       "alignment exceptions",
+       "Only the log messages about \"double-hummer alignment exceptions\" and \"floating point alignment exceptions\" (event_template containing either text), excluding the integer alignment exceptions.",
+       "your team"
+      ]
+     ]
+    },
+    {
+     "answer": "There were **1,296 login failures** in December 2005.\n\nI counted FATAL \"ciod: LOGIN chdir(...) failed\" messages. I left out the \"Error reading message prefix after LOGIN_MESSAGE ... Link has been severed\" connection errors.\n\n**Memory used:** \u201clogin failures\u201d = FATAL \"ciod: LOGIN chdir(...) failed\" messages only, i.e. ciod LOGIN chdir messages that failed; excludes \"Error reading message prefix aft\u2026 (your team)",
+     "seconds": 6.8,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE level='FATAL' AND event_template LIKE 'ciod: LOGIN chdir(%) failed%' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 1432,
+     "note": null,
+     "applied": [
+      [
+       "login failures",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many login failures were there in December 2005?",
+     "reference": 1296,
+     "ok": true,
+     "term": "login failures",
+     "style": "correction",
+     "teacher": "jana.kral",
+     "saved": [
+      [
+       "add",
+       "login failures",
+       "FATAL \"ciod: LOGIN chdir(...) failed\" messages only, i.e. ciod LOGIN chdir messages that failed; excludes \"Error reading message prefix after LOGIN_MESSAGE ... Link has been severed\" connection errors.",
+       "only you"
+      ],
+      [
+       "team",
+       "login failures",
+       "FATAL \"ciod: LOGIN chdir(...) failed\" messages only, i.e. ciod LOGIN chdir messages that failed; excludes \"Error reading message prefix after LOGIN_MESSAGE ... Link has been severed\" connection errors.",
+       "your team"
+      ]
+     ]
+    },
+    {
+     "answer": "There were **3,213** cache parity errors in November 2005.\n\n- Instruction cache parity error corrected: 3,206\n- Data cache search parity error detected (attempting to correct): 7\n\nI counted events whose template matched those two messages and whose date fell in 2005-11-01 to 2005-11-30.\n\n**Memory used:** \u201ccache parity errors\u201d = Events whose message is 'instruction cache parity error corrected' or 'data cache search parity error detected' (matched on event_template). (your team)",
+     "seconds": 6.9,
+     "sql": [
+      "SELECT event_template, COUNT(*) AS n FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND (event_template LIKE 'instruction cache parity error corrected%' OR event_template LIKE 'data cache search parity error detected%') GROUP BY event_template"
+     ],
+     "lookup_ms": 1778,
+     "note": null,
+     "applied": [
+      [
+       "cache parity errors",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "jana.kral",
+     "question": "How many cache parity errors were there in November 2005?",
+     "reference": 3213,
+     "ok": true,
+     "term": "cache parity errors",
+     "style": "stated",
+     "teacher": "lukas.brandt",
+     "saved": [
+      [
+       "add",
+       "cache parity errors",
+       "Events whose message is 'instruction cache parity error corrected' or 'data cache search parity error detected' (matched on event_template).",
+       "only you"
+      ],
+      [
+       "team",
+       "cache parity errors",
+       "Events whose message is 'instruction cache parity error corrected' or 'data cache search parity error detected' (matched on event_template).",
+       "your team"
+      ]
+     ]
+    },
+    {
+     "answer": "December 2005 had **16,718** memory errors.\n\nI counted memory errors as correctable DDR errors, meaning events whose message contains \"ddr error\".\n\n**Memory used:** \u201cmemory errors\u201d = only correctable DDR errors: messages that contain 'ddr error' (yours)",
+     "seconds": 7.1,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE message LIKE '%ddr error%' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 1741,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "personal",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "tomas.vrba",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 16718,
+     "ok": true,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": [
+      [
+       "add",
+       "memory errors",
+       "only correctable DDR errors: messages that contain 'ddr error'",
+       "only you"
+      ]
+     ]
+    },
+    {
+     "answer": "October 2005 had **76,963** memory errors.\n\nI counted events whose message contains \"ddr error\" or \"parity error\", or starts with \"CE sym\". These are correctable DDR errors, cache parity errors and CE sym events.\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team)",
+     "seconds": 7.1,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-10-01' AND event_date < '2005-11-01' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 749,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in October 2005?",
+     "reference": 76963,
+     "ok": true,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": [
+      [
+       "add",
+       "memory errors",
+       "only correctable DDR errors: messages that contain 'ddr error'",
+       "only you"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "seeded": [
+    {
+     "answer": "December 2005 had **64,077 memory errors**.\n\nI counted events with \"ddr error\" or \"parity error\" anywhere in the message, plus messages that start with \"CE sym\". These are correctable DDR errors, cache parity errors and CE sym events.\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team)",
+     "seconds": 9.3,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 2645,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 64077,
+     "ok": true,
+     "level": "team"
+    },
+    {
+     "answer": "There were **59,995** comms errors in total.\n\nI counted them as ciod socket errors between compute and I/O nodes. These are messages that start with \"ciod: Error reading message prefix\" or \"ciod: failed to read message prefix\".\n\n**Memory used:** \u201ccomms errors\u201d = ciod socket errors between compute and I/O nodes: messages that start with 'ciod: Error reading message prefix' or 'ciod: failed to read me\u2026 (your department)",
+     "seconds": 7.6,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE message LIKE 'ciod: Error reading message prefix%' OR message LIKE 'ciod: failed to read message prefix%'"
+     ],
+     "lookup_ms": 727,
+     "note": null,
+     "applied": [
+      [
+       "comms errors",
+       "department",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many comms errors were there in total?",
+     "reference": 59995,
+     "ok": true,
+     "level": "department"
+    },
+    {
+     "answer": "November 2005 had **50,538** node card problems.\n\nI counted two kinds of event:\n- Events from the DISCOVERY, HARDWARE or MONITOR components whose message mentions \"node card\", in any capitalisation.\n- Events with level FATAL or FAILURE at a location that includes a node card. This covers compute, I/O and link cards on that node card, not only the node card itself.\n\n**Memory used:** \u201cnode card problems\u201d = a node card contains compute and I/O cards; its problems are events from component DISCOVERY, HARDWARE or MONITOR whose message mentions 'n\u2026 (your team)",
+     "seconds": 8.6,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND ((component IN ('DISCOVERY','HARDWARE','MONITOR') AND LOWER(message) LIKE '%node card%') OR (level IN ('FATAL','FAILURE') AND node_card IS NOT NULL))"
+     ],
+     "lookup_ms": 800,
+     "note": null,
+     "applied": [
+      [
+       "node card problems",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many node card problems were there in November 2005?",
+     "reference": 50538,
+     "ok": true,
+     "level": "team relation"
+    },
+    {
+     "answer": "The noisy rack (R37) had **38,442** memory errors in total.\n\nI counted events in rack R37 whose message contains \"ddr error\" or \"parity error\", or starts with \"CE sym\".\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team); \u201cthe noisy rack\u201d = rack R37, which produces by far the most events (your team)",
+     "seconds": 4.1,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE rack='R37' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 805,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       null
+      ],
+      [
+       "the noisy rack",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many memory errors did the noisy rack have in total?",
+     "reference": 38442,
+     "ok": true,
+     "level": "team + team"
+    },
+    {
+     "answer": "December 2005 had **44,873 incidents**. I counted every event with level FATAL or FAILURE, whether or not it has an alert label.\n\n**Memory used:** \u201cincidents\u201d = every event with level FATAL or FAILURE, whether or not it has an alert label (your team)",
+     "seconds": 5.8,
+     "sql": [
+      "SELECT COUNT(*) AS incidents FROM bgl_events WHERE level IN ('FATAL','FAILURE') AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 736,
+     "note": null,
+     "applied": [
+      [
+       "incidents",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 44873,
+     "ok": true,
+     "level": "team"
+    },
+    {
+     "answer": "There were **8,785 incidents** in December 2005. I counted incidents as FATAL-level events from the KERNEL component.\n\n**Memory used:** \u201cincidents\u201d = FATAL kernel events, the ones that take a node down: level FATAL and component KERNEL (your department)",
+     "seconds": 5.3,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE level='FATAL' AND component='KERNEL' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 742,
+     "note": null,
+     "applied": [
+      [
+       "incidents",
+       "department",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "vera.wolf",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 8785,
+     "ok": true,
+     "level": "department"
+    },
+    {
+     "answer": "December 2005 had **17,797 incidents**. I counted incidents as events that have an alert label, which means the ones the administrators tagged as real alerts.\n\n**Memory used:** \u201cincidents\u201d = events tagged as real alerts by the administrators: every event that has an alert label (official)",
+     "seconds": 7.0,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 983,
+     "note": null,
+     "applied": [
+      [
+       "incidents",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 17797,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **1,734,072** job failures in total.\n\nI counted two kinds of events as job failures:\n- Events with alert label KERNRTSP or KERNTERM, which are compute-node kernel panics and terminations.\n- Core dumps, meaning events whose message template starts with \"generating core\".\n\n**Memory used:** \u201cjob failures\u201d = anything that ended a user's job: compute-node kernel panics and terminations (alert label KERNRTSP or KERNTERM) and core dumps (message te\u2026 (your department)",
+     "seconds": 7.1,
+     "sql": [
+      "SELECT COUNT(*) AS job_failures FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM') OR event_template LIKE 'generating core%'"
+     ],
+     "lookup_ms": 890,
+     "note": null,
+     "applied": [
+      [
+       "job failures",
+       "department",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "quinn.nemec",
+     "question": "How many job failures were there in total?",
+     "reference": 1734072,
+     "ok": true,
+     "level": "department"
+    },
+    {
+     "answer": "There were **49,307** fatal events in November 2005. I counted events with level FATAL or FAILURE.\n\n**Memory used:** \u201cfatal events\u201d = events with level FATAL or FAILURE (official)",
+     "seconds": 5.5,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE level IN ('FATAL','FAILURE') AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": 726,
+     "note": null,
+     "applied": [
+      [
+       "fatal events",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many fatal events were there in November 2005?",
+     "reference": 49307,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **32,251** Lustre problems in total. I counted them as events with alert label KERNMNTF or KERNMNT, meaning failed Lustre or filesystem mounts on compute nodes.\n\n**Memory used:** \u201clustre problems\u201d = failed Lustre / filesystem mounts on compute nodes: events with alert label KERNMNTF or KERNMNT (official)",
+     "seconds": 6.2,
+     "sql": [
+      "SELECT COUNT(*) AS n FROM bgl_events WHERE alert_label IN ('KERNMNTF','KERNMNT')"
+     ],
+     "lookup_ms": 648,
+     "note": null,
+     "applied": [
+      [
+       "lustre problems",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many lustre problems were there in total?",
+     "reference": 32251,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **11** TLB errors in November 2005. I counted them as data TLB error interrupts, meaning events with alert label KERNDTLB.\n\n**Memory used:** \u201ctlb errors\u201d = data TLB error interrupts: events with alert label KERNDTLB (official)",
+     "seconds": 5.2,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label = 'KERNDTLB' AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": 763,
+     "note": null,
+     "applied": [
+      [
+       "tlb errors",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many TLB errors were there in November 2005?",
+     "reference": 11,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321** rts crashes in total. I counted events with alert label KERNRTSP or KERNTERM, which covers compute-node kernel panics and terminations.\n\n**Memory used:** \u201crts crashes\u201d = compute-node kernel panics and terminations: events with alert label KERNRTSP or KERNTERM (official)",
+     "seconds": 5.1,
+     "sql": [
+      "SELECT COUNT(*) AS rts_crashes FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM')"
+     ],
+     "lookup_ms": 727,
+     "note": null,
+     "applied": [
+      [
+       "rts crashes",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many rts crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **0** core dumps in December 2005.\n\nI counted core dumps as events whose template starts with \"generating core\". The log only has them in June 2005 (419,795) and July 2005 (1,286,956).\n\n**Memory used:** \u201ccore dumps\u201d = core files written by crashing programs: events whose message template starts with 'generating core' (official)",
+     "seconds": 9.0,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_template LIKE 'generating core%' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'",
+      "SELECT substr(event_date,1,7) m, COUNT(*) FROM bgl_events WHERE event_template LIKE 'generating core%' GROUP BY m LIMIT 12"
+     ],
+     "lookup_ms": 747,
+     "note": null,
+     "applied": [
+      [
+       "core dumps",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many core dumps were there in December 2005?",
+     "reference": 0,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "I/O nodes reported **47,529 events** in December 2005.\n\nI took \"io nodes\" to mean events from I/O cards (`card_type = 'IO'`). I counted every event dated 2005-12-01 through 2005-12-31.\n\n**Memory used:** \u201cio nodes\u201d = events reported by I/O cards: card type IO (official)",
+     "seconds": 5.7,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE card_type = 'IO' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 791,
+     "note": null,
+     "applied": [
+      [
+       "io nodes",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many events did the io nodes report in December 2005?",
+     "reference": 47529,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321** kernel crashes in total.\n\nI took \"kernel crashes\" to mean the same as \"rts crashes\". That means compute-node kernel panics and terminations, which are events with alert label KERNRTSP or KERNTERM.\n\n**Memory used:** \u201crts crashes\u201d = compute-node kernel panics and terminations: events with alert label KERNRTSP or KERNTERM (official)",
+     "seconds": 7.0,
+     "sql": [
+      "SELECT COUNT(*) AS crashes FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM')"
+     ],
+     "lookup_ms": 832,
+     "note": null,
+     "applied": [
+      [
+       "rts crashes",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many kernel crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official, by alias"
+    },
+    {
+     "answer": "November 2005 had **55,337** memory errors.\n\nI counted \"memory errors\" as correctable DDR memory errors plus cache parity errors and CE sym events. That means messages containing \"ddr error\" or \"parity error\", or starting with \"CE sym\".\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team)",
+     "seconds": 4.8,
+     "sql": [
+      "SELECT COUNT(*) AS n FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 669,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       "matched by spelling: \u201cmemroy errors\u201d \u2248 memory errors"
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memroy errors were there in November 2005?",
+     "reference": 55337,
+     "ok": true,
+     "level": "team, typo"
+    },
+    {
+     "answer": "December 2005 had **64,077** RAM problems.\n\nI took \"RAM problems\" to mean memory errors. That covers correctable DDR errors, cache parity errors and CE sym events. I counted messages containing \"ddr error\" or \"parity error\", plus messages starting with \"CE sym\".\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team)",
+     "seconds": 8.5,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_ts >= '2005-12-01' AND event_ts < '2006-01-01' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 786,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       "matched by meaning with Mem0: \u201cram problems\u201d \u2248 ram errors (0.90)"
+      ]
+     ],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many RAM problems were there in December 2005?",
+     "reference": 64077,
+     "ok": true,
+     "level": "team, synonym (Mem0)"
+    }
+   ],
+   "taught": [
+    {
+     "answer": "The quiet rack (R12) had **7,138 events** in December 2005. This counts every logged event for rack R12 from 2005-12-01 through 2005-12-31.\n\n**Memory used:** \u201cthe quiet rack\u201d = rack R12 (your team)",
+     "seconds": 6.5,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE rack = 'R12' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 1717,
+     "note": null,
+     "applied": [
+      [
+       "the quiet rack",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many events did the quiet rack have in December 2005?",
+     "reference": 7138,
+     "ok": true,
+     "term": "the quiet rack",
+     "style": "in passing",
+     "teacher": "eva.horak",
+     "saved": [
+      [
+       "add",
+       "the quiet rack",
+       "rack R12",
+       "only you"
+      ],
+      [
+       "team",
+       "the quiet rack",
+       "rack R12",
+       "your team"
+      ]
+     ]
+    },
+    {
+     "answer": "There were **563,489** alignment exceptions in total.\n\nI counted only the double-hummer alignment exception events (295,764) and the floating point alignment exception events (267,725). I left out the integer alignment exceptions.\n\n**Memory used:** \u201calignment exceptions\u201d = Only the double-hummer alignment exception and floating point alignment exception messages (event_template '<N> double-hummer alignment exc\u2026 (your team)",
+     "seconds": 6.7,
+     "sql": [
+      "SELECT COUNT(*) AS total FROM bgl_events WHERE event_template IN ('<N> double-hummer alignment exceptions', '<N> floating point alignment exceptions')"
+     ],
+     "lookup_ms": 1428,
+     "note": null,
+     "applied": [
+      [
+       "alignment exceptions",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many alignment exceptions were there in total?",
+     "reference": 563489,
+     "ok": true,
+     "term": "alignment exceptions",
+     "style": "stated",
+     "teacher": "tomas.vrba",
+     "saved": [
+      [
+       "add",
+       "alignment exceptions",
+       "Only the double-hummer alignment exception and floating point alignment exception messages (event_template '<N> double-hummer alignment exceptions' and '<N> floating point alignment exceptions'), not the integer alignment exceptions.",
+       "only you"
+      ],
+      [
+       "team",
+       "alignment exceptions",
+       "Only the double-hummer alignment exception and floating point alignment exception messages (event_template '<N> double-hummer alignment exceptions' and '<N> floating point alignment exceptions'), not the integer alignment exceptions.",
+       "your team"
+      ]
+     ]
+    },
+    {
+     "answer": "There were **1,296** login failures in December 2005.\n\nI counted only the `ciod: LOGIN chdir(...) failed` messages. I did not count the \"Error reading message prefix after LOGIN_MESSAGE \u2026 Link has been severed\" messages.\n\n**Memory used:** \u201clogin failures\u201d = Only the ciod LOGIN chdir messages that failed, i.e. messages matching 'ciod: LOGIN chdir(%) failed%'; 'Error reading message prefix after\u2026 (your team)",
+     "seconds": 7.3,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE message LIKE 'ciod: LOGIN chdir(%) failed%' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 1409,
+     "note": null,
+     "applied": [
+      [
+       "login failures",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many login failures were there in December 2005?",
+     "reference": 1296,
+     "ok": true,
+     "term": "login failures",
+     "style": "correction",
+     "teacher": "jana.kral",
+     "saved": [
+      [
+       "add",
+       "login failures",
+       "Only the ciod LOGIN chdir messages that failed, i.e. messages matching 'ciod: LOGIN chdir(%) failed%'; 'Error reading message prefix after LOGIN_MESSAGE ... Link has been severed' messages are not included.",
+       "only you"
+      ],
+      [
+       "team",
+       "login failures",
+       "Only the ciod LOGIN chdir messages that failed, i.e. messages matching 'ciod: LOGIN chdir(%) failed%'; 'Error reading message prefix after LOGIN_MESSAGE ... Link has been severed' messages are not included.",
+       "your team"
+      ]
+     ]
+    },
+    {
+     "answer": "There were **3,213** cache parity errors in November 2005.\n\nI counted events dated 2005-11-01 through 2005-11-30. Each one had a message starting with \"instruction cache parity error corrected\" or \"data cache search parity error detected\".\n\n**Memory used:** \u201ccache parity errors\u201d = Events whose message is 'instruction cache parity error corrected' or 'data cache search parity error detected' (event_template starts with\u2026 (your team)",
+     "seconds": 7.2,
+     "sql": [
+      "SELECT COUNT(*) AS cnt FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND (event_template LIKE 'instruction cache parity error corrected%' OR event_template LIKE 'data cache search parity error detected%')"
+     ],
+     "lookup_ms": 1449,
+     "note": null,
+     "applied": [
+      [
+       "cache parity errors",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "jana.kral",
+     "question": "How many cache parity errors were there in November 2005?",
+     "reference": 3213,
+     "ok": true,
+     "term": "cache parity errors",
+     "style": "stated",
+     "teacher": "lukas.brandt",
+     "saved": [
+      [
+       "add",
+       "cache parity errors",
+       "Events whose message is 'instruction cache parity error corrected' or 'data cache search parity error detected' (event_template starts with either text).",
+       "only you"
+      ],
+      [
+       "team",
+       "cache parity errors",
+       "Events whose message is 'instruction cache parity error corrected' or 'data cache search parity error detected' (event_template starts with either text).",
+       "your team"
+      ]
+     ]
+    },
+    {
+     "answer": "December 2005 had **16,718** memory errors.\n\nI counted memory errors as correctable DDR errors, meaning events whose message contains \"ddr error\".\n\n**Memory used:** \u201cmemory errors\u201d = only correctable DDR errors: messages that contain 'ddr error' (yours)",
+     "seconds": 7.8,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE message LIKE '%ddr error%' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 1517,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "personal",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "tomas.vrba",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 16718,
+     "ok": true,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": [
+      [
+       "add",
+       "memory errors",
+       "only correctable DDR errors: messages that contain 'ddr error'",
+       "only you"
+      ]
+     ]
+    },
+    {
+     "answer": "October 2005 had **76,963** memory errors.\n\nI counted events whose message contains \"ddr error\" or \"parity error\", or starts with \"CE sym\". That covers correctable DDR errors, cache parity errors and CE sym events.\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team)",
+     "seconds": 6.6,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-10-01' AND event_date < '2005-11-01' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 736,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in October 2005?",
+     "reference": 76963,
+     "ok": true,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": [
+      [
+       "add",
+       "memory errors",
+       "only correctable DDR errors: messages that contain 'ddr error'",
+       "only you"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "seeded": [
+    {
+     "answer": "December 2005 had **64,077** memory errors.\n\nI counted memory errors as correctable DDR errors, cache parity errors and CE sym events. A message counted if it contained \"ddr error\" or \"parity error\", or started with \"CE sym\".\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team)",
+     "seconds": 8.9,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 2468,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 64077,
+     "ok": true,
+     "level": "team"
+    },
+    {
+     "answer": "There were **59,995** comms errors in total.\n\nI counted them as ciod socket errors between compute and I/O nodes. These are messages that start with \"ciod: Error reading message prefix\" or \"ciod: failed to read message prefix\".\n\n**Memory used:** \u201ccomms errors\u201d = ciod socket errors between compute and I/O nodes: messages that start with 'ciod: Error reading message prefix' or 'ciod: failed to read me\u2026 (your department)",
+     "seconds": 6.4,
+     "sql": [
+      "SELECT COUNT(*) AS total FROM bgl_events WHERE message LIKE 'ciod: Error reading message prefix%' OR message LIKE 'ciod: failed to read message prefix%'"
+     ],
+     "lookup_ms": 710,
+     "note": null,
+     "applied": [
+      [
+       "comms errors",
+       "department",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many comms errors were there in total?",
+     "reference": 59995,
+     "ok": true,
+     "level": "department"
+    },
+    {
+     "answer": "November 2005 had **50,538 node card problems**.\n\nI counted two kinds of events:\n- Events from the DISCOVERY, HARDWARE or MONITOR components whose message mentions \"node card\" in any capitalisation.\n- Events at level FATAL or FAILURE that have a node card in their location. This covers every card type, including compute and I/O cards.\n\n**Memory used:** \u201cnode card problems\u201d = a node card contains compute and I/O cards; its problems are events from component DISCOVERY, HARDWARE or MONITOR whose message mentions 'n\u2026 (your team)",
+     "seconds": 8.7,
+     "sql": [
+      "SELECT COUNT(*) AS n FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND ((component IN ('DISCOVERY','HARDWARE','MONITOR') AND LOWER(message) LIKE '%node card%') OR (level IN ('FATAL','FAILURE') AND node_card IS NOT NULL))"
+     ],
+     "lookup_ms": 728,
+     "note": null,
+     "applied": [
+      [
+       "node card problems",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many node card problems were there in November 2005?",
+     "reference": 50538,
+     "ok": true,
+     "level": "team relation"
+    },
+    {
+     "answer": "The noisy rack (R37) had **38,442** memory errors in total.\n\nI counted R37 events whose message contains \"ddr error\" or \"parity error\", or starts with \"CE sym\". I did not apply any date filter, so this covers the whole log.\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team); \u201cthe noisy rack\u201d = rack R37, which produces by far the most events (your team)",
+     "seconds": 4.6,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE rack = 'R37' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 864,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       null
+      ],
+      [
+       "the noisy rack",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many memory errors did the noisy rack have in total?",
+     "reference": 38442,
+     "ok": true,
+     "level": "team + team"
+    },
+    {
+     "answer": "December 2005 had **44,873 incidents**. I counted incidents as every event with level FATAL or FAILURE, whether or not it has an alert label.\n\n**Memory used:** \u201cincidents\u201d = every event with level FATAL or FAILURE, whether or not it has an alert label (your team)",
+     "seconds": 5.5,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE level IN ('FATAL','FAILURE') AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 732,
+     "note": null,
+     "applied": [
+      [
+       "incidents",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 44873,
+     "ok": true,
+     "level": "team"
+    },
+    {
+     "answer": "December 2005 had **8,785 incidents**. I counted incidents as FATAL-level events from the KERNEL component, dated 2005-12-01 through 2005-12-31.\n\n**Memory used:** \u201cincidents\u201d = FATAL kernel events, the ones that take a node down: level FATAL and component KERNEL (your department)",
+     "seconds": 6.2,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE level='FATAL' AND component='KERNEL' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 795,
+     "note": null,
+     "applied": [
+      [
+       "incidents",
+       "department",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "vera.wolf",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 8785,
+     "ok": true,
+     "level": "department"
+    },
+    {
+     "answer": "December 2005 had **17,797 incidents**. I counted incidents as events that have an alert label, which means the administrators tagged them as real alerts.\n\n**Memory used:** \u201cincidents\u201d = events tagged as real alerts by the administrators: every event that has an alert label (official)",
+     "seconds": 10.4,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IS NOT NULL AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 690,
+     "note": null,
+     "applied": [
+      [
+       "incidents",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 17797,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **1,734,072** job failures in total.\n\nI counted three kinds of events as job failures:\n- events with alert label KERNRTSP (compute-node kernel panics)\n- events with alert label KERNTERM (kernel terminations)\n- core dumps, meaning events whose message template starts with \"generating core\"\n\n**Memory used:** \u201cjob failures\u201d = anything that ended a user's job: compute-node kernel panics and terminations (alert label KERNRTSP or KERNTERM) and core dumps (message te\u2026 (your department)",
+     "seconds": 8.9,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM') OR event_template LIKE 'generating core%'"
+     ],
+     "lookup_ms": 777,
+     "note": null,
+     "applied": [
+      [
+       "job failures",
+       "department",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "quinn.nemec",
+     "question": "How many job failures were there in total?",
+     "reference": 1734072,
+     "ok": true,
+     "level": "department"
+    },
+    {
+     "answer": "In November 2005 there were **49,307 fatal events**. I counted events with level FATAL or FAILURE.\n\n**Memory used:** \u201cfatal events\u201d = events with level FATAL or FAILURE (official)",
+     "seconds": 5.5,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE level IN ('FATAL','FAILURE') AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": 745,
+     "note": null,
+     "applied": [
+      [
+       "fatal events",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many fatal events were there in November 2005?",
+     "reference": 49307,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **32,251** Lustre problems in total.\n\nI counted them as failed Lustre/filesystem mounts on compute nodes, meaning events with alert label KERNMNTF or KERNMNT.\n\n**Memory used:** \u201clustre problems\u201d = failed Lustre / filesystem mounts on compute nodes: events with alert label KERNMNTF or KERNMNT (official)",
+     "seconds": 3.9,
+     "sql": [
+      "SELECT COUNT(*) AS n FROM bgl_events WHERE alert_label IN ('KERNMNTF','KERNMNT')"
+     ],
+     "lookup_ms": 695,
+     "note": null,
+     "applied": [
+      [
+       "lustre problems",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many lustre problems were there in total?",
+     "reference": 32251,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "November 2005 had **11** TLB errors. I counted data TLB error interrupts, which are events with alert label KERNDTLB.\n\n**Memory used:** \u201ctlb errors\u201d = data TLB error interrupts: events with alert label KERNDTLB (official)",
+     "seconds": 5.7,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE alert_label = 'KERNDTLB' AND event_date >= '2005-11-01' AND event_date < '2005-12-01'"
+     ],
+     "lookup_ms": 756,
+     "note": null,
+     "applied": [
+      [
+       "tlb errors",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many TLB errors were there in November 2005?",
+     "reference": 11,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321** rts crashes in total.\n\nI counted events with alert label KERNRTSP or KERNTERM, which is how you define \"rts crashes\" (compute-node kernel panics and terminations). The split is:\n- KERNRTSP: 3,983\n- KERNTERM: 23,338\n\n**Memory used:** \u201crts crashes\u201d = compute-node kernel panics and terminations: events with alert label KERNRTSP or KERNTERM (official)",
+     "seconds": 4.2,
+     "sql": [
+      "SELECT COUNT(*) AS n, SUM(alert_label='KERNRTSP') AS kernrtsp, SUM(alert_label='KERNTERM') AS kernterm FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM')"
+     ],
+     "lookup_ms": 679,
+     "note": null,
+     "applied": [
+      [
+       "rts crashes",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many rts crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **0 core dumps in December 2005**.\n\nI counted core dumps as events whose template starts with \"generating core\". All 1,706,751 of them fall in June 2005 (419,795) and July 2005 (1,286,956). None appear in any later month.\n\n**Memory used:** \u201ccore dumps\u201d = core files written by crashing programs: events whose message template starts with 'generating core' (official)",
+     "seconds": 11.1,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_template LIKE 'generating core%' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'",
+      "SELECT strftime('%Y-%m', event_date) m, COUNT(*) FROM bgl_events WHERE event_template LIKE 'generating core%' GROUP BY m"
+     ],
+     "lookup_ms": 700,
+     "note": null,
+     "applied": [
+      [
+       "core dumps",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many core dumps were there in December 2005?",
+     "reference": 0,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "I/O nodes reported **47,529 events** in December 2005.\n\nI took \"io nodes\" to mean events from I/O cards (`card_type = 'IO'`). The count covers 2005-12-01 through 2005-12-31.\n\n**Memory used:** \u201cio nodes\u201d = events reported by I/O cards: card type IO (official)",
+     "seconds": 6.2,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE card_type = 'IO' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 759,
+     "note": null,
+     "applied": [
+      [
+       "io nodes",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many events did the io nodes report in December 2005?",
+     "reference": 47529,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "The log has **27,321** kernel crashes in total.\n\nI took \"kernel crashes\" to mean the same as \"rts crashes\". That means compute-node kernel panics and terminations, which are events with alert label KERNRTSP or KERNTERM.\n\n**Memory used:** \u201crts crashes\u201d = compute-node kernel panics and terminations: events with alert label KERNRTSP or KERNTERM (official)",
+     "seconds": 8.4,
+     "sql": [
+      "SELECT COUNT(*) AS crashes FROM bgl_events WHERE alert_label IN ('KERNRTSP','KERNTERM')"
+     ],
+     "lookup_ms": 833,
+     "note": null,
+     "applied": [
+      [
+       "rts crashes",
+       "gold",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many kernel crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official, by alias"
+    },
+    {
+     "answer": "November 2005 had **55,337** memory errors.\n\nI counted \"memory errors\" as correctable DDR errors, cache parity errors and CE sym events. A message counted if it contained \"ddr error\" or \"parity error\", or started with \"CE sym\".\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team)",
+     "seconds": 7.0,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 854,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       "matched by spelling: \u201cmemroy errors\u201d \u2248 memory errors"
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memroy errors were there in November 2005?",
+     "reference": 55337,
+     "ok": true,
+     "level": "team, typo"
+    },
+    {
+     "answer": "December 2005 had **64,077** RAM problems.\n\nI took \"RAM problems\" to mean memory errors. That covers correctable DDR errors (messages containing \"ddr error\"), cache parity errors (messages containing \"parity error\"), and CE sym events (messages starting with \"CE sym\").\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team)",
+     "seconds": 8.0,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-12-01' AND event_date < '2006-01-01' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 952,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       "matched by meaning with Mem0: \u201cram problems\u201d \u2248 ram errors (0.90)"
+      ]
+     ],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many RAM problems were there in December 2005?",
+     "reference": 64077,
+     "ok": true,
+     "level": "team, synonym (Mem0)"
+    }
+   ],
+   "taught": [
+    {
+     "answer": "Rack R12 (the quiet rack) had **7,138 events** in December 2005. I counted every event logged for R12 from 2005-12-01 to 2005-12-31, whatever its level or alert status.\n\n**Memory used:** \u201cthe quiet rack\u201d = Rack R12. (your team)",
+     "seconds": 6.5,
+     "sql": [
+      "SELECT COUNT(*) AS n FROM bgl_events WHERE rack = 'R12' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 1770,
+     "note": null,
+     "applied": [
+      [
+       "the quiet rack",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many events did the quiet rack have in December 2005?",
+     "reference": 7138,
+     "ok": true,
+     "term": "the quiet rack",
+     "style": "in passing",
+     "teacher": "eva.horak",
+     "saved": [
+      [
+       "add",
+       "the quiet rack",
+       "Rack R12.",
+       "only you"
+      ],
+      [
+       "team",
+       "the quiet rack",
+       "Rack R12.",
+       "your team"
+      ]
+     ]
+    },
+    {
+     "answer": "There were **563,489** alignment exceptions in total.\n\nI counted only the double-hummer and floating point alignment exception events. I left out the integer alignment exception messages.\n\n**Memory used:** \u201calignment exceptions\u201d = Only the event templates '<N> double-hummer alignment exceptions' and '<N> floating point alignment exceptions'; the integer alignment exce\u2026 (your team)",
+     "seconds": 7.2,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_template IN ('<N> double-hummer alignment exceptions','<N> floating point alignment exceptions')"
+     ],
+     "lookup_ms": 1479,
+     "note": null,
+     "applied": [
+      [
+       "alignment exceptions",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many alignment exceptions were there in total?",
+     "reference": 563489,
+     "ok": true,
+     "term": "alignment exceptions",
+     "style": "stated",
+     "teacher": "tomas.vrba",
+     "saved": [
+      [
+       "add",
+       "alignment exceptions",
+       "Only the event templates '<N> double-hummer alignment exceptions' and '<N> floating point alignment exceptions'; the integer alignment exception messages are excluded.",
+       "only you"
+      ],
+      [
+       "team",
+       "alignment exceptions",
+       "Only the event templates '<N> double-hummer alignment exceptions' and '<N> floating point alignment exceptions'; the integer alignment exception messages are excluded.",
+       "your team"
+      ]
+     ]
+    },
+    {
+     "answer": "There were **1,296 login failures in December 2005**.\n\nI counted events whose message matches \"ciod: LOGIN chdir(...) failed\". I left out the \"Error reading message prefix after LOGIN_MESSAGE ... Link has been severed\" events.\n\n**Memory used:** \u201clogin failures\u201d = Only events whose message matches \"ciod: LOGIN chdir(...) failed\" (the ciod LOGIN chdir failed messages); excludes \"Error reading message p\u2026 (your team)",
+     "seconds": 7.7,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_template LIKE 'ciod: LOGIN chdir(%) failed%' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 1441,
+     "note": null,
+     "applied": [
+      [
+       "login failures",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many login failures were there in December 2005?",
+     "reference": 1296,
+     "ok": true,
+     "term": "login failures",
+     "style": "correction",
+     "teacher": "jana.kral",
+     "saved": [
+      [
+       "add",
+       "login failures",
+       "Only events whose message matches \"ciod: LOGIN chdir(...) failed\" (the ciod LOGIN chdir failed messages); excludes \"Error reading message prefix after LOGIN_MESSAGE ... Link has been severed\" events.",
+       "only you"
+      ],
+      [
+       "team",
+       "login failures",
+       "Only events whose message matches \"ciod: LOGIN chdir(...) failed\" (the ciod LOGIN chdir failed messages); excludes \"Error reading message prefix after LOGIN_MESSAGE ... Link has been severed\" events.",
+       "your team"
+      ]
+     ]
+    },
+    {
+     "answer": "November 2005 had **3,213** cache parity errors. I counted messages containing \"instruction cache parity error corrected\" or \"data cache search parity error detected\".\n\n**Memory used:** \u201ccache parity errors\u201d = Messages containing 'instruction cache parity error corrected' or 'data cache search parity error detected' (the latter continues with '. a\u2026 (your team)",
+     "seconds": 8.0,
+     "sql": [
+      "SELECT COUNT(*) AS n FROM bgl_events WHERE event_date >= '2005-11-01' AND event_date < '2005-12-01' AND (message LIKE '%instruction cache parity error corrected%' OR message LIKE '%data cache search parity error detected%')"
+     ],
+     "lookup_ms": 1338,
+     "note": null,
+     "applied": [
+      [
+       "cache parity errors",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "jana.kral",
+     "question": "How many cache parity errors were there in November 2005?",
+     "reference": 3213,
+     "ok": true,
+     "term": "cache parity errors",
+     "style": "stated",
+     "teacher": "lukas.brandt",
+     "saved": [
+      [
+       "add",
+       "cache parity errors",
+       "Messages containing 'instruction cache parity error corrected' or 'data cache search parity error detected' (the latter continues with '. attempting to correct').",
+       "only you"
+      ],
+      [
+       "team",
+       "cache parity errors",
+       "Messages containing 'instruction cache parity error corrected' or 'data cache search parity error detected' (the latter continues with '. attempting to correct').",
+       "your team"
+      ]
+     ]
+    },
+    {
+     "answer": "December 2005 had **16,718** memory errors.\n\nI counted memory errors as correctable DDR errors, meaning events whose message contains \"ddr error\".\n\n**Memory used:** \u201cmemory errors\u201d = Only correctable DDR errors: messages that contain 'ddr error'. (yours)",
+     "seconds": 12.1,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE message LIKE '%ddr error%' AND event_date >= '2005-12-01' AND event_date < '2006-01-01'"
+     ],
+     "lookup_ms": 1435,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "personal",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "tomas.vrba",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 16718,
+     "ok": true,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": [
+      [
+       "add",
+       "memory errors",
+       "Only correctable DDR errors: messages that contain 'ddr error'.",
+       "only you"
+      ]
+     ]
+    },
+    {
+     "answer": "There were **76,963 memory errors** in October 2005.\n\nI counted events with a message that contains \"ddr error\" or \"parity error\", or that starts with \"CE sym\". That covers correctable DDR errors, cache parity errors and CE sym events.\n\n**Memory used:** \u201cmemory errors\u201d = correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start wit\u2026 (your team)",
+     "seconds": 6.0,
+     "sql": [
+      "SELECT COUNT(*) FROM bgl_events WHERE event_date >= '2005-10-01' AND event_date < '2005-11-01' AND (message LIKE '%ddr error%' OR message LIKE '%parity error%' OR message LIKE 'CE sym%')"
+     ],
+     "lookup_ms": 700,
+     "note": null,
+     "applied": [
+      [
+       "memory errors",
+       "team",
+       null
+      ]
+     ],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in October 2005?",
+     "reference": 76963,
+     "ok": true,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": [
+      [
+       "add",
+       "memory errors",
+       "Only correctable DDR errors: messages that contain 'ddr error'.",
+       "only you"
+      ]
+     ]
+    }
+   ]
+  }
+ ],
+ "minutes": 11.2
+}

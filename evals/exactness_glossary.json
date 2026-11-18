@@ -1,0 +1,1191 @@
+{
+ "mode": "glossary",
+ "runs": [
+  {
+   "seeded": [
+    {
+     "answer": "There were **16,718 memory errors** in December 2005.\n\n*Interpretation: \u201cmemory errors\u201d means events whose message mentions a DDR error.*",
+     "seconds": 7.8,
+     "sql": [
+      "SELECT COUNT(*) AS memory_error_events\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND LOWER(message) LIKE '%ddr error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 64077,
+     "ok": false,
+     "level": "team"
+    },
+    {
+     "answer": "There were **752 comms errors** in total.\n\n*Interpretation: counted events whose message contains \u201cCommunication error:\u201d.*",
+     "seconds": 17.2,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) AS event_count\nFROM bgl_events\nWHERE (LOWER(message) LIKE '%comm%error%' OR LOWER(event_template) LIKE '%comm%error%')\nGROUP BY event_template, level\nORDER BY event_count DESC\nLIMIT 5;",
+      "SELECT COUNT(*) AS comms_error_count\nFROM bgl_events\nWHERE message LIKE '%Communication error:%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many comms errors were there in total?",
+     "reference": 59995,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "There were **27,973 node card problems** in November 2005.\n\n*Interpretation: counted events with a non-null node card and an administrator-assigned alert label.*",
+     "seconds": 7.6,
+     "sql": [
+      "SELECT COUNT(*) AS node_card_problems\nFROM bgl_events\nWHERE event_date >= '2005-11-01'\n  AND event_date < '2005-12-01'\n  AND node_card IS NOT NULL\n  AND alert_label IS NOT NULL;"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many node card problems were there in November 2005?",
+     "reference": 50538,
+     "ok": false,
+     "level": "team relation"
+    },
+    {
+     "answer": "The noisiest rack was **R30**, with **3,690 memory-error events**.\n\n*Interpretation: \u201cmemory errors\u201d was counted as events whose messages mention DDR errors.*",
+     "seconds": 10.6,
+     "sql": [
+      "SELECT rack, COUNT(*) AS memory_error_events\nFROM bgl_events\nWHERE LOWER(message) LIKE '%ddr error%'\nGROUP BY rack\nORDER BY memory_error_events DESC, rack\nLIMIT 5;"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many memory errors did the noisy rack have in total?",
+     "reference": 38442,
+     "ok": false,
+     "level": "team + team"
+    },
+    {
+     "answer": "There were **17,797 incidents** in December 2005.",
+     "seconds": 4.8,
+     "sql": [
+      "SELECT COUNT(*) AS incident_count\nFROM bgl_events\nWHERE is_alert = 1\n  AND event_date >= '2005-12-01'\n  AND event_date < '2006-01-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 44873,
+     "ok": false,
+     "level": "team"
+    },
+    {
+     "answer": "There were **17,797 incidents** in December 2005.",
+     "seconds": 4.7,
+     "sql": [
+      "SELECT COUNT(*) AS incident_count\nFROM bgl_events\nWHERE is_alert = 1\n  AND event_date >= '2005-12-01'\n  AND event_date < '2006-01-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "vera.wolf",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 8785,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "There were **17,797 incidents** in December 2005.",
+     "seconds": 5.3,
+     "sql": [
+      "SELECT COUNT(*) AS incident_count\nFROM bgl_events\nWHERE is_alert = 1\n  AND event_date >= '2005-12-01'\n  AND event_date < '2006-01-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 17797,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **1,714 job failures** in total, interpreting \u201cjob failures\u201d as events with severity level **FAILURE**.",
+     "seconds": 5.2,
+     "sql": [
+      "SELECT COUNT(*) AS job_failure_count\nFROM bgl_events\nWHERE level = 'FAILURE';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "quinn.nemec",
+     "question": "How many job failures were there in total?",
+     "reference": 1734072,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "There were **49,307 fatal events** in November 2005.",
+     "seconds": 6.8,
+     "sql": [
+      "SELECT COUNT(*) AS fatal_event_count\nFROM bgl_events\nWHERE event_date >= '2005-11-01'\n  AND event_date < '2005-12-01'\n  AND level IN ('FATAL', 'FAILURE');"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many fatal events were there in November 2005?",
+     "reference": 49307,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **32,251 Lustre problems** in total.",
+     "seconds": 5.1,
+     "sql": [
+      "SELECT COUNT(*) AS lustre_problem_count\nFROM bgl_events\nWHERE alert_label IN ('KERNMNTF', 'KERNMNT');"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many lustre problems were there in total?",
+     "reference": 32251,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **11 TLB errors** in November 2005.",
+     "seconds": 5.1,
+     "sql": [
+      "SELECT COUNT(*) AS tlb_error_count\nFROM bgl_events\nWHERE alert_label = 'KERNDTLB'\n  AND event_date >= '2005-11-01'\n  AND event_date < '2005-12-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many TLB errors were there in November 2005?",
+     "reference": 11,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321 RTS crashes** in total.",
+     "seconds": 5.1,
+     "sql": [
+      "SELECT COUNT(*) AS rts_crash_count\nFROM bgl_events\nWHERE alert_label IN ('KERNRTSP', 'KERNTERM');"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many rts crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **0 core dumps** in December 2005.",
+     "seconds": 5.4,
+     "sql": [
+      "SELECT COUNT(*) AS core_dump_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND event_template LIKE 'generating core%'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many core dumps were there in December 2005?",
+     "reference": 0,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "IO nodes reported **47,529 events** in December 2005.",
+     "seconds": 5.5,
+     "sql": [
+      "SELECT COUNT(*) AS event_count\nFROM bgl_events\nWHERE card_type = 'IO'\n  AND event_date >= '2005-12-01'\n  AND event_date < '2006-01-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many events did the io nodes report in December 2005?",
+     "reference": 47529,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321 kernel crashes** in total, counting events tagged **KERNRTSP** or **KERNTERM**.",
+     "seconds": 5.1,
+     "sql": [
+      "SELECT COUNT(*) AS kernel_crashes\nFROM bgl_events\nWHERE alert_label IN ('KERNRTSP', 'KERNTERM');"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many kernel crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official, by alias"
+    },
+    {
+     "answer": "There were **10,423 memory (DDR) error events** in **November 2005**.\n\n*Interpretation: \u201cmemory errors\u201d means messages containing \u201cDDR error.\u201d*",
+     "seconds": 8.1,
+     "sql": [
+      "SELECT\n  CASE\n    WHEN LOWER(message) LIKE '%ddr error%' THEN 'DDR error messages'\n    WHEN LOWER(message) LIKE '%memory error%' THEN 'memory error messages'\n    ELSE 'other memory wording'\n  END AS error_group,\n  COUNT(*) AS error_count\nFROM bgl_events\nWHERE event_date >= '2005-11-01'\n  AND event_date < '2005-12-01'\n  AND (LOWER(message) LIKE '%ddr error%' OR LOWER(message) LIKE '%memory error%')\nGROUP BY error_group\nORDER BY error_count DESC\nLIMIT 5;"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memroy errors were there in November 2005?",
+     "reference": 55337,
+     "ok": false,
+     "level": "team, typo"
+    },
+    {
+     "answer": "There were **16,718 RAM problems** in December 2005.\n\n*Interpretation: RAM problems = events whose message mentions a DDR error.*",
+     "seconds": 6.5,
+     "sql": [
+      "SELECT COUNT(*) AS ram_problem_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND LOWER(message) LIKE '%ddr error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many RAM problems were there in December 2005?",
+     "reference": 64077,
+     "ok": false,
+     "level": "team, synonym (Mem0)"
+    }
+   ],
+   "taught": [
+    {
+     "answer": "The quietest rack was **R50**, with **5,007 events** in December 2005.\n\n*Interpreted \u201cquiet rack\u201d as the rack with the fewest events during that calendar month.*",
+     "seconds": 7.2,
+     "sql": [
+      "SELECT rack, COUNT(*) AS event_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01' AND event_date < '2006-01-01'\n  AND rack IS NOT NULL\n  AND rack <> 'UNKNOWN_LOCATION'\nGROUP BY rack\nORDER BY event_count ASC, rack ASC\nLIMIT 5;"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many events did the quiet rack have in December 2005?",
+     "reference": 7138,
+     "ok": false,
+     "term": "the quiet rack",
+     "style": "in passing",
+     "teacher": "eva.horak",
+     "saved": []
+    },
+    {
+     "answer": "There were **585,666 alignment-exception events** in total.",
+     "seconds": 7.3,
+     "sql": [
+      "SELECT COUNT(*) AS total_alignment_exceptions FROM bgl_events WHERE message LIKE '%alignment exceptions%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many alignment exceptions were there in total?",
+     "reference": 563489,
+     "ok": false,
+     "term": "alignment exceptions",
+     "style": "stated",
+     "teacher": "tomas.vrba",
+     "saved": []
+    },
+    {
+     "answer": "There were **1,296 login failures** in December 2005.",
+     "seconds": 7.4,
+     "sql": [
+      "SELECT COUNT(*) AS login_failures\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND message LIKE '%LOGIN%'\n  AND message LIKE '%failed%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many login failures were there in December 2005?",
+     "reference": 1296,
+     "ok": true,
+     "term": "login failures",
+     "style": "correction",
+     "teacher": "jana.kral",
+     "saved": []
+    },
+    {
+     "answer": "There were **3,358 cache parity errors** in November 2005.",
+     "seconds": 6.9,
+     "sql": [
+      "SELECT COUNT(*) AS cache_parity_errors\nFROM bgl_events\nWHERE event_date >= '2005-11-01'\n  AND event_date < '2005-12-01'\n  AND LOWER(message) LIKE '%cache%parity error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "jana.kral",
+     "question": "How many cache parity errors were there in November 2005?",
+     "reference": 3213,
+     "ok": false,
+     "term": "cache parity errors",
+     "style": "stated",
+     "teacher": "lukas.brandt",
+     "saved": []
+    },
+    {
+     "answer": "There were **17,084 memory-error events** in December 2005.\n\nInterpretation: I counted events whose messages mention both **\u201cDDR\u201d** and **\u201cerror.\u201d**",
+     "seconds": 8.0,
+     "sql": [
+      "SELECT COUNT(*) AS memory_error_events\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND LOWER(message) LIKE '%ddr%'\n  AND LOWER(message) LIKE '%error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "tomas.vrba",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 16718,
+     "ok": false,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": []
+    },
+    {
+     "answer": "There were **16,324 memory errors** in October 2005.\n\n*Interpretation: counted events whose messages mention \u201cDDR error.\u201d*",
+     "seconds": 6.1,
+     "sql": [
+      "SELECT COUNT(*) AS memory_error_count\nFROM bgl_events\nWHERE event_date >= '2005-10-01'\n  AND event_date < '2005-11-01'\n  AND LOWER(message) LIKE '%ddr error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in October 2005?",
+     "reference": 76963,
+     "ok": false,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": []
+    }
+   ]
+  },
+  {
+   "seeded": [
+    {
+     "answer": "There were **16,718 memory-error events** in December 2005.\n\n*Interpreted \u201cmemory errors\u201d as events whose message contains \u201cDDR error.\u201d*",
+     "seconds": 6.3,
+     "sql": [
+      "SELECT COUNT(*) AS memory_error_events\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND LOWER(message) LIKE '%ddr error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 64077,
+     "ok": false,
+     "level": "team"
+    },
+    {
+     "answer": "There were **767 comms errors** in total.\n\n*Interpretation: counted events whose message or event template contains \u201ccomm\u201d followed by \u201cerror.\u201d*",
+     "seconds": 14.0,
+     "sql": [
+      "SELECT COUNT(*) AS total_comms_errors\nFROM bgl_events\nWHERE LOWER(message) LIKE '%comm%error%'\n   OR LOWER(event_template) LIKE '%comm%error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many comms errors were there in total?",
+     "reference": 59995,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "There were **27,973 node card problems** in November 2005.\n\n*Interpretation: \u201cproblems\u201d means events tagged as real alerts, including problems reported by components inside the node card.*",
+     "seconds": 13.6,
+     "sql": [
+      "SELECT COUNT(*) AS node_card_problems\nFROM bgl_events\nWHERE event_date >= '2005-11-01'\n  AND event_date < '2005-12-01'\n  AND node_card IS NOT NULL\n  AND is_alert = 1;"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many node card problems were there in November 2005?",
+     "reference": 50538,
+     "ok": false,
+     "level": "team relation"
+    },
+    {
+     "answer": "The noisiest rack was **R30**, with **3,690 memory-error events**.\n\nInterpreted \u201cmemory errors\u201d as events whose messages contain **\u201cDDR error.\u201d**",
+     "seconds": 10.3,
+     "sql": [
+      "SELECT rack, COUNT(*) AS memory_error_events\nFROM bgl_events\nWHERE LOWER(message) LIKE '%ddr error%'\nGROUP BY rack\nORDER BY memory_error_events DESC, rack\nLIMIT 5;"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many memory errors did the noisy rack have in total?",
+     "reference": 38442,
+     "ok": false,
+     "level": "team + team"
+    },
+    {
+     "answer": "There were **17,797 incidents** in December 2005.",
+     "seconds": 6.0,
+     "sql": [
+      "SELECT COUNT(*) AS incident_count\nFROM bgl_events\nWHERE is_alert = 1\n  AND event_date >= '2005-12-01'\n  AND event_date < '2006-01-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 44873,
+     "ok": false,
+     "level": "team"
+    },
+    {
+     "answer": "There were **17,797 incidents** in December 2005.",
+     "seconds": 6.4,
+     "sql": [
+      "SELECT COUNT(*) AS incident_count\nFROM bgl_events\nWHERE is_alert = TRUE\n  AND event_date >= '2005-12-01'\n  AND event_date < '2006-01-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "vera.wolf",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 8785,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "There were **17,797 incidents** in December 2005.",
+     "seconds": 4.8,
+     "sql": [
+      "SELECT COUNT(*) AS incident_count\nFROM bgl_events\nWHERE is_alert = 1\n  AND event_date >= '2005-12-01'\n  AND event_date < '2006-01-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 17797,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **306 job failures**, interpreted as jobs that **timed out** (`job <N> timed out. Block freed.`).",
+     "seconds": 25.8,
+     "sql": [
+      "SELECT event_template, COUNT(*) AS event_count\nFROM bgl_events\nWHERE LOWER(message) LIKE '%job%'\n  AND LOWER(message) LIKE '%fail%'\nGROUP BY event_template\nORDER BY event_count DESC\nLIMIT 5;",
+      "SELECT COUNT(*) AS job_failure_count\nFROM bgl_events\nWHERE LOWER(message) LIKE '%job%'\n  AND (LOWER(message) LIKE '%fail%' OR LOWER(message) LIKE '%failure%');",
+      "SELECT event_template, COUNT(*) AS event_count\nFROM bgl_events\nWHERE LOWER(message) LIKE '%job%'\nGROUP BY event_template\nORDER BY event_count DESC\nLIMIT 5;"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "quinn.nemec",
+     "question": "How many job failures were there in total?",
+     "reference": 1734072,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "There were **49,307 fatal events** in November 2005.",
+     "seconds": 5.5,
+     "sql": [
+      "SELECT COUNT(*) AS fatal_event_count\nFROM bgl_events\nWHERE event_date >= '2005-11-01'\n  AND event_date < '2005-12-01'\n  AND level IN ('FATAL', 'FAILURE');"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many fatal events were there in November 2005?",
+     "reference": 49307,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **32,251 Lustre problems** in total.",
+     "seconds": 5.7,
+     "sql": [
+      "SELECT COUNT(*) AS lustre_problem_count\nFROM bgl_events\nWHERE alert_label IN ('KERNMNTF', 'KERNMNT');"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many lustre problems were there in total?",
+     "reference": 32251,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **11 TLB errors** in November 2005.",
+     "seconds": 5.3,
+     "sql": [
+      "SELECT COUNT(*) AS tlb_errors\nFROM bgl_events\nWHERE alert_label = 'KERNDTLB'\n  AND event_date >= '2005-11-01'\n  AND event_date < '2005-12-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many TLB errors were there in November 2005?",
+     "reference": 11,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321 RTS crashes** in total.",
+     "seconds": 6.1,
+     "sql": [
+      "SELECT COUNT(*) AS rts_crashes\nFROM bgl_events\nWHERE alert_label IN ('KERNRTSP', 'KERNTERM');",
+      "SELECT COUNT(*) AS rts_crashes\nFROM bgl_events\nWHERE alert_label IN ('KERNRTSP', 'KERNTERM');"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many rts crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **0 core dumps** in December 2005.",
+     "seconds": 4.7,
+     "sql": [
+      "SELECT COUNT(*) AS core_dump_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND event_template LIKE 'generating core%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many core dumps were there in December 2005?",
+     "reference": 0,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "IO nodes reported **47,529 events** in December 2005.",
+     "seconds": 5.2,
+     "sql": [
+      "SELECT COUNT(*) AS event_count\nFROM bgl_events\nWHERE card_type = 'IO'\n  AND event_date >= '2005-12-01'\n  AND event_date < '2006-01-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many events did the io nodes report in December 2005?",
+     "reference": 47529,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321 kernel crashes** in total, using the defined \u201crts crashes\u201d filter: alert labels `KERNRTSP` or `KERNTERM`.",
+     "seconds": 4.9,
+     "sql": [
+      "SELECT COUNT(*) AS kernel_crashes\nFROM bgl_events\nWHERE alert_label IN ('KERNRTSP', 'KERNTERM');"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many kernel crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official, by alias"
+    },
+    {
+     "answer": "There were **10,423 memory-error events** in November 2005.\n\n*Interpreted \u201cmemory errors\u201d as events whose message contains \u201cDDR error.\u201d*",
+     "seconds": 6.7,
+     "sql": [
+      "SELECT COUNT(*) AS memory_error_events\nFROM bgl_events\nWHERE event_date >= '2005-11-01'\n  AND event_date < '2005-12-01'\n  AND LOWER(message) LIKE '%ddr error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memroy errors were there in November 2005?",
+     "reference": 55337,
+     "ok": false,
+     "level": "team, typo"
+    },
+    {
+     "answer": "There were **16,718 RAM problems** in December 2005.\n\n*Interpreted \u201cRAM problems\u201d as events whose messages mention DDR errors.*",
+     "seconds": 7.0,
+     "sql": [
+      "SELECT COUNT(*) AS ram_problem_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND LOWER(message) LIKE '%ddr error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many RAM problems were there in December 2005?",
+     "reference": 64077,
+     "ok": false,
+     "level": "team, synonym (Mem0)"
+    }
+   ],
+   "taught": [
+    {
+     "answer": "The quietest rack was **R50**, with **5,007 events** in December 2005.\n\n*Interpretation: \u201cquiet rack\u201d means the rack with the fewest events, excluding unknown locations.*",
+     "seconds": 6.5,
+     "sql": [
+      "SELECT rack, COUNT(*) AS event_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND rack IS NOT NULL\n  AND rack <> 'UNKNOWN_LOCATION'\nGROUP BY rack\nORDER BY event_count ASC, rack ASC\nLIMIT 5;"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many events did the quiet rack have in December 2005?",
+     "reference": 7138,
+     "ok": false,
+     "term": "the quiet rack",
+     "style": "in passing",
+     "teacher": "eva.horak",
+     "saved": []
+    },
+    {
+     "answer": "There were **585,666 alignment-exception events** in total.",
+     "seconds": 6.1,
+     "sql": [
+      "SELECT COUNT(*) AS total_alignment_exceptions\nFROM bgl_events\nWHERE message LIKE '%alignment exceptions%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many alignment exceptions were there in total?",
+     "reference": 563489,
+     "ok": false,
+     "term": "alignment exceptions",
+     "style": "stated",
+     "teacher": "tomas.vrba",
+     "saved": []
+    },
+    {
+     "answer": "There were **1,296 login failures** in December 2005.\n\n*Interpretation: counted events in December whose messages contained both \u201cLOGIN\u201d and \u201cfailed\u201d.*",
+     "seconds": 13.4,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) AS failure_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND UPPER(message) LIKE '%LOGIN%'\n  AND (UPPER(message) LIKE '%FAIL%' OR UPPER(message) LIKE '%ERROR%')\nGROUP BY event_template, level\nORDER BY failure_count DESC\nLIMIT 5;",
+      "SELECT COUNT(*) AS login_failure_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND UPPER(message) LIKE '%LOGIN%'\n  AND UPPER(message) LIKE '%FAILED%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many login failures were there in December 2005?",
+     "reference": 1296,
+     "ok": true,
+     "term": "login failures",
+     "style": "correction",
+     "teacher": "jana.kral",
+     "saved": []
+    },
+    {
+     "answer": "There were **3,358 cache parity errors** in November 2005.",
+     "seconds": 5.8,
+     "sql": [
+      "SELECT COUNT(*) AS cache_parity_errors\nFROM bgl_events\nWHERE event_date >= '2005-11-01'\n  AND event_date < '2005-12-01'\n  AND message LIKE '%cache%parity error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "jana.kral",
+     "question": "How many cache parity errors were there in November 2005?",
+     "reference": 3213,
+     "ok": false,
+     "term": "cache parity errors",
+     "style": "stated",
+     "teacher": "lukas.brandt",
+     "saved": []
+    },
+    {
+     "answer": "There were **16,718 memory-error events** in December 2005.\n\n*Interpretation: \u201cmemory errors\u201d was matched to messages containing \u201cddr error.\u201d*",
+     "seconds": 7.1,
+     "sql": [
+      "SELECT COUNT(*) AS memory_error_events\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND message LIKE '%ddr error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "tomas.vrba",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 16718,
+     "ok": true,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": []
+    },
+    {
+     "answer": "There were **16,324 memory errors** in October 2005.\n\n*Interpretation: \u201cmemory errors\u201d was counted as events whose message contains \u201cDDR error.\u201d*",
+     "seconds": 6.3,
+     "sql": [
+      "SELECT COUNT(*) AS memory_error_events\nFROM bgl_events\nWHERE event_date >= '2005-10-01'\n  AND event_date < '2005-11-01'\n  AND LOWER(message) LIKE '%ddr error%'"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in October 2005?",
+     "reference": 76963,
+     "ok": false,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": []
+    }
+   ]
+  },
+  {
+   "seeded": [
+    {
+     "answer": "There were **16,718 memory errors** in December 2005.\n\n*Interpretation: \u201cmemory errors\u201d = events whose message contains \u201cddr error\u201d.*",
+     "seconds": 6.4,
+     "sql": [
+      "SELECT COUNT(*) AS memory_error_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND message LIKE '%ddr error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 64077,
+     "ok": false,
+     "level": "team"
+    },
+    {
+     "answer": "There were **752 communication errors** in total.\n\n*Interpretation: counted events whose message contains \u201cCommunication error\u201d.*",
+     "seconds": 16.7,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) AS event_count\nFROM bgl_events\nWHERE LOWER(message) LIKE '%comm%error%'\n   OR LOWER(event_template) LIKE '%comm%error%'\nGROUP BY event_template, level\nORDER BY event_count DESC\nLIMIT 5;",
+      "SELECT COUNT(*) AS total_comms_errors\nFROM bgl_events\nWHERE message LIKE '%Communication error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many comms errors were there in total?",
+     "reference": 59995,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "There were **27,973 node card problems** in November 2005.\n\n*Interpretation: counted events tagged as real alerts (`is_alert = 1`) associated with a node card.*",
+     "seconds": 16.0,
+     "sql": [
+      "SELECT COUNT(*) AS node_card_problem_count\nFROM bgl_events\nWHERE event_date >= '2005-11-01'\n  AND event_date < '2005-12-01'\n  AND is_alert = 1\n  AND node_card IS NOT NULL;"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many node card problems were there in November 2005?",
+     "reference": 50538,
+     "ok": false,
+     "level": "team relation"
+    },
+    {
+     "answer": "The noisiest rack was **R30**, with **3,690 memory-error events**.\n\nI interpreted \u201cmemory errors\u201d as events whose messages contain **\u201cDDR error.\u201d**",
+     "seconds": 10.2,
+     "sql": [
+      "SELECT rack, COUNT(*) AS memory_error_events\nFROM bgl_events\nWHERE LOWER(message) LIKE '%ddr error%'\n  AND rack IS NOT NULL\nGROUP BY rack\nORDER BY memory_error_events DESC, rack\nLIMIT 5;"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many memory errors did the noisy rack have in total?",
+     "reference": 38442,
+     "ok": false,
+     "level": "team + team"
+    },
+    {
+     "answer": "There were **17,797 incidents** in December 2005.",
+     "seconds": 5.1,
+     "sql": [
+      "SELECT COUNT(*) AS incident_count\nFROM bgl_events\nWHERE is_alert = 1\n  AND event_date >= '2005-12-01'\n  AND event_date < '2006-01-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 44873,
+     "ok": false,
+     "level": "team"
+    },
+    {
+     "answer": "There were **17,797 incidents** in December 2005.",
+     "seconds": 4.8,
+     "sql": [
+      "SELECT COUNT(*) AS incident_count\nFROM bgl_events\nWHERE is_alert = 1\n  AND event_date >= '2005-12-01'\n  AND event_date < '2006-01-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "vera.wolf",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 8785,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "There were **17,797 incidents** in December 2005.",
+     "seconds": 5.0,
+     "sql": [
+      "SELECT COUNT(*) AS incident_count\nFROM bgl_events\nWHERE is_alert = 1\n  AND event_date >= '2005-12-01'\n  AND event_date < '2006-01-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many incidents were there in December 2005?",
+     "reference": 17797,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **306 job failures**, interpreted as jobs with the message **\u201cjob <N> timed out. Block freed.\u201d**",
+     "seconds": 23.4,
+     "sql": [
+      "SELECT event_template, level, alert_label, COUNT(*) AS event_count\nFROM bgl_events\nWHERE lower(message) LIKE '%job%'\n  AND lower(message) LIKE '%fail%'\nGROUP BY event_template, level, alert_label\nORDER BY event_count DESC\nLIMIT 5;",
+      "SELECT event_template, level, alert_label, COUNT(*) AS event_count\nFROM bgl_events\nWHERE lower(event_template) LIKE '%job%'\n   OR lower(event_template) LIKE '%fail%'\nGROUP BY event_template, level, alert_label\nORDER BY event_count DESC\nLIMIT 5;",
+      "SELECT event_template, level, alert_label, COUNT(*) AS event_count\nFROM bgl_events\nWHERE lower(event_template) LIKE '%job%'\nGROUP BY event_template, level, alert_label\nORDER BY event_count DESC\nLIMIT 5;"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "quinn.nemec",
+     "question": "How many job failures were there in total?",
+     "reference": 1734072,
+     "ok": false,
+     "level": "department"
+    },
+    {
+     "answer": "There were **49,307 fatal events** in November 2005.",
+     "seconds": 5.4,
+     "sql": [
+      "SELECT COUNT(*) AS fatal_event_count\nFROM bgl_events\nWHERE event_date >= '2005-11-01'\n  AND event_date < '2005-12-01'\n  AND level IN ('FATAL', 'FAILURE');"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many fatal events were there in November 2005?",
+     "reference": 49307,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **32,251 Lustre problems** in total.",
+     "seconds": 5.4,
+     "sql": [
+      "SELECT COUNT(*) AS lustre_problem_count\nFROM bgl_events\nWHERE alert_label IN ('KERNMNTF', 'KERNMNT');"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many lustre problems were there in total?",
+     "reference": 32251,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **11 TLB errors** in November 2005.",
+     "seconds": 7.2,
+     "sql": [
+      "SELECT COUNT(*) AS tlb_error_count\nFROM bgl_events\nWHERE alert_label = 'KERNDTLB'\n  AND event_date >= '2005-11-01'\n  AND event_date < '2005-12-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many TLB errors were there in November 2005?",
+     "reference": 11,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321 RTS crashes** in total.",
+     "seconds": 5.5,
+     "sql": [
+      "SELECT COUNT(*) AS rts_crash_count\nFROM bgl_events\nWHERE alert_label IN ('KERNRTSP', 'KERNTERM');"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many rts crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **0 core dumps** in December 2005.",
+     "seconds": 5.3,
+     "sql": [
+      "SELECT COUNT(*) AS core_dump_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND event_template LIKE 'generating core%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many core dumps were there in December 2005?",
+     "reference": 0,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "IO nodes reported **47,529 events** in December 2005.",
+     "seconds": 5.3,
+     "sql": [
+      "SELECT COUNT(*) AS event_count\nFROM bgl_events\nWHERE card_type = 'IO'\n  AND event_date >= '2005-12-01'\n  AND event_date < '2006-01-01';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many events did the io nodes report in December 2005?",
+     "reference": 47529,
+     "ok": true,
+     "level": "official"
+    },
+    {
+     "answer": "There were **27,321 kernel crashes** in total, counting events labeled **KERNRTSP** or **KERNTERM**.",
+     "seconds": 5.2,
+     "sql": [
+      "SELECT COUNT(*) AS kernel_crashes\nFROM bgl_events\nWHERE alert_label IN ('KERNRTSP', 'KERNTERM');"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "mei.chen",
+     "question": "How many kernel crashes were there in total?",
+     "reference": 27321,
+     "ok": true,
+     "level": "official, by alias"
+    },
+    {
+     "answer": "There were **10,423 memory errors** in November 2005.\n\n*Interpreted \u201cmemory errors\u201d as events whose messages contain \u201cDDR error.\u201d*",
+     "seconds": 6.4,
+     "sql": [
+      "SELECT COUNT(*) AS memory_error_events\nFROM bgl_events\nWHERE event_date >= '2005-11-01'\n  AND event_date < '2005-12-01'\n  AND LOWER(message) LIKE '%ddr error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memroy errors were there in November 2005?",
+     "reference": 55337,
+     "ok": false,
+     "level": "team, typo"
+    },
+    {
+     "answer": "There were **16,846 RAM problems** in December 2005.\n\n*Interpretation: RAM problems were counted as events whose messages mention DDR errors.*",
+     "seconds": 7.6,
+     "sql": [
+      "SELECT COUNT(*) AS ram_problem_events\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND LOWER(message) LIKE '%ddr%error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many RAM problems were there in December 2005?",
+     "reference": 64077,
+     "ok": false,
+     "level": "team, synonym (Mem0)"
+    }
+   ],
+   "taught": [
+    {
+     "answer": "The quietest rack was **R50**, with **5,007 events** in December 2005.\n\n*Interpretation: \u201cquiet rack\u201d means the rack with the fewest events, excluding events without a rack.*",
+     "seconds": 7.7,
+     "sql": [
+      "SELECT rack, COUNT(*) AS event_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\nGROUP BY rack\nORDER BY event_count ASC, rack ASC\nLIMIT 5;"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "lukas.brandt",
+     "question": "How many events did the quiet rack have in December 2005?",
+     "reference": 7138,
+     "ok": false,
+     "term": "the quiet rack",
+     "style": "in passing",
+     "teacher": "eva.horak",
+     "saved": []
+    },
+    {
+     "answer": "There were **585,666 alignment-exception events** in total.",
+     "seconds": 5.7,
+     "sql": [
+      "SELECT COUNT(*) AS total_alignment_exceptions\nFROM bgl_events\nWHERE message LIKE '%alignment exception%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many alignment exceptions were there in total?",
+     "reference": 563489,
+     "ok": false,
+     "term": "alignment exceptions",
+     "style": "stated",
+     "teacher": "tomas.vrba",
+     "saved": []
+    },
+    {
+     "answer": "There were **1,296 login failures** in December 2005.\n\n*Interpretation: counted events in December whose messages contained both \u201cLOGIN\u201d and \u201cfailed.\u201d*",
+     "seconds": 13.1,
+     "sql": [
+      "SELECT event_template, level, COUNT(*) AS event_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND (UPPER(message) LIKE '%LOGIN%' OR UPPER(message) LIKE '%LOG IN%')\n  AND (UPPER(message) LIKE '%FAIL%' OR UPPER(message) LIKE '%ERROR%')\nGROUP BY event_template, level\nORDER BY event_count DESC\nLIMIT 5;",
+      "SELECT COUNT(*) AS login_failure_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND UPPER(message) LIKE '%LOGIN%'\n  AND UPPER(message) LIKE '%FAILED%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many login failures were there in December 2005?",
+     "reference": 1296,
+     "ok": true,
+     "term": "login failures",
+     "style": "correction",
+     "teacher": "jana.kral",
+     "saved": []
+    },
+    {
+     "answer": "There were **3,358 cache parity errors** in November 2005.",
+     "seconds": 6.4,
+     "sql": [
+      "SELECT COUNT(*) AS cache_parity_errors\nFROM bgl_events\nWHERE event_date >= '2005-11-01'\n  AND event_date < '2005-12-01'\n  AND event_template LIKE '%cache%parity error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "jana.kral",
+     "question": "How many cache parity errors were there in November 2005?",
+     "reference": 3213,
+     "ok": false,
+     "term": "cache parity errors",
+     "style": "stated",
+     "teacher": "lukas.brandt",
+     "saved": []
+    },
+    {
+     "answer": "There were **16,718 memory errors** in December 2005.\n\n*Interpretation: \u201cmemory errors\u201d refers to events whose messages contain \u201cDDR error\u201d.*",
+     "seconds": 6.8,
+     "sql": [
+      "SELECT COUNT(*) AS memory_error_count\nFROM bgl_events\nWHERE event_date >= '2005-12-01'\n  AND event_date < '2006-01-01'\n  AND message LIKE '%ddr error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "tomas.vrba",
+     "question": "How many memory errors were there in December 2005?",
+     "reference": 16718,
+     "ok": true,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": []
+    },
+    {
+     "answer": "There were **16,324 memory errors** in October 2005.\n\n*Interpretation: counted events whose messages contain \u201cDDR error.\u201d*",
+     "seconds": 6.4,
+     "sql": [
+      "SELECT COUNT(*) AS memory_error_count\nFROM bgl_events\nWHERE event_date >= '2005-10-01'\n  AND event_date < '2005-11-01'\n  AND LOWER(message) LIKE '%ddr error%';"
+     ],
+     "lookup_ms": null,
+     "note": null,
+     "applied": [],
+     "writes": [],
+     "user": "petra.lind",
+     "question": "How many memory errors were there in October 2005?",
+     "reference": 76963,
+     "ok": false,
+     "term": "memory errors (own meaning)",
+     "style": "correction of the team's",
+     "teacher": "tomas.vrba",
+     "saved": []
+    }
+   ]
+  }
+ ],
+ "minutes": 13.7
+}
