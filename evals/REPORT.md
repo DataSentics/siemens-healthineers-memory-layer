@@ -6,6 +6,88 @@ memory. The memory saved the right things in 129 of 129 decisions on Claude, pas
 153 unit tests cover 89% of its code. Its weak spots: it finds few synonyms (2 of 9), a term's words inside another
 phrase still trigger it ("uncorrectable memory errors"), and it can copy the agent's own SQL slip into a definition.
 
+## Update (19 Nov, later): saving through Mem0's extraction phase; Mem0's search tried and not used
+
+Two more parts of the job were tried through Mem0 and compared with the current results on the same data (Claude
+Sonnet 5.5, 2 runs each), to keep only what does at least as well.
+
+**Saving: now through Mem0's extraction phase.** After each answer the memory call runs as Mem0 runs it: the turn goes
+in as Mem0 formats it (`parse_messages`, "Input:"), our rules are its custom fact extraction prompt, and the answer is
+Mem0's list of facts ("term: meaning", "relation component: meaning", "forget: term"), read with Mem0's helpers. The
+rules themselves are word for word the same; a fact has no field for a joke or for "the assistant only inferred it",
+so the rules say not to return those. The ratings of the applied terms come in the same JSON answer. The structured
+tool call stays available for comparison (`MEMORY_EXTRACTION=structured`).
+
+| Check (same data, 2 runs) | Structured call | Mem0 extraction, before ratings were added | Mem0 extraction with ratings (now) |
+| --- | --- | --- | --- |
+| What gets saved: 43 messages | 86 / 86 | 86 / 86 | **86 / 86**, nothing shared that should not be |
+| Behaviour scenarios: 14 | 64 / 64 | 64 / 64 | **64 / 64** |
+| Exact answers on BGL: 23 questions (17 seeded, 6 taught in conversation) | 45 / 46 | 46 / 46 | **44 / 46** |
+
+The exact-answer misses: "login failures", taught as a correction, was saved narrower than taught in 1 of 2 runs, with
+the structured call and with the final setup alike; and once the agent ran the right SQL for "core dumps" but left the
+count out of its answer, which is the SQL agent, not memory. For the 9 definitions in the capture cases, both wrote
+the same or nearly the same meaning. Results: `evals/capture_structured_run.md`, `evals/capture_mem0_run.md`,
+`evals/last_run.md`; `evals/scenarios_structured_run.md`, `evals/scenarios_mem0_run.md`,
+`evals/scenarios_last_run.md`; `evals/exactness_mcp_structured_run.md`, `evals/exactness_mcp_mem0_run.md`,
+`evals/exactness_mcp_last_run.md`.
+
+**Finding terms and storage: Mem0's `search()` tried, not used.** Every term was written with Mem0's `add()` and found
+with its `search()`, then the same checks applied, on the term questions:
+
+| Finding terms (34 questions) | Right | Median lookup | Index built in |
+| --- | --- | --- | --- |
+| Today: our lookup in Mem0's vector store (1-3 word windows of the question, one embedding call) | 26 | 0.8 s | 10 s |
+| Mem0 `search()` for each window | 26 (the same matches) | **3.8 s** | 37 s |
+| Mem0 `search()` with the whole question, each term a memory "term: meaning" | **25** (1 of 9 synonyms) | 0.8 s | 20 s |
+
+`search()` embeds one query per call, so searching each window takes five times as long for the same result. Searched
+with the whole question, terms unrelated to it score 0.60 to 0.69 (for example "incidents" for "kernel crashes"), as
+high as real synonyms, so no cutoff separates them; the 0.70 used was chosen on these same questions, so even 25 is
+optimistic. Moving storage to Mem0's own Databricks store (a Delta table with a Vector Search index) needs a Vector
+Search endpoint and was not tried; on its own it would change no result. The code for both was removed after the
+comparison. Results: `evals/terms_mem0_windows_run.md`, `evals/terms_mem0_question_run.md`.
+
+## Update (19 Nov): merging through Mem0's update phase
+
+When the wording check cannot tell whether a user's meaning is one memory already has, Mem0's update phase now
+decides: its own prompt template and answer format (`get_update_memory_messages`), with a custom update prompt for
+definitions (`consolidate.MERGE_PROMPT`). It is given the term's meanings of everyone the user can see, and answers
+NONE for one only when both select exactly the same events, however they are written, and ADD otherwise. This
+replaces the strict check from 18 Nov (a certain model plus matching exact values) and the extractor's own "same as"
+hint, so one place decides every merge. Its answer only says "same or not": what is stored still follows the memory
+rules.
+
+**Why**: on 31 hand-labelled pairs of meanings (`evals/merge_cases.json`, 2 runs, Claude Sonnet 5.5) the strict check
+merged only 20 of 30 runs where the meanings were the same. It missed "rack 37" for R37, "the link card component" for
+LINKCARD and "1,000" for 1000. Mem0's update phase with its default prompt merged nearly everything: it kept 5 of 32
+different meanings apart and overwrote the rest ("rack R37" became "rack R38"), which is right for one person changing
+their mind but not for colleagues. The same Mem0 step with a prompt for definitions got all of them right:
+
+| Merge decision (31 pairs, 2 runs) | Same meaning merged | Different meanings kept apart |
+| --- | --- | --- |
+| Strict check (18 Nov) | 20 / 30 | 32 / 32 |
+| Strict check without the exact-values part | 24 / 30 | 32 / 32 |
+| Mem0 update phase, default prompt | 30 / 30 | 5 / 32 |
+| Mem0 update phase, prompt for definitions | 30 / 30 | 32 / 32 |
+
+**After the change**, rerun on Claude Sonnet 5.5:
+
+| Check | Result |
+| --- | --- |
+| Merging: the 31 pairs plus 6 cases where the term has several meanings and the right one must be picked, 2 runs | **36 / 38** same meanings merged, **36 / 36** different ones kept apart (Mem0 default on the pairs: 30 / 30 and 6 / 32) |
+| Behaviour scenarios: 14, 2 runs | **64 / 64** |
+| What gets saved: 43 messages, 2 runs | **86 / 86**; nothing shared that should not be (a first run had 85 / 86: once the extractor returned nothing for "By memory errors I mean only the correctable DDR errors"; 10 reruns of that message saved it every time) |
+| Unit tests | 165 pass |
+
+The two misses are one pair, "rack 37" for "rack R37", kept apart in both runs. Asked the same question 4 more times,
+the model said "the same" 3 times: it is a borderline case for it. With "rack R38" also in memory (case M3) it matched
+R37 in both runs. Results: `evals/merge_last_run.md`.
+
+`scripts/eval_capture.py` now gives every run its own memory: it named them by the clock, which on Windows changes
+only every few milliseconds, so runs of one message started together could share a memory and see each other's
+definitions. That can only have lowered earlier scores, since the runs of one message start far apart in a normal run.
+
 ## Update (later on 18 Nov): shared vocabulary only, strict merging
 
 Two changes after the runs below, rerun on Claude Sonnet 5.5 (GPT not rerun):
@@ -14,7 +96,7 @@ Two changes after the runs below, rerun on Claude Sonnet 5.5 (GPT not rerun):
   (preferences, facts about their work, likes, a name only they use, jokes). No model decides any more whether a saved
   item may be shared: every saved item is a definition, and the user's share switch alone decides.
 - **Merging is strict**: two meanings count as the same only when the model is certain and their exact values (codes
-  and names in capitals, numbers, quoted message texts) match.
+  and names in capitals, numbers, quoted message texts) match. (Replaced on 19 Nov by Mem0's update phase, above.)
 
 | Check | Result |
 | --- | --- |
@@ -35,7 +117,7 @@ below describe the runs before the change; their preference rows (scenarios 5 an
   departments and 10 teams, 7 official terms, 8 team and department meanings.
 - **Two models**, each running both the SQL agent and the memory: Claude Sonnet 5.5 on Databricks (what the memory app
   uses) and the GPT deployment in `.env`.
-- Scripts: `scripts/eval_exactness.py`, `eval_capture.py`, `eval_terms.py`, `eval_scenarios.py`,
+- Scripts: `scripts/eval_exactness.py`, `eval_capture.py`, `eval_merge.py`, `eval_terms.py`, `eval_scenarios.py`,
   `eval_summary.py`. Raw results: `evals/`.
 
 ## 1. Are the answers exact?
@@ -144,9 +226,10 @@ term matching, client. Less is covered in the warehouse code (`store.py`, 83%), 
 2. **A term inside another phrase** ("uncorrectable memory errors") gets the term's meaning.
 3. **The agent's own mistakes can become memory**: a definition takes exact values from the SQL that ran, including a
    wrong "exactly equal". Fix to try: describe text matches the way the user put them.
-4. **Strict merging can slow agreement**: a rewording that drops an exact value (a quoted message text, a code) no
-   longer counts as the same meaning, so teammates who word one intent differently may take longer to reach a team
-   meaning. Scenario 4 still converged in 2 of 2 runs.
+4. **Merging rests on one model answer**: nothing checks Mem0's "same" afterwards, so a wrong one would count a
+   user towards a meaning they do not hold (none in 36 runs with different meanings here), and borderline cases such
+   as "rack 37" for R37 can go either way between runs (a missed merge only keeps a second wording). The cases and the
+   prompt for definitions were written by the same person.
 5. **Model dependence**: saving decisions were perfect on Claude Sonnet 5.5 and 96% on GPT.
 6. **Time**: a lookup took a median of 0.8 s here (SQLite plus the embedding call), 7–10 s the first time after a
    start while Mem0 builds its index; learning adds 1–4 s before the SQL agent returns. On the warehouse add about
@@ -169,6 +252,7 @@ term matching, client. Less is covered in the warehouse code (`store.py`, 83%), 
 ```bash
 python scripts/eval_exactness.py --mode mcp --runs 3          # also: --mode none / glossary / memory
 python scripts/eval_capture.py --runs 3
+python scripts/eval_merge.py --runs 2
 python scripts/eval_terms.py
 python scripts/eval_scenarios.py --runs 3
 python scripts/eval_summary.py

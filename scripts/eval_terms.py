@@ -30,6 +30,7 @@ from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(HERE / ".env")
 sys.path.insert(0, str(HERE))
+sys.stdout.reconfigure(encoding="utf-8")  # the Windows console is cp1252; matches print "≈"
 from memory_demo import config  # noqa: E402
 
 E = "{}@shs-demo.example".format

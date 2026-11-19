@@ -1,0 +1,1094 @@
+{
+ "ours": {
+  "S1": [
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "team",
+      "type": "term",
+      "term": "the quiet rack",
+      "meaning": "rack R12",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "the quiet rack",
+      "meaning": "rack R12",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   },
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "team",
+      "type": "term",
+      "term": "the quiet rack",
+      "meaning": "rack R12",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "the quiet rack",
+      "meaning": "rack R12",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   }
+  ],
+  "S2": [
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "add",
+      "type": "term",
+      "term": "memory errors",
+      "meaning": "only the correctable DDR errors",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "memory errors",
+      "meaning": "only the correctable DDR errors",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   },
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "add",
+      "type": "term",
+      "term": "memory errors",
+      "meaning": "only the correctable DDR errors",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "memory errors",
+      "meaning": "only the correctable DDR errors",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   }
+  ],
+  "S3": [
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "add",
+      "type": "term",
+      "term": "comms errors",
+      "meaning": "all ciod errors, not only the socket errors between compute and I/O nodes",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "comms errors",
+      "meaning": "all ciod errors, not only the socket errors between compute and I/O nodes",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   },
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "add",
+      "type": "term",
+      "term": "comms errors",
+      "meaning": "all ciod errors, not only the socket errors between compute and I/O nodes",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "comms errors",
+      "meaning": "all ciod errors, not only the socket errors between compute and I/O nodes",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   }
+  ],
+  "S4": [
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "team",
+      "type": "term",
+      "term": "hot racks",
+      "meaning": "racks R30 to R37",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "Hot racks",
+      "meaning": "racks R30 to R37",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   },
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "team",
+      "type": "term",
+      "term": "hot racks",
+      "meaning": "racks R30 to R37",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "Hot racks",
+      "meaning": "racks R30 to R37",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   }
+  ],
+  "S5": [
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "team",
+      "type": "term",
+      "term": "node crash",
+      "meaning": "any event with level FATAL from the KERNEL component",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "node crash",
+      "meaning": "any event with level FATAL from the KERNEL component",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   },
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "team",
+      "type": "term",
+      "term": "node crash",
+      "meaning": "any FATAL event from the KERNEL component",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "node crash",
+      "meaning": "any FATAL event from the KERNEL component",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   }
+  ],
+  "S6": [
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "team",
+      "type": "term",
+      "term": "somaris10",
+      "meaning": "the software platform the CT scanners run on",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "SOMARIS10",
+      "meaning": "the software platform the CT scanners run on",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   },
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "team",
+      "type": "term",
+      "term": "somaris10",
+      "meaning": "the software platform the CT scanners run on",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "SOMARIS10",
+      "meaning": "the software platform the CT scanners run on",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   }
+  ],
+  "S7": [
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "team",
+      "type": "term",
+      "term": "link issues",
+      "meaning": "events from the LINKCARD component",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "link issues",
+      "meaning": "events from the LINKCARD component",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   },
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "team",
+      "type": "term",
+      "term": "link issues",
+      "meaning": "events from the LINKCARD component",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "link issues",
+      "meaning": "events from the LINKCARD component",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   }
+  ],
+  "S8": [
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "add",
+      "type": "term",
+      "term": "memory errors",
+      "meaning": "only the DDR errors (messages that contain 'ddr error')",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "memory errors",
+      "meaning": "only the DDR errors (messages that contain 'ddr error')",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   },
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "add",
+      "type": "term",
+      "term": "memory errors",
+      "meaning": "only the DDR errors",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "memory errors",
+      "meaning": "only the DDR errors",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   }
+  ],
+  "S9": [
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "team",
+      "type": "relation",
+      "term": "midplane",
+      "meaning": "a midplane contains 16 node cards",
+      "shared": true
+     },
+     {
+      "op": "team",
+      "type": "term",
+      "term": "midplane problems",
+      "meaning": "all problems of the midplane itself and of its node cards",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "relation",
+      "term": "midplane",
+      "meaning": "a midplane contains 16 node cards",
+      "evidence": "stated",
+      "is_joke": false
+     },
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "midplane problems",
+      "meaning": "all problems of the midplane itself and of its node cards",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   },
+   {
+    "outcome": "shared",
+    "saved": [
+     {
+      "op": "team",
+      "type": "relation",
+      "term": "midplane",
+      "meaning": "a midplane contains 16 node cards",
+      "shared": true
+     },
+     {
+      "op": "team",
+      "type": "term",
+      "term": "midplane problems",
+      "meaning": "all problems of the midplane itself plus all problems of its node cards",
+      "shared": true
+     }
+    ],
+    "dropped": [],
+    "ops": [
+     {
+      "op": "add",
+      "item_type": "relation",
+      "term": "midplane",
+      "meaning": "a midplane contains 16 node cards",
+      "evidence": "stated",
+      "is_joke": false
+     },
+     {
+      "op": "add",
+      "item_type": "term",
+      "term": "midplane problems",
+      "meaning": "all problems of the midplane itself plus all problems of its node cards",
+      "evidence": "stated",
+      "is_joke": false
+     }
+    ]
+   }
+  ],
+  "P1": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "P2": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "P3": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "P4": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "P5": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "P6": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "P7": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N1": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N2": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N3": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N4": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N5": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N6": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N7": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N8": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N9": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N10": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N11": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N12": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N13": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N14": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N15": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N16": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N17": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N18": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N19": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N20": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N21": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N22": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "P8": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N23": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "N24": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "P9": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ],
+  "E5": [
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   },
+   {
+    "outcome": "none",
+    "saved": [],
+    "dropped": [],
+    "ops": []
+   }
+  ]
+ },
+ "mem0": {
+  "S1": [
+   "Calls rack R12 the quiet rack",
+   "Asked about the number of events the quiet rack (R12) had last month"
+  ],
+  "S2": [
+   "Interested in correctable DDR memory errors",
+   "Wants to know how many correctable DDR memory errors occurred last month"
+  ],
+  "S3": [
+   "Defines 'comms errors' as all ciod errors, not just the socket ones"
+  ],
+  "S4": [
+   "Hot racks are R30 to R37 for them",
+   "Wants to know which hot rack was the busiest last month"
+  ],
+  "S5": [
+   "Defines a node crash as any FATAL event from the KERNEL component",
+   "Wants to know how many node crashes occurred in December"
+  ],
+  "S6": [
+   "SOMARIS10 is the software platform their CT scanners run on"
+  ],
+  "S7": [
+   "Uses the term 'link issues' to mean events from the LINKCARD component",
+   "Wants to know about link issues (LINKCARD component events) from last month"
+  ],
+  "S8": [
+   "Considers memory errors to be only DDR errors"
+  ],
+  "S9": [
+   "Asked about the number of midplane problems on R37-M1 last month",
+   "Knows that a midplane contains 16 node cards, so midplane problems include all problems of its node cards"
+  ],
+  "P1": [
+   "Prefers answers to be kept to one sentence",
+   "Asked about the number of incidents last month"
+  ],
+  "P2": [
+   "Always wants results shown per rack",
+   "Never needs totals",
+   "Asked how many FATAL events occurred last month"
+  ],
+  "P3": [
+   "Only looks after racks R30 to R37",
+   "Wants to focus on racks R30 to R37",
+   "Asked what broke last month"
+  ],
+  "P4": [
+   "Is the on-call engineer for the I/O nodes",
+   "Asked whether there were I/O node problems last month"
+  ],
+  "P5": [
+   "Prefers dates to always be given in ISO format",
+   "Asked when the last KERNDTLB alert was"
+  ],
+  "P6": [
+   "Rack is R12",
+   "Asked about the number of errors rack R12 had last month"
+  ],
+  "P7": [
+   "Doesn't like long tables and prefers the top 5 results at most",
+   "Wants to know which components logged the most errors last month"
+  ],
+  "N1": [
+   "Asked about the number of FATAL events on R37 last month"
+  ],
+  "N2": [
+   "Wants to see only the top 3 racks by events for last month"
+  ],
+  "N3": [],
+  "N4": [],
+  "N5": [
+   "Petra thinks incidents should mean only FATAL events",
+   "Wants to know how many FATAL events occurred last month"
+  ],
+  "N6": [
+   "Is tired today after a long week",
+   "Asked about the number of alerts yesterday"
+  ],
+  "N7": [
+   "Is on holiday next week",
+   "Interested in which rack had the most events last month"
+  ],
+  "N8": [
+   "Asked which rack had the most errors in the week of 19 December 2005"
+  ],
+  "N9": [],
+  "N10": [
+   "Asked whether R37 is the noisiest rack"
+  ],
+  "N11": [
+   "Wants to check errors for their portal account"
+  ],
+  "N12": [
+   "Has a doctor's appointment at 3",
+   "Asked about the number of incidents last month"
+  ],
+  "N13": [
+   "Manager is named Jana",
+   "Manager Jana wants a report on incidents by Friday",
+   "Wants to know the number of incidents last month"
+  ],
+  "N14": [
+   "Is experiencing bugs with the log viewer",
+   "Wants to know how many KERNEL errors occurred last month"
+  ],
+  "N15": [],
+  "N16": [
+   "Wants to know how many memory errors occurred, treating 'last month' as November 2005"
+  ],
+  "N17": [
+   "Was asking about R37 (corrected from R38 due to a typo)"
+  ],
+  "N18": [],
+  "N19": [
+   "Asking about Patient Anna Novak's scan that failed on Tuesday and whether a FATAL event occurred that day"
+  ],
+  "N20": [
+   "Likes SOMARIS10",
+   "Favourite platform is SOMARIS10"
+  ],
+  "N21": [
+   "Likes apples",
+   "Asked about the number of alerts last month"
+  ],
+  "N22": [
+   "Joined R&D last week",
+   "Is new to the company/team",
+   "Interested in learning about the most common errors"
+  ],
+  "P8": [
+   "Thinks LINKCARD alerts are mostly noise",
+   "Asked how many LINKCARD alerts there were last month"
+  ],
+  "N23": [
+   "Hates Mondays",
+   "Asked about the number of incidents last month"
+  ],
+  "N24": [
+   "Thinks the old log viewer was nicer",
+   "Wants to know which rack had the most events last month"
+  ],
+  "P9": [
+   "Only FATAL events matter for their work, warnings are irrelevant",
+   "Interested in what happened on R37 last month"
+  ],
+  "E5": [
+   "Is trying to bring the number of node card problems down this quarter",
+   "Wants to know the number of node card problems last month"
+  ]
+ }
+}

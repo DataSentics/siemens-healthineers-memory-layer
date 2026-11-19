@@ -16,7 +16,7 @@ Compare them with his code once it is handed over (K1).
 | `memory_demo/bgl.py` | BGL parsing; table schema and column comments |
 | `memory_demo/models.py` | Memory items, signals, the memory trace (FR19), writes (FR13) |
 | `memory_demo/resolver.py` | Levels `personal > team > department > gold`, other departments shown but never applied, when a team meaning changes, confidence → note/warning, untrustworthy official terms (FR4–FR10) |
-| `memory_demo/extractor.py` | After-turn write decision, one structured LLM call (FR1–FR3; Mem0's extraction phase): saves the definitions the user states, without "remember that"; nothing about the user themself |
+| `memory_demo/extractor.py` | After-turn write decision, one LLM call through Mem0's extraction phase (Mem0's input format and list of facts, our rules as its custom prompt; FR1–FR3): saves the definitions the user states, without "remember that"; nothing about the user themself. The same rules as one structured tool call: `MEMORY_EXTRACTION=structured` |
 | `memory_demo/consolidate.py` | Before saving, the same term spelled differently and the same meaning in other words are recognised (Mem0's update phase), so nothing is stored twice |
 | `memory_demo/org.py` | The org directory: a table (Delta on Databricks, SQLite locally) re-read every few minutes; teams and departments are whatever it says today |
 | `memory_demo/service.py` | `MemoryService`: retrieve / learn / undo / forget / feedback / viewer |
@@ -45,9 +45,11 @@ answer) but never applied unless the user picks one with **Use this**. A team's 
   names, numbers, and the texts a message contains (in quotes). The SQL that ran this turn, when the agent passes
   it, helps word a definition exactly. `scripts/eval_exactness.py` checks on BGL that answers built from the words
   match the counts of the old filters.
-- **No "remember that" needed.** After each answer one memory call (Mem0's extraction phase) saves the definitions
-  the user states: one said in passing ("we call R12 the quiet rack"), a correction ("no, memory errors means only
-  DDR"). One-off details of a question and the assistant's own guesses are not saved. The call also sees the user's earlier messages in the conversation, as
+- **No "remember that" needed.** After each answer one memory call saves the definitions the user states. It runs
+  as Mem0's extraction phase: the turn goes in as Mem0 formats it, our rules are its custom fact extraction prompt,
+  and the answer is Mem0's list of facts ("term: meaning", "forget: term"), with the ratings of the applied terms in
+  the same answer. It saves a definition said in passing ("we call R12 the quiet rack") and a correction ("no, memory
+  errors means only DDR"). One-off details of a question and the assistant's own guesses are not saved. The call also sees the user's earlier messages in the conversation, as
   Mem0 does. Every save shows the "Remembered" line above the answer, with **Undo** (FR13).
 - **Only shared vocabulary is saved (18 Nov).** Memory keeps definitions of terms and relations that colleagues
   could use, and nothing about the user themself: no preferences ("from now on one sentence"), no facts about their
@@ -60,8 +62,12 @@ answer) but never applied unless the user picks one with **Use this**. A team's 
 - **Nothing is stored twice** (Mem0's update phase, `consolidate.py`). Before a term is saved it is compared with
   what memory holds: the same term spelled differently ("SOMARIS 10", "Somaris-10", "memroy errors", "memory
   error"), and the same meaning in other words (case, punctuation, articles, plurals, up to two typos). Different numbers (R37 / R38) or different words (correctable / uncorrectable) are never merged that
-  way. When the term is the same but those checks cannot tell whether the meaning is, an LLM decides, given the
-  user's own words, as in Mem0. A different word for the same thing ("link issues" next to "link card problems") is
+  way. When the term is the same but those checks cannot tell whether the meaning is, Mem0's update phase decides:
+  its own prompt template and answer format, with our rule for definitions as its custom update prompt. It gets the
+  term's meanings that the user can see (own, teammates', team, department, official) and answers NONE for one only
+  when both select exactly the same events, however they are written ("rack 37" and R37), and ADD otherwise. Mem0's
+  default prompt would fold a narrower or changed definition into a colleague's (`scripts/eval_merge.py`). Its answer
+  only says "same or not": what gets stored still follows the memory rules. A different word for the same thing ("link issues" next to "link card problems") is
   a synonym and stays a term of its own, so the user's word keeps working. A match reuses the existing wording, so colleagues who mean the same thing are counted together; restating what memory holds shows **Already in memory** and saves nothing. This fixes the 5 Nov
   duplicate: "Only correctable DDR errors, …" and "only the correctable DDR errors, …" were counted as two
   meanings, so Tomas's copy stayed next to the new team meaning.
@@ -147,6 +153,7 @@ Locally from `.env` (copy `example.env`), on Databricks from `app.yaml`.
 | `ORG_CSV`, `ORG_REFRESH_S` | `seed/org.csv` (fills the directory table when it is empty), `300` (seconds between re-reads of the directory) | same |
 | `DEMO_TODAY` | `2005-12-01` | same. The demo clock starts here ("last month" = November 2005); the sidebar's **+1 month** moves it to 2006-01-01 |
 | `JOKE_FILTER` | `1` | `1` |
+| `MEMORY_EXTRACTION` | `mem0` (Mem0's extraction phase with our rules) | same (`structured`: the same rules as one structured tool call, for comparison) |
 | `AZURE_OPENAI_EMBEDDING_DEPLOYMENT`, `EMBEDDING_DIMS` | for Mem0 (term matching, on by default); dims default `1536` (text-embedding-3-small) | – (or `DATABRICKS_EMBEDDING_ENDPOINT`, default `databricks-gte-large-en`, with `LLM_PROVIDER=databricks`) |
 
 The sidebar switches between **Supervisor with casebook** (default) and **Single SQL agent**. Both use the
@@ -178,9 +185,15 @@ weak spots and what the tests do not show.
 `evals/capture_cases.json` (definitions, and things that must not be saved: standing wishes, work facts, plain
 and one-off questions, hypotheticals, other people's views and plans, small talk, likes and opinions, secrets,
 patient data, jokes) through the real extractor and memory rules, several times each, and through Mem0's default
-extraction prompt for comparison. It writes `evals/last_run.md`. Results: `evals/REPORT.md`.
+extraction prompt for comparison (`--extraction structured` runs our rules as one structured tool call instead of
+Mem0's extraction phase). It writes `evals/last_run.md`. Results: `evals/REPORT.md`.
 The messages were written by the same person who wrote the prompt, so a sample of real AskFST questions is the next
 test.
+
+**Merging, measured.** `scripts/eval_merge.py` runs the 37 labelled cases in `evals/merge_cases.json` (a meaning
+in memory, some with the term's other meanings, and a meaning a user just stated: reworded, written differently,
+narrower, broader, other numbers and codes) through the memory layer's merge decision and through Mem0's update phase
+with its default prompt. It writes `evals/merge_last_run.md`.
 
 ## Deploy to Databricks
 

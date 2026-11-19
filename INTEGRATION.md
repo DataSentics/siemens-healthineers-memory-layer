@@ -30,8 +30,9 @@ main agent (central team)
                                                                                   │ MCP over HTTPS
 memory app (mcp-shs-memory) ◀─────────────────────────────────────────────────────┘
   ├─ Delta tables in AskFST's catalog, schema shs_memory (the memories)
-  ├─ Mem0 term index in the app's temp folder, rebuilt from the tables
-  └─ model endpoint (what to remember) and embedding endpoint (Mem0)
+  ├─ Mem0: its extraction step (what to keep), its update step (same meaning?) and a term
+  │   index in the app's temp folder, rebuilt from the tables
+  └─ model endpoint (Mem0's two steps) and embedding endpoint (Mem0's term index)
 ```
 
 ## What happens in a turn of the SQL agent
@@ -42,7 +43,9 @@ memory app (mcp-shs-memory) ◀────────────────�
    with Mem0 ("RAM problems" finds *memory errors*).
 2. **After the answer** it calls `memory_learn`. Learning uses the user's own words when the request carries them
    (`user_message` in the agent's context, or `user_message_of=`); otherwise it uses the request itself, and the main
-   agent's wording is then saved as if the user had said it. One model call decides what to keep.
+   agent's wording is then saved as if the user had said it. One model call, Mem0's extraction step, decides what
+   to keep; when a meaning is worded unlike any memory holds for that term, Mem0's update step decides whether it is
+   one of them.
 3. **The answer says what memory did** (`note_in_answer=True`): it ends with "**Memory used:** …" and
    "**Remembered:** …". The SQL agent has no UI of its own, so this is how the user sees it, if the main agent passes
    the text on. The agent state also holds `memory_trace` and `memory_writes` for anything that wants them.
@@ -52,7 +55,8 @@ If memory fails (the memory app or the warehouse is down, a model times out), th
 
 **What it costs per turn.** The lookup is one request to the memory app: two table reads on the warehouse (0.35–0.45 s
 in the demo) plus one embedding call for Mem0 (about 0.9 s). The first lookup after the memory app starts builds the
-Mem0 index (about 7 s for the demo's terms). Learning is one model call after the answer, 1–4 s.
+Mem0 index (about 7 s for the demo's terms). Learning is one model call after the answer, 1–4 s, and one more when
+a new meaning has to be compared with those memory holds.
 
 ## What AskFST provides
 
@@ -78,6 +82,7 @@ A Databricks App whose name starts with `mcp-`, running `python -m memory_demo.m
 | `LLM_PROVIDER`, `DATABRICKS_LLM_ENDPOINT` | `databricks`, the model that decides what to remember (`databricks-claude-sonnet-5-5` in the demo) |
 | `DATABRICKS_EMBEDDING_ENDPOINT`, `EMBEDDING_DIMS` | `databricks-gte-large-en`, `1024`: Mem0's embeddings (the match thresholds were set on this model) |
 | `MEMORY_TRUSTED_CALLERS` | the id of the service principal the SQL agent signs in as |
+| `MEMORY_EXTRACTION` | leave unset (`mem0`: Mem0's extraction phase with our rules) |
 
 The memory app's service principal needs `USE CATALOG`, `USE SCHEMA`, `SELECT` and `MODIFY` on the memory tables
 (`memory_items`, `memory_signals`, `casebook`; the casebook is written when a team's meaning changes), only `SELECT` on
@@ -166,6 +171,7 @@ Memory tab and the other way round.
 | 7 | Finding terms by meaning | **On by default (Mem0)**, in the memory app. A phrase with the same head word and another modifier ("quiet rack" vs "noisy rack") is never taken for a term. |
 | 8 | Showing memory to the user | **In the answer text** (`note_in_answer`), as Tomáš suggested: bold "Memory used" / "Remembered" lines. |
 | 9 | Consent | Nothing is saved before a user opts in. For the pilot, switch it on for the pilot users (`scripts/pilot_admin.py consent`); users can change it themselves with `set_consent`. |
+| 10 | How much of Mem0 | **Its extraction and update phases** (19 Nov): what to save and whether two meanings are the same are decided in Mem0's format, with our rules as its custom prompts. Not its `search()` or its store: tried on the term questions, `search()` found fewer terms or took five times as long (`evals/REPORT.md`), and the store would need a Vector Search endpoint. The tables stay the source of truth, and the level rules stay ours. |
 
 ## Questions for Tomáš
 

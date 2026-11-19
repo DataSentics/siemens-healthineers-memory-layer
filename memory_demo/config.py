@@ -166,4 +166,5 @@ def term_index():
 def memory_service(with_llm: bool = True) -> MemoryService:
     return MemoryService(memory_store(), org(), llm() if with_llm else None,
                          joke_filter=env("JOKE_FILTER", "1") == "1",
-                         term_index=term_index)  # built only when the Mem0 switch is first used
+                         term_index=term_index,  # built only when the Mem0 switch is first used
+                         extraction=env("MEMORY_EXTRACTION", "mem0"))

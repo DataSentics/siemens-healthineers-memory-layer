@@ -1,4 +1,4 @@
-# Behaviour scenarios: 2 run(s), 4.8 min
+# Behaviour scenarios: 2 run(s), 4.1 min
 
 Real model; memory MCP server + SQL agent with MemoryClient, MemoryMiddleware(note_in_answer) and the three tools. **64 of 64 checks passed.**
 

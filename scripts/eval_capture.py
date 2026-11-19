@@ -19,6 +19,7 @@ import os
 import sys
 import tempfile
 import time
+import uuid
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -27,7 +28,7 @@ sys.path.insert(0, str(ROOT))
 os.environ.setdefault("MEM0_TELEMETRY", "False")
 
 from memory_demo import config, seeding  # noqa: E402
-from memory_demo.extractor import extract  # noqa: E402
+from memory_demo.extractor import extract, extract_structured  # noqa: E402
 from memory_demo.middleware import message_text  # noqa: E402
 from memory_demo.org import Org  # noqa: E402
 from memory_demo.service import MemoryService  # noqa: E402
@@ -37,15 +38,18 @@ USER = "tomas.vrba@shs-demo.example"
 ANSWER = "Here are the results for your question."
 
 
-def ours(case: dict, llm, org: Org, workdir: str) -> dict:
-    store = MemoryStore(SqliteExecutor(os.path.join(workdir, f"{case['id']}-{time.time_ns()}.db")))
+def ours(case: dict, llm, org: Org, workdir: str, extraction: str = "mem0") -> dict:
+    # A fresh memory per run. Not named by time: on Windows time_ns() changes only every few milliseconds, so runs
+    # started together shared one memory and saw each other's definitions.
+    store = MemoryStore(SqliteExecutor(os.path.join(workdir, f"{case['id']}-{uuid.uuid4().hex}.db")))
     seeding.reset(store, org, step=2, start="2005-12-01")
     svc = MemoryService(store, org, llm)
     _, trace = svc.retrieve(USER, case["msg"])
     applied = trace.to_dict()["items"]
     own = [vars(i) for i in store.own_items(USER)]
-    result = extract(llm, case.get("prev"), case["msg"], ANSWER, applied, own, sql=[], recent=[])
-    writes = svc.apply(USER, result.ops, applied, said=case["msg"])
+    decide = extract_structured if extraction == "structured" else extract
+    result = decide(llm, case.get("prev"), case["msg"], ANSWER, applied, own, sql=[], recent=[])
+    writes = svc.apply(USER, result.ops, applied)
     saved = []
     folded = {i for w in writes for i in w.folded_ids}  # a personal copy that became the team's is one item
     for w in writes:
@@ -91,6 +95,8 @@ def main() -> None:
     ap.add_argument("--runs", type=int, default=2)
     ap.add_argument("--out", default=str(ROOT / "evals" / "last_run.md"))
     ap.add_argument("--workers", type=int, default=6)
+    ap.add_argument("--extraction", choices=("mem0", "structured"), default="mem0",
+                    help="structured: the same rules as one structured tool call (extractor.extract_structured)")
     a = ap.parse_args()
     cases = json.loads((ROOT / "evals" / "capture_cases.json").read_text(encoding="utf-8"))["cases"]
     llm, org = config.llm(), Org.from_csv(ROOT / "seed" / "org.csv")
@@ -98,14 +104,14 @@ def main() -> None:
     jobs = [(c, r) for r in range(a.runs) for c in cases]
     t0 = time.time()
     with ThreadPoolExecutor(a.workers) as pool:
-        our_runs = list(pool.map(lambda j: ours(j[0], llm, org, workdir), jobs))
+        our_runs = list(pool.map(lambda j: ours(j[0], llm, org, workdir, a.extraction), jobs))
         facts = list(pool.map(lambda c: mem0_facts(c, llm), cases))
     by_case: dict[str, list[dict]] = {}
     for (c, _), res in zip(jobs, our_runs):
         by_case.setdefault(c["id"], []).append(res)
 
     lines = [f"# What gets remembered: {len(cases)} messages, {a.runs} runs of ours, 1 of Mem0 "
-             f"({time.time() - t0:.0f} s)", "",
+             f"({time.time() - t0:.0f} s)", "", f"Extraction: {a.extraction}.", "",
              "| Case | Kind | Expected | Ours (each run) | What we saved (run 1) | Mem0 would store |",
              "| --- | --- | --- | --- | --- | --- |"]
     stats = {k: [0, 0] for k in ("shared", "none")}

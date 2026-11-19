@@ -2,6 +2,8 @@
 phase), the department level, other departments' meanings shown to everyone, teams read from the org directory,
 and what is about the user stays private."""
 
+import json
+import re
 from pathlib import Path
 
 import pytest
@@ -96,61 +98,67 @@ def test_a_different_meaning_is_not_merged(svc):
     assert used(svc, TOMAS, "memory errors")["memory errors"].scope == "personal"
 
 
-class SameAsModel(GenericFakeChatModel):
-    """Answers the consolidation question with a fixed SameAs call and counts the calls."""
+class MergeModel(GenericFakeChatModel):
+    """Answers Mem0's merge question in Mem0's format: NONE for the listed meaning `same`, else ADD; or a fixed raw
+    `reply`. Counts the calls and keeps the last prompt."""
 
-    answer: dict = {}
+    same: str | None = None
+    reply: str | None = None
     calls: int = 0
+    prompt: str = ""
 
-    def bind_tools(self, tools, **kwargs):
-        return self
-
-    def invoke(self, *a, **k):
+    def invoke(self, messages, *a, **k):
         self.calls += 1
-        return AIMessage("", tool_calls=[{"name": "SameAs", "args": self.answer, "id": "1"}])
+        self.prompt = messages[-1][1]
+        if self.reply is not None:
+            return AIMessage(self.reply)
+        listed = self.prompt.split("The new retrieved facts")[0]
+        if self.same and self.same in listed:
+            mid = re.findall(r"'id': '(\d+)'", listed[:listed.index(self.same)])[-1]
+            return AIMessage(json.dumps({"memory": [{"id": mid, "text": self.same, "event": "NONE"}]}))
+        return AIMessage(json.dumps({"memory": [{"id": "9", "text": "new", "event": "ADD"}]}))
 
 
-# The team's "memory errors" in other words, with the same exact values (the quoted message texts).
+# The team's "memory errors" in other words.
 REWORDED = ("DDR memory errors that were corrected, and cache parity and CE sym events: messages containing "
             "'ddr error' or 'parity error', or starting with 'CE sym'")
 
 
-def test_the_llm_decides_when_wording_is_not_enough(svc):
-    team_id = used(svc, TOMAS, "memory errors")["memory errors"].item_id
-    llm = SameAsModel(messages=iter([]), answer={"same_meaning_id": team_id, "certain": True})
+def test_mem0_decides_when_wording_is_not_enough(svc):
+    team = used(svc, TOMAS, "memory errors")["memory errors"]
+    llm = MergeModel(messages=iter([]), same=team.meaning)
     svc.llm = llm
     [w] = svc.apply(TOMAS, [term_op("RAM errors", REWORDED)])
     assert (w.op, w.term, w.shared_with) == ("same", "memory errors", "your team") and llm.calls == 1
-    # A term applied this turn was already compared by the extractor: no second LLM call.
-    llm.answer = {"same_meaning_id": None}
+    # Mem0's update prompt template, with our rule for definitions as its custom prompt.
+    assert "shared memory of a data assistant" in llm.prompt and "The new retrieved facts" in llm.prompt
+    # A meaning applied this turn is compared the same way: restating it in other words is agreement.
     applied = [vars(i) for i in svc.retrieve(TOMAS, "memory errors")[1].items]
+    [w] = svc.apply(TOMAS, [term_op("memory errors", REWORDED)], applied)
+    assert w.op == "same" and llm.calls == 2
+    llm.same = None
     [w] = svc.apply(TOMAS, [term_op("memory errors", "only DDR errors")], applied)
-    assert w.op == "add" and llm.calls == 1
+    assert w.op == "add" and llm.calls == 3
 
 
-def test_a_merge_needs_a_certain_model_and_the_same_exact_values(svc):
-    """A wrong merge replaces what the user said with another meaning and counts them for it; a missed one only keeps
-    a second wording. So the model must be certain, and exact values (codes, numbers, quoted texts) must match."""
-    team = used(svc, TOMAS, "memory errors")["memory errors"]
-    unsure = SameAsModel(messages=iter([]), answer={"same_meaning_id": team.item_id, "certain": False})
-    svc.llm = unsure
-    [w] = svc.apply(TOMAS, [term_op("RAM errors", REWORDED)])
-    assert w.op == "add" and unsure.calls == 1  # not certain: saved as his own wording
-    svc.forget(TOMAS, w.item_id)
-    sure = SameAsModel(messages=iter([]), answer={"same_meaning_id": team.item_id, "certain": True})
-    svc.llm = sure
-    [w] = svc.apply(TOMAS, [term_op("RAM errors", REWORDED.replace("'CE sym'", "'CE sym' on rack R37"))])
-    assert w.op == "add" and sure.calls == 1  # certain, but R37 is not in the team's meaning
-    svc.forget(TOMAS, w.item_id)
-    # The extractor's own "same as" hint passes the same check.
-    applied = [vars(i) for i in svc.retrieve(TOMAS, "memory errors")[1].items]
-    other = term_op("memory errors", REWORDED.replace("'parity error'", "'parity fault'"), same_as_item_id=team.item_id)
-    assert svc.apply(TOMAS, [other], applied)[0].op == "add"
-    same = term_op("memory errors", REWORDED, same_as_item_id=team.item_id)
-    assert [w.op for w in svc.apply(TOMAS, [same], applied)] == ["withdraw"]  # his own goes: the team's is his
+def test_a_merge_follows_mem0s_answer_when_it_singles_out_one_meaning(svc):
+    """No exact-values check overrides Mem0: "rack 37" can be R37. Its answer must single out one meaning: an ADD,
+    Mem0's default listing of every meaning as unchanged, or an answer that cannot be read keeps the user's own."""
+    team = used(svc, TOMAS, "the noisy rack")["the noisy rack"]
+    svc.llm = MergeModel(messages=iter([]), same=team.meaning)
+    [w] = svc.apply(TOMAS, [term_op("noisy rack", "rack 37")])
+    assert (w.op, w.term, w.meaning) == ("same", "the noisy rack", team.meaning)
+    r37, r38 = item("rack R37", "the noisy rack"), item("rack R38", "the noisy rack")
+    llm = MergeModel(messages=iter([]), reply=json.dumps({"memory": [{"id": "1", "event": "NONE"}]}))
+    assert consolidate.resolve("noisy rack", "rack 38", [r37, r38], llm).same is r38
+    for reply in ({"memory": [{"id": "0", "event": "NONE"}, {"id": "1", "event": "NONE"}]},
+                  {"memory": [{"id": "0", "event": "NONE"}, {"id": "2", "text": "rack 37", "event": "ADD"}]},
+                  {"memory": [{"id": "7", "event": "NONE"}]}, "not json"):
+        llm.reply = reply if isinstance(reply, str) else json.dumps(reply)
+        assert consolidate.resolve("noisy rack", "rack 37", [r37, r38], llm).same is None, reply
 
 
-def test_exact_values_must_match_for_two_meanings_to_be_the_same():
+def test_the_wording_shortcut_never_merges_different_values():
     from memory_demo.consolidate import same_details
     assert same_details("events at level FATAL", "fatal events")
     assert same_details('messages starting "data TLB error interrupt"',
@@ -165,7 +173,7 @@ def test_exact_values_must_match_for_two_meanings_to_be_the_same():
 def test_a_synonym_stays_a_term_of_its_own(svc):
     """Eval 12 Nov: 'link issues = LINKCARD events' was merged into 'link card problems' by the LLM, so nothing was
     saved and Tomas's own word never matched. Only spelling variants of a term merge; the LLM is not asked."""
-    llm = SameAsModel(messages=iter([]), answer={"same_meaning_id": None})
+    llm = MergeModel(messages=iter([]))
     svc.llm = llm
     writes = svc.apply(TOMAS, [term_op("link issues", "events from the LINKCARD component")])
     assert [w.op for w in writes] == ["add", "team"] and writes[1].term == "link issues" and llm.calls == 0
@@ -173,15 +181,44 @@ def test_a_synonym_stays_a_term_of_its_own(svc):
     assert "link card problems" in used(svc, TOMAS, "link card problems?")  # the existing term is untouched
 
 
-def test_the_extractor_can_say_it_is_a_colleague_s_meaning(svc):
+def test_a_colleague_s_meaning_in_other_words_counts_together(svc):
     svc.apply(TOMAS, [term_op("memory errors", "only correctable DDR errors")])
     _, trace = svc.retrieve(PETRA, "memory errors")
     applied = [vars(i) for i in trace.items]
-    tomas_id = trace.items[0].alternatives[0].item_id
-    op = term_op("memory errors", "just the DDR ones that got corrected", same_as_item_id=tomas_id)
-    [w] = svc.apply(PETRA, [op], applied)
+    svc.llm = MergeModel(messages=iter([]), same="only correctable DDR errors")
+    [w] = svc.apply(PETRA, [term_op("memory errors", "just the DDR ones that got corrected")], applied)
     assert w.meaning == "only correctable DDR errors"  # her copy is his meaning, so the two count together
     assert used(svc, LUKAS, "memory errors")["memory errors"].alternatives[0].holders == 2
+
+
+# ---- Mem0's extraction phase (the default extractor) -----------------------------------------------------------
+def test_mem0_extraction_reads_facts_as_ops():
+    from memory_demo.extractor import MEM0_SYSTEM, extract
+
+    class Facts(GenericFakeChatModel):
+        prompt: str = ""
+
+        def invoke(self, messages, *a, **k):
+            self.prompt = messages[-1][1]
+            return AIMessage('```json\n{"facts": ["the noisy rack: rack R38", "relation node card: contains compute '
+                             'cards", "forget: link issues", "forget: nothing known", {"fact": "x"}, "no term"], '
+                             '"relevance": [{"item_id": "a1", "level": "low", "reason": "not about it"}, '
+                             '{"item_id": "a2", "level": "huge"}]}\n```')
+
+    own = [{"item_id": "o1", "term": "link issues", "meaning": "LINKCARD events"}]
+    llm = Facts(messages=iter([]))
+    ops = extract(llm, None, "the noisy rack is R38", "Here it is.", [], own, sql=["SELECT 1"])
+    assert [(o.op, o.item_type, o.term, o.meaning, o.target_item_id) for o in ops.ops] == [
+        ("add", "term", "the noisy rack", "rack R38", None),
+        ("add", "relation", "node card", "contains compute cards", None),
+        ("withdraw", "term", "link issues", "", "o1")]
+    assert [(r.item_id, r.level) for r in ops.relevance] == [("a1", "low")]  # a rating that does not fit is dropped
+    assert llm.prompt.startswith("Input:\nsystem: SQL that ran") and "user: the noisy rack is R38" in llm.prompt
+    assert "is_joke" not in MEM0_SYSTEM and "op=" not in MEM0_SYSTEM and "Never save anything about the user" in MEM0_SYSTEM
+    # Nothing readable: nothing saved, nothing rated.
+    llm_bad = GenericFakeChatModel(messages=iter([AIMessage("sorry, no json here")]))
+    assert extract(llm_bad, None, "hi", "hello", [], []) == extract(llm_bad.__class__(messages=iter([AIMessage("[]")])),
+                                                                     None, "hi", "hello", [], [])
 
 
 # ---- departments ---------------------------------------------------------------------------------------------

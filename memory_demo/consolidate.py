@@ -11,31 +11,33 @@ structured (a term and its meaning, per scope), so the question splits in two:
    its own, so the user's own word keeps working.
 2. Does that term already have this meaning, worded differently? Then the new item copies the existing wording
    exactly, so the rest of the layer (team counts, folding into the team meaning) sees one meaning, not two.
-   A cheap check goes first (the same words up to case, punctuation, articles, plurals and two typos; never different
-   numbers like R37 / R38 or different words like correctable / uncorrectable). When it is not enough, the LLM decides
-   from the user's own words, as in Mem0, but only a match it is certain of counts.
-   Whatever decides, two meanings are never the same when their exact values differ (`same_details`: codes and names
-   in capitals, anything with a digit, quoted texts). A wrong merge would replace what a user said with another
-   meaning and count them towards a team meaning they do not hold; a missed one only keeps a second wording. So
-   merging is strict, and what it merges is the same meaning. The cheap check is also used when meanings are compared
-   on read (`same_meaning`).
+   A cheap check goes first (the same words up to case, punctuation, articles, plurals and two typos, with the same
+   exact values: never R37 / R38, KERNDTLB / KERNSTLB or correctable / uncorrectable). It is also used when meanings
+   are compared on read (`same_meaning`). When it is not enough, Mem0's update phase decides: its own prompt
+   template and answer format (mem0 `get_update_memory_messages`), with `MERGE_PROMPT` as the custom update prompt.
+   The existing meanings are those of everyone the user can see (own, teammates', team, department, gold), so a
+   colleague's meaning in other words counts as the same one. Mem0's own rule merges a narrower or changed fact into
+   the old one ("keep the one with more information"), which is right for one person's memory but would make one
+   colleague's definition replace another's; the custom prompt says NONE only when both select exactly the same
+   events, however they are written, and ADD otherwise. The answer only decides "same or not": what is stored stays
+   with the memory rules (a user changes only their own memory). Evaluated in evals/merge_last_run.md.
 """
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 from dataclasses import dataclass
 from difflib import SequenceMatcher
 
 from langchain_core.language_models import BaseChatModel
-from pydantic import BaseModel, Field
 
 from .models import MemoryItem
 
 log = logging.getLogger(__name__)
 ARTICLES = {"a", "an", "the"}
-MAX_ENTRIES = 15  # Mem0 compares with the top s=10 similar memories; one term can have a few more meanings
+MAX_ENTRIES = 15  # Mem0's add() compares with the 5 most similar memories; one term can have a few more meanings
 WORD = re.compile(r"[^\W_]+")  # letters and digits of any script: "größer" and "内存错误" are words too
 QUOTED = re.compile(r""""([^"]+)"|“([^”]+)”|(?<!\w)'([^']+)'(?!\w)""")  # "x", “x”, 'x' (not an apostrophe)
 
@@ -131,34 +133,29 @@ def _covered(found: set[str], text: str) -> bool:
 class Resolution:
     term: str  # the term to store it under: an existing one when it is the same term spelled differently
     same: MemoryItem | None = None  # an existing item of that term that already has this meaning
-    how: str | None = None  # "wording" or "llm" (for tests and the trace)
+    how: str | None = None  # "wording" or "mem0" (for tests and the trace)
 
 
-class SameAs(BaseModel):
-    same_meaning_id: str | None = Field(None, description="Id of the entry that means what the user means, or null.")
-    certain: bool = Field(False, description="True only when you are certain that entry selects exactly the same "
-                                             "events as the user's meaning.")
+MERGE_PROMPT = """You are a smart memory manager for the shared memory of a data assistant. Each memory is a
+definition of a work term, written as "term: meaning". Colleagues state definitions in their own words, so one
+definition can be written in many ways.
+
+Compare each new fact with the existing memories of the same term:
+- NONE: an existing memory selects exactly the same events, however it is written: other words or word order, typos,
+  upper or lower case, a number or code written another way, a name written as a code or in words, or an explanation
+  added or left out that does not change which events count.
+- ADD: the new fact selects different events: narrower, broader, other codes, components, levels, numbers, message
+  texts, time windows, or an extra condition. Add it as a new element and keep the existing memory unchanged.
+- Never UPDATE or DELETE a memory because a new fact defines the term differently: different definitions of one term
+  are kept side by side, since they can come from different colleagues.
+
+Return only the existing memory that already holds the new fact, with event NONE, or, when none does, the new fact
+with event ADD. Leave the other memories out."""
 
 
-SYSTEM = """You keep the shared memory of a data assistant free of duplicates. A user just said what a term means, and
-memory already has one or more meanings for that same term. Decide whether one of them is what the user means.
-
-same_meaning_id: the id of the entry that means what the user means: only worded differently or with typos. Judge
-by what the user said: the meanings were written down by an assistant and can differ in form for the same intent. A
-meaning is different when the user's words ask for different events (narrower, broader or other ones), or name other
-codes, components, levels, numbers or message texts. Null if none of them is.
-certain: true only when you are certain: both select exactly the same events. If you have any doubt, answer null. A
-wrong match replaces what the user said with someone else's meaning; a missed one only keeps a second wording.
-
-Always answer by calling the SameAs tool."""
-
-
-def resolve(term: str, meaning: str, known: list[MemoryItem], llm: BaseChatModel | None = None,
-            decided: frozenset[str] | set[str] = frozenset(), said: str | None = None) -> Resolution:
+def resolve(term: str, meaning: str, known: list[MemoryItem], llm: BaseChatModel | None = None) -> Resolution:
     """`known`: term items the user's memory can see (own, teammates', team, department, other departments, gold).
-    `decided`: terms applied this turn. The extractor already compared the user's meaning with their meanings in use
-    (the applied one and its alternatives), so the LLM is not asked about those meanings again.
-    `said`: the user's message, so the LLM judges what they meant rather than how it was written down."""
+    Without `llm`, only the wording check runs."""
     known = [k for k in known if k.term]
     new = MemoryItem(item_type="term", term=term, meaning=meaning, owner_email=None, owner_team=None,
                      owner_department=None)
@@ -174,24 +171,32 @@ def resolve(term: str, meaning: str, known: list[MemoryItem], llm: BaseChatModel
     same = next((e for e in entries if same_meaning(new, e)), None)
     if same is not None:
         return Resolution(canon, same, "wording")
-    if llm is None or canon in decided or not entries:
+    if llm is None or not entries:
         return Resolution(canon)
-    return _ask(llm, new, entries[:MAX_ENTRIES], canon, said)
+    return _ask(llm, new, entries[:MAX_ENTRIES], canon)
 
 
-def _ask(llm: BaseChatModel, new: MemoryItem, entries: list[MemoryItem], canon: str, said: str | None) -> Resolution:
-    lines = "\n".join(f"[{e.item_id}] meaning: {e.meaning}" for e in entries)
-    human = (f"Term: {canon}\nWhat the user said: {(said or 'not available')[:1500]}\n"
-             f"As written down: meaning: {new.meaning}\n\n"
-             f"Meanings already in memory:\n{lines}")
+def _ask(llm: BaseChatModel, new: MemoryItem, entries: list[MemoryItem], canon: str) -> Resolution:
+    """Mem0's update phase for one new fact against the term's meanings. NONE on one of them is "the same meaning"; an
+    ADD, or an answer that does not single one out, keeps the user's meaning as their own."""
+    from mem0.configs.prompts import get_update_memory_messages
+
+    from .middleware import message_text
+
+    memories = [{"id": str(i), "text": f"{canon}: {e.meaning}"} for i, e in enumerate(entries)]
+    prompt = get_update_memory_messages(memories, [f"{canon}: {new.meaning}"], MERGE_PROMPT)
     try:
-        msg = llm.bind_tools([SameAs]).invoke([("system", SYSTEM), ("human", human)])
-        call = next((tc for tc in getattr(msg, "tool_calls", []) or [] if tc["name"] == "SameAs"), None)
-        answer = SameAs(**call["args"]) if call else SameAs()
+        text = message_text(llm.invoke([("human", prompt)]))
+        events = json.loads(text[text.find("{"): text.rfind("}") + 1]).get("memory", [])
     except Exception as e:  # never let consolidation break a turn: store it as said
         log.warning("could not compare “%s” with memory, saving it as said: %s", canon, e)
         return Resolution(canon)
-    same = {e.item_id: e for e in entries}.get(answer.same_meaning_id or "")
-    if same is None or not answer.certain or not same_details(new.meaning, same.meaning):
+    events = [x for x in events if isinstance(x, dict)]
+    kinds = [str(x.get("event") or "").upper() for x in events]
+    same = [entries[int(x["id"])] for x, kind in zip(events, kinds)
+            if kind == "NONE" and str(x.get("id")).isdigit() and int(x["id"]) < len(entries)]
+    # An ADD means "new"; several different meanings marked NONE is Mem0's default "nothing changed" listing, which
+    # does not say which one holds the fact.
+    if "ADD" in kinds or len({e.meaning for e in same}) != 1:
         return Resolution(canon)
-    return Resolution(canon, same, "llm")
+    return Resolution(canon, same[0], "mem0")

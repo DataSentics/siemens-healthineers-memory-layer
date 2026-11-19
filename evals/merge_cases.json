@@ -1,0 +1,395 @@
+{
+ "comment": "Merging: is a meaning a user just stated the same as one memory already has for that term? Each case is one existing meaning (old, as written down earlier), what the user typed (said) and how it was written down (new); M cases also list other meanings of the term in memory (others), and the new one must be matched to old, not to one of those. expect: 'same' (old and new select exactly the same events, so they count as one meaning) or 'different' (they select different events and must stay apart). Labels were written by hand; 'why' says the reasoning. Kinds marked 'written differently' probe whether merging is too strict about how a value is written.",
+ "cases": [
+  {
+   "id": "S1",
+   "kind": "reworded",
+   "expect": "same",
+   "term": "incidents",
+   "old": "every event with level FATAL or FAILURE, whether or not it has an alert label",
+   "said": "incidents are just all FATAL and FAILURE events, alert label or not",
+   "new": "all events with level FATAL or FAILURE, with or without an alert label",
+   "why": "Same levels, same 'alert label does not matter'."
+  },
+  {
+   "id": "S2",
+   "kind": "explanation dropped",
+   "expect": "same",
+   "term": "the noisy rack",
+   "old": "rack R37, which produces by far the most events",
+   "said": "the noisy rack is R37",
+   "new": "rack R37",
+   "why": "Both are rack R37; the rest of the old one only explains why."
+  },
+  {
+   "id": "S3",
+   "kind": "explanation added",
+   "expect": "same",
+   "term": "the noisy rack",
+   "old": "rack R37",
+   "said": "the noisy rack is R37, the one that logs by far the most",
+   "new": "rack R37, the rack that logs by far the most events",
+   "why": "Both are rack R37; the new one adds why."
+  },
+  {
+   "id": "S4",
+   "kind": "written differently: rack number",
+   "expect": "same",
+   "term": "the noisy rack",
+   "old": "rack R37",
+   "said": "by the noisy rack I mean rack 37",
+   "new": "rack 37",
+   "why": "Rack 37 is R37 (racks are R00 to R77)."
+  },
+  {
+   "id": "S5",
+   "kind": "written differently: component name",
+   "expect": "same",
+   "term": "link card problems",
+   "old": "any event from component LINKCARD, the cards that connect midplanes",
+   "said": "link card problems are everything the link card component logs",
+   "new": "all events from the link card component",
+   "why": "The link card component is LINKCARD."
+  },
+  {
+   "id": "S6",
+   "kind": "written differently: number format",
+   "expect": "same",
+   "term": "busy midplanes",
+   "old": "midplanes with more than 1000 events in one day",
+   "said": "busy midplanes have over 1,000 events a day",
+   "new": "midplanes with over 1,000 events in a day",
+   "why": "1,000 is 1000; 'over' is 'more than'."
+  },
+  {
+   "id": "S7",
+   "kind": "written differently: quotes dropped",
+   "expect": "same",
+   "term": "memory errors",
+   "old": "correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start with 'CE sym'",
+   "said": "memory errors means corrected DDR errors, cache parity errors and CE sym messages, so anything with ddr error or parity error in it, or starting with CE sym",
+   "new": "corrected DDR errors, cache parity errors and CE sym events: messages containing ddr error or parity error, or starting with CE sym",
+   "why": "Same three kinds, same message texts, without quote marks."
+  },
+  {
+   "id": "S8",
+   "kind": "written differently: lower case",
+   "expect": "same",
+   "term": "incidents",
+   "old": "FATAL kernel events, the ones that take a node down: level FATAL and component KERNEL",
+   "said": "incidents are fatal events from the kernel",
+   "new": "events with level fatal from the kernel component",
+   "why": "Level FATAL and component KERNEL, in lower case."
+  },
+  {
+   "id": "S9",
+   "kind": "reordered",
+   "expect": "same",
+   "term": "comms errors",
+   "old": "ciod socket errors between compute and I/O nodes: messages that start with 'ciod: Error reading message prefix' or 'ciod: failed to read message prefix'",
+   "said": "comms errors: ciod can't read the message prefix, so 'ciod: Error reading message prefix' or 'ciod: failed to read message prefix'",
+   "new": "messages starting with 'ciod: Error reading message prefix' or 'ciod: failed to read message prefix': ciod socket errors between I/O and compute nodes",
+   "why": "Same two message texts."
+  },
+  {
+   "id": "S10",
+   "kind": "reordered",
+   "expect": "same",
+   "term": "job failures",
+   "old": "anything that ended a user's job: compute-node kernel panics and terminations (alert label KERNRTSP or KERNTERM) and core dumps (message template starts with 'generating core')",
+   "said": "job failures are core dumps, so messages starting 'generating core', plus KERNTERM and KERNRTSP alerts",
+   "new": "core dumps (messages starting with 'generating core') and kernel terminations and panics with alert label KERNTERM or KERNRTSP",
+   "why": "Same two alert labels and the same message text."
+  },
+  {
+   "id": "S11",
+   "kind": "typo",
+   "expect": "same",
+   "term": "incidents",
+   "old": "every event with level FATAL or FAILURE",
+   "said": "incidents = every evnet with level FATAL or FAILURE",
+   "new": "every evnet with level FATAL or FAILURE",
+   "why": "A typo in an ordinary word."
+  },
+  {
+   "id": "S12",
+   "kind": "written differently: mixed case",
+   "expect": "same",
+   "term": "incidents",
+   "old": "every event with level FATAL or FAILURE",
+   "said": "incidents are the fatal or failure level ones",
+   "new": "events at Fatal or Failure level",
+   "why": "Same two levels."
+  },
+  {
+   "id": "S13",
+   "kind": "written differently: location in words",
+   "expect": "same",
+   "term": "the busy card",
+   "old": "node card R12-M0-N4",
+   "said": "the busy card is node card N4 in midplane M0 of rack R12",
+   "new": "node card N4 in midplane M0 of rack R12",
+   "why": "R12-M0-N4 spelled out."
+  },
+  {
+   "id": "S14",
+   "kind": "explanation added",
+   "expect": "same",
+   "term": "link card problems",
+   "old": "any event from component LINKCARD",
+   "said": "link card problems = LINKCARD component events, those cards connect the midplanes",
+   "new": "events from component LINKCARD (the cards that connect midplanes)",
+   "why": "Same component; the rest explains."
+  },
+  {
+   "id": "S15",
+   "kind": "reworded",
+   "expect": "same",
+   "term": "memory errors",
+   "old": "correctable DDR memory errors",
+   "said": "memory errors are DDR errors that got corrected",
+   "new": "DDR memory errors that were corrected",
+   "why": "'Correctable' errors are the ones that were corrected."
+  },
+  {
+   "id": "D1",
+   "kind": "other number",
+   "expect": "different",
+   "term": "the noisy rack",
+   "old": "rack R37",
+   "said": "the noisy rack is R38",
+   "new": "rack R38",
+   "why": "Another rack."
+  },
+  {
+   "id": "D2",
+   "kind": "other number",
+   "expect": "different",
+   "term": "the busy card",
+   "old": "node card R12-M0-N4",
+   "said": "the busy card is R12-M0-N5",
+   "new": "node card R12-M0-N5",
+   "why": "Another node card."
+  },
+  {
+   "id": "D3",
+   "kind": "opposite",
+   "expect": "different",
+   "term": "memory errors",
+   "old": "correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start with 'CE sym'",
+   "said": "memory errors are only the uncorrectable DDR errors",
+   "new": "uncorrectable DDR memory errors only",
+   "why": "Uncorrectable instead of correctable, and nothing else."
+  },
+  {
+   "id": "D4",
+   "kind": "narrower",
+   "expect": "different",
+   "term": "memory errors",
+   "old": "correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start with 'CE sym'",
+   "said": "memory errors are the corrected DDR errors, the messages with 'ddr error'",
+   "new": "correctable DDR memory errors: messages that contain 'ddr error'",
+   "why": "Leaves out parity and CE sym events."
+  },
+  {
+   "id": "D5",
+   "kind": "broader",
+   "expect": "different",
+   "term": "incidents",
+   "old": "FATAL kernel events, the ones that take a node down: level FATAL and component KERNEL",
+   "said": "incidents are all FATAL events, whatever the component",
+   "new": "every event with level FATAL, from any component",
+   "why": "Any component, not only KERNEL."
+  },
+  {
+   "id": "D6",
+   "kind": "broader",
+   "expect": "different",
+   "term": "incidents",
+   "old": "every event with level FATAL or FAILURE",
+   "said": "incidents are FATAL, FAILURE and SEVERE events",
+   "new": "events with level FATAL, FAILURE or SEVERE",
+   "why": "Adds level SEVERE."
+  },
+  {
+   "id": "D7",
+   "kind": "extra condition",
+   "expect": "different",
+   "term": "incidents",
+   "old": "every event with level FATAL or FAILURE, whether or not it has an alert label",
+   "said": "incidents are FATAL or FAILURE events that have an alert label",
+   "new": "events with level FATAL or FAILURE that carry an alert label",
+   "why": "Only events with an alert label: narrower, with the same codes."
+  },
+  {
+   "id": "D8",
+   "kind": "other number",
+   "expect": "different",
+   "term": "busy midplanes",
+   "old": "midplanes with more than 1000 events in one day",
+   "said": "busy midplanes have more than 100 events a day",
+   "new": "midplanes with more than 100 events in a day",
+   "why": "Another threshold."
+  },
+  {
+   "id": "D9",
+   "kind": "other time window",
+   "expect": "different",
+   "term": "recent alerts",
+   "old": "events with an alert label in the last 7 days",
+   "said": "recent alerts are alert-labelled events from the last 30 days",
+   "new": "events with an alert label in the last 30 days",
+   "why": "30 days, not 7."
+  },
+  {
+   "id": "D10",
+   "kind": "other field",
+   "expect": "different",
+   "term": "link card problems",
+   "old": "any event from component LINKCARD",
+   "said": "link card problems are events whose message mentions link card, from any component",
+   "new": "events whose message mentions 'link card', from any component",
+   "why": "Message text from any component, not the LINKCARD component."
+  },
+  {
+   "id": "D11",
+   "kind": "extra condition",
+   "expect": "different",
+   "term": "link card problems",
+   "old": "any event from component LINKCARD",
+   "said": "link card problems are the LINKCARD events on rack R12",
+   "new": "events from component LINKCARD on rack R12",
+   "why": "Only rack R12."
+  },
+  {
+   "id": "D12",
+   "kind": "narrower",
+   "expect": "different",
+   "term": "comms errors",
+   "old": "ciod socket errors between compute and I/O nodes: messages that start with 'ciod: Error reading message prefix' or 'ciod: failed to read message prefix'",
+   "said": "comms errors are just 'ciod: Error reading message prefix' messages",
+   "new": "messages that start with 'ciod: Error reading message prefix'",
+   "why": "One of the two message texts."
+  },
+  {
+   "id": "D13",
+   "kind": "narrower",
+   "expect": "different",
+   "term": "job failures",
+   "old": "anything that ended a user's job: compute-node kernel panics and terminations (alert label KERNRTSP or KERNTERM) and core dumps (message template starts with 'generating core')",
+   "said": "job failures are KERNRTSP alerts",
+   "new": "events with alert label KERNRTSP",
+   "why": "One alert label, no core dumps."
+  },
+  {
+   "id": "D14",
+   "kind": "extra condition",
+   "expect": "different",
+   "term": "healthy nodes",
+   "old": "nodes with no FATAL event in the last 7 days",
+   "said": "healthy nodes are nodes without any FATAL or FAILURE event in the last 7 days",
+   "new": "nodes with no FATAL or FAILURE event in the last 7 days",
+   "why": "A FAILURE event now also makes a node unhealthy."
+  },
+  {
+   "id": "D15",
+   "kind": "opposite",
+   "expect": "different",
+   "term": "memory errors",
+   "old": "correctable DDR memory errors",
+   "said": "memory errors are the DDR errors that could not be corrected",
+   "new": "DDR memory errors that were not corrected",
+   "why": "Not corrected instead of corrected."
+  },
+  {
+   "id": "D16",
+   "kind": "other kind",
+   "expect": "different",
+   "term": "memory errors",
+   "old": "correctable DDR memory errors",
+   "said": "memory errors are cache parity errors",
+   "new": "cache parity errors",
+   "why": "Cache, not DDR."
+  },
+  {
+   "id": "M1",
+   "kind": "several meanings",
+   "expect": "same",
+   "term": "incidents",
+   "old": "FATAL kernel events, the ones that take a node down: level FATAL and component KERNEL",
+   "others": [
+    "every event with level FATAL or FAILURE, whether or not it has an alert label",
+    "events with level FATAL, FAILURE or SEVERE"
+   ],
+   "said": "incidents are fatal events from the kernel",
+   "new": "events with level fatal from the kernel component",
+   "why": "The department's kernel meaning, not the team's FATAL-or-FAILURE one."
+  },
+  {
+   "id": "M2",
+   "kind": "several meanings",
+   "expect": "same",
+   "term": "memory errors",
+   "old": "correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start with 'CE sym'",
+   "others": [
+    "uncorrectable DDR memory errors only",
+    "cache parity errors"
+   ],
+   "said": "memory errors means corrected DDR errors, cache parity errors and CE sym messages, so anything with ddr error or parity error in it, or starting with CE sym",
+   "new": "corrected DDR errors, cache parity errors and CE sym events: messages containing ddr error or parity error, or starting with CE sym",
+   "why": "The team meaning, not the narrower ones."
+  },
+  {
+   "id": "M3",
+   "kind": "several meanings",
+   "expect": "same",
+   "term": "the noisy rack",
+   "old": "rack R37",
+   "others": [
+    "rack R38"
+   ],
+   "said": "by the noisy rack I mean rack 37",
+   "new": "rack 37",
+   "why": "Rack 37 is R37, not R38."
+  },
+  {
+   "id": "M4",
+   "kind": "several meanings",
+   "expect": "different",
+   "term": "incidents",
+   "old": "every event with level FATAL or FAILURE, whether or not it has an alert label",
+   "others": [
+    "FATAL kernel events, the ones that take a node down: level FATAL and component KERNEL"
+   ],
+   "said": "incidents are FATAL or FAILURE events that have an alert label",
+   "new": "events with level FATAL or FAILURE that carry an alert label",
+   "why": "Narrower than the team's meaning and not the department's."
+  },
+  {
+   "id": "M5",
+   "kind": "several meanings",
+   "expect": "same",
+   "term": "link card problems",
+   "old": "any event from component LINKCARD",
+   "others": [
+    "events whose message mentions 'link card', from any component"
+   ],
+   "said": "link card problems are everything the link card component logs",
+   "new": "all events from the link card component",
+   "why": "The component meaning, not the message-text one."
+  },
+  {
+   "id": "M6",
+   "kind": "several meanings",
+   "expect": "different",
+   "term": "memory errors",
+   "old": "correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start with 'CE sym'",
+   "others": [
+    "correctable DDR memory errors"
+   ],
+   "said": "memory errors are the DDR errors that could not be corrected",
+   "new": "DDR memory errors that were not corrected",
+   "why": "Neither: not corrected."
+  }
+ ]
+}

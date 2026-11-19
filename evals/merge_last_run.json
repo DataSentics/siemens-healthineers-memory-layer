@@ -1,0 +1,842 @@
+{
+ "S1": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "every event with level FATAL or FAILURE, whether or not it has an alert label"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "every event with level FATAL or FAILURE, whether or not it has an alert label"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "S2": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "rack R37, which produces by far the most events"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "rack R37, which produces by far the most events"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "S3": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "rack R37"
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "the noisy rack: rack R37, the rack that logs by far the most events"
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "rack R37"
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "the noisy rack: rack R37, the rack that logs by far the most events"
+   }
+  }
+ ],
+ "S4": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "S5": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "any event from component LINKCARD, the cards that connect midplanes"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "any event from component LINKCARD, the cards that connect midplanes"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "S6": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "midplanes with more than 1000 events in one day"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "midplanes with more than 1000 events in one day"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "S7": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start with 'CE sym'"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start with 'CE sym'"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "S8": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "FATAL kernel events, the ones that take a node down: level FATAL and component KERNEL"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "FATAL kernel events, the ones that take a node down: level FATAL and component KERNEL"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "S9": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "ciod socket errors between compute and I/O nodes: messages that start with 'ciod: Error reading message prefix' or 'ciod: failed to read message prefix'"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "ciod socket errors between compute and I/O nodes: messages that start with 'ciod: Error reading message prefix' or 'ciod: failed to read message prefix'"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "S10": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "anything that ended a user's job: compute-node kernel panics and terminations (alert label KERNRTSP or KERNTERM) and core dumps (message template starts with 'generating core')"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "anything that ended a user's job: compute-node kernel panics and terminations (alert label KERNRTSP or KERNTERM) and core dumps (message template starts with 'generating core')"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "S11": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "wording",
+    "matched": "every event with level FATAL or FAILURE"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "wording",
+    "matched": "every event with level FATAL or FAILURE"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "S12": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "every event with level FATAL or FAILURE"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "every event with level FATAL or FAILURE"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "S13": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "node card R12-M0-N4"
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "the busy card: node card N4 in midplane M0 of rack R12"
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "node card R12-M0-N4"
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "the busy card: node card N4 in midplane M0 of rack R12"
+   }
+  }
+ ],
+ "S14": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "any event from component LINKCARD"
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "link card problems: events from component LINKCARD (the cards that connect midplanes)"
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "any event from component LINKCARD"
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "link card problems: events from component LINKCARD (the cards that connect midplanes)"
+   }
+  }
+ ],
+ "S15": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "correctable DDR memory errors"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "correctable DDR memory errors"
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "D1": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "the noisy rack: rack R38"
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "the noisy rack: rack R38"
+   }
+  }
+ ],
+ "D2": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "ADD",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "ADD",
+    "text": null
+   }
+  }
+ ],
+ "D3": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "memory errors: uncorrectable DDR memory errors only"
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "memory errors: uncorrectable DDR memory errors only"
+   }
+  }
+ ],
+ "D4": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "D5": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "incidents: every event with level FATAL, from any component"
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "incidents: every event with level FATAL, from any component"
+   }
+  }
+ ],
+ "D6": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "incidents: events with level FATAL, FAILURE or SEVERE"
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "incidents: events with level FATAL, FAILURE or SEVERE"
+   }
+  }
+ ],
+ "D7": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "incidents: events with level FATAL or FAILURE that carry an alert label"
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "incidents: events with level FATAL or FAILURE that carry an alert label"
+   }
+  }
+ ],
+ "D8": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "busy midplanes: midplanes with more than 100 events in a day"
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "busy midplanes: midplanes with more than 100 events in a day"
+   }
+  }
+ ],
+ "D9": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "recent alerts: events with an alert label in the last 30 days"
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "recent alerts: events with an alert label in the last 30 days"
+   }
+  }
+ ],
+ "D10": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "link card problems: events whose message mentions 'link card', from any component"
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "link card problems: events whose message mentions 'link card', from any component"
+   }
+  }
+ ],
+ "D11": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "link card problems: events from component LINKCARD on rack R12"
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "link card problems: events from component LINKCARD on rack R12"
+   }
+  }
+ ],
+ "D12": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "D13": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "NONE",
+    "text": null
+   }
+  }
+ ],
+ "D14": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "healthy nodes: nodes with no FATAL or FAILURE event in the last 7 days"
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "UPDATE",
+    "text": "healthy nodes: nodes with no FATAL or FAILURE event in the last 7 days"
+   }
+  }
+ ],
+ "D15": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "ADD",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "ADD",
+    "text": null
+   }
+  }
+ ],
+ "D16": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "ADD",
+    "text": null
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   },
+   "mem0": {
+    "event": "ADD",
+    "text": null
+   }
+  }
+ ],
+ "M1": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "FATAL kernel events, the ones that take a node down: level FATAL and component KERNEL"
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "FATAL kernel events, the ones that take a node down: level FATAL and component KERNEL"
+   }
+  }
+ ],
+ "M2": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start with 'CE sym'"
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "correctable DDR memory errors plus cache parity errors and CE sym events: messages that contain 'ddr error' or 'parity error', or start with 'CE sym'"
+   }
+  }
+ ],
+ "M3": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "rack R37"
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "rack R37"
+   }
+  }
+ ],
+ "M4": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   }
+  }
+ ],
+ "M5": [
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "any event from component LINKCARD"
+   }
+  },
+  {
+   "layer": {
+    "found": "one",
+    "how": "mem0",
+    "matched": "any event from component LINKCARD"
+   }
+  }
+ ],
+ "M6": [
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   }
+  },
+  {
+   "layer": {
+    "found": "two",
+    "how": null,
+    "matched": null
+   }
+  }
+ ]
+}

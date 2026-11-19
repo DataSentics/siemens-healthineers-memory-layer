@@ -1,7 +1,11 @@
-"""After-turn write decision (FR1, FR2, FR3, FR17): one structured LLM call per turn.
+"""After-turn write decision (FR1, FR2, FR3, FR17): one LLM call per turn, through Mem0's extraction phase.
 
-This is the extraction phase of Mem0 (Chhikara et al. 2025, section 2.1): from the latest exchange, with the earlier
-messages as context, an LLM picks out what is worth keeping. Users do not have to say "remember that": a definition
+This is the extraction phase of Mem0 (Chhikara et al. 2025, section 2.1), run as Mem0 runs it (`extract`): the
+conversation formatted by Mem0 (`parse_messages`, "Input:"), our rules as its custom fact extraction prompt, and the
+answer read as Mem0 reads it, a list of facts ("term: meaning"); the same answer also rates the applied terms. From
+the latest exchange, with the earlier messages as context, the LLM picks out what is worth keeping.
+`extract_structured` is the same decision as one structured tool call (MEMORY_EXTRACTION=structured), kept for
+comparison: on 19 Nov both saved the same things and gave the same exact answers (evals/REPORT.md). Users do not have to say "remember that": a definition
 stated in passing is enough. Only what the user said counts, never the assistant's own reading. Comparing it with what
 memory already holds (Mem0's update phase) happens next, in `consolidate`.
 
@@ -35,10 +39,6 @@ class MemoryOp(BaseModel):
         description="correction: the user corrected how the assistant read something. stated: the user said it "
                     "themself, whether or not they asked to remember it. inferred: only the assistant's own reading.")
     is_joke: bool = Field(False, description="True when the definition is clearly a joke or nonsense.")
-    same_as_item_id: str | None = Field(
-        None, description="When you are certain the user's meaning is one already listed under 'Memory items applied "
-                          "this turn' (an applied meaning or another meaning in use), only worded differently: that "
-                          "meaning's id. Null when in doubt, and never for a correction that changes it.")
 
 
 class TermRelevance(BaseModel):
@@ -82,8 +82,8 @@ Set is_joke=true for definitions that are clearly jokes or nonsense: they are no
 Memory items applied this turn are already remembered: never add them again just because they were used. Only return
 an op for one when the user corrects or refines it; then return op=update with its target_item_id.
 If the user states a meaning that is already listed under 'Memory items applied this turn' (applied, or another
-meaning in use) in other words, still return it, with same_as_item_id set to that meaning's id, but only when you
-are certain it selects exactly the same events (the same codes, names, numbers and texts).
+meaning in use), in other words or not, still return it as op=add: memory recognises it and counts the user as
+holding that meaning.
 If the user asks to forget something, return op=withdraw with its target_item_id.
 `meaning` is the definition only, one sentence, without repeating the term. It is all that a colleague's assistant
 gets when it writes its own SQL for the term, so it must select exactly the same events without guessing: keep every
@@ -123,7 +123,7 @@ def _applied_text(applied: list[dict]) -> str:
     return "\n".join(lines) or "none"
 
 
-def extract(
+def extract_structured(
     llm: BaseChatModel,
     previous_answer: str | None,
     user_message: str,
@@ -152,6 +152,115 @@ def extract(
     msg = llm.bind_tools([MemoryOps]).invoke([("system", SYSTEM + ANSWER_WITH_TOOL), ("human", human)])
     call = next((tc for tc in getattr(msg, "tool_calls", []) or [] if tc["name"] == "MemoryOps"), None)
     return parse(call["args"]) if call else MemoryOps()
+
+
+# ---- Mem0's extraction phase (the default) ---------------------------------------------------------------------
+# Our rules as Mem0's custom fact extraction prompt; only what the model returns differs from `extract_structured`:
+# Mem0's list of facts, not our structured ops. A fact has no field for a joke, an id or "the assistant only inferred
+# it", so the rules say what not to return and a forget names the term. The ratings of the applied terms come in the
+# same JSON answer, next to the facts.
+MEM0_FACTS = """
+
+Answer with a JSON object {"facts": [...], "relevance": [...]}.
+facts: one string per definition the user taught in their last message, and an empty list when there is none (most
+turns):
+- a term: "<term>: <meaning>", e.g. "the noisy rack: rack R37, which produces by far the most events"
+- a relation: "relation <component or group>: <meaning>", e.g. "relation node card: a node card contains compute and
+  I/O cards"
+- a request to forget one of the user's own definitions: "forget: <term>"
+relevance: one entry per applied term or relation, {"item_id": "<its id>", "level": "high", "medium" or "low",
+"reason": "<a few words>"}.
+The input starts with context from memory and the SQL that ran (system), then the conversation."""
+
+
+def _mem0_prompt() -> str:
+    text = SYSTEM
+    for old, new in (
+            (" (that is evidence=inferred, and it is never saved).", "."),
+            ("Set is_joke=true for definitions that are clearly jokes or nonsense: they are not saved.",
+             "Never return a definition that is clearly a joke or nonsense."),
+            ("Only return\nan op for one when the user corrects or refines it; then return op=update with its "
+             "target_item_id.", "Only return\na fact for one when the user corrects or refines it: the new "
+                                "definition, under the same term."),
+            ("still return it as op=add: memory", "still return it: memory"),
+            ("If the user asks to forget something, return op=withdraw with its target_item_id.",
+             'If the user asks to forget one of their definitions, return "forget: <term>".'),
+            ("`meaning` is the definition only", "The meaning is the definition only")):
+        assert text.count(old) == 1, old
+        text = text.replace(old, new)
+    return text + MEM0_FACTS
+
+
+MEM0_SYSTEM = _mem0_prompt()
+
+
+def extract(llm: BaseChatModel, previous_answer: str | None, user_message: str, answer: str,
+            applied: list[dict], own: list[dict], sql: list[str] | None = None,
+            recent: list[str] | None = None) -> MemoryOps:
+    """What to remember from this turn, through Mem0's extraction phase: the turn formatted as Mem0 formats it
+    (`parse_messages`, "Input:"), our rules as its custom fact extraction prompt, and its answer read as Mem0 reads it.
+    `own`: the user's own definitions saved earlier (so a correction or "forget" can name one).
+    `sql`: the SQL that ran this turn (optional; it helps word a definition exactly).
+    `recent`: the user's earlier messages in this conversation, oldest first (context only)."""
+    from mem0.memory.utils import extract_json, normalize_facts, parse_messages, remove_code_blocks
+
+    from .middleware import message_text
+
+    own_txt = "\n".join(f"- [{p['item_id']}] {p.get('term')}: {p['meaning']}" for p in own) or "none"
+    context = (f"SQL that ran to answer the last user message (last one is final):\n"
+               f"{chr(10).join(q[:MAX_SQL] for q in (sql or [])[-3:]) or 'none'}\n\n"
+               f"Memory items applied this turn:\n{_applied_text(applied)}\n\n"
+               f"The user's own definitions saved earlier:\n{own_txt}")
+    messages = [{"role": "system", "content": context}]
+    messages += [{"role": "user", "content": m[:300]} for m in (recent or [])[-RECENT:]]
+    if previous_answer:
+        messages.append({"role": "assistant", "content": previous_answer[:MAX_ANSWER]})
+    messages += [{"role": "user", "content": user_message[:MAX_MESSAGE]},
+                 {"role": "assistant", "content": answer[:MAX_ANSWER]}]
+    text = remove_code_blocks(message_text(llm.invoke([("system", MEM0_SYSTEM),
+                                                        ("human", f"Input:\n{parse_messages(messages)}")])))
+    try:
+        try:
+            data = json.loads(text, strict=False)
+        except json.JSONDecodeError:
+            data = json.loads(extract_json(text), strict=False)
+    except (ValueError, TypeError):
+        data = {}
+    data = data if isinstance(data, dict) else {}
+    facts = _listed(data.get("facts"))
+    rated = []
+    for raw in _listed(data.get("relevance")) if isinstance(data.get("relevance"), (list, str)) else []:
+        try:
+            rated.append(TermRelevance(**raw))
+        except (ValidationError, TypeError):
+            pass
+    return MemoryOps(ops=fact_ops(normalize_facts(facts if isinstance(facts, list) else []), applied, own),
+                     relevance=rated)
+
+
+def fact_ops(facts: list[str], applied: list[dict], own: list[dict]) -> list[MemoryOp]:
+    """Mem0 facts as ops: "term: meaning", "relation component: meaning", "forget: term" (one of the user's own
+    definitions, or the applied one)."""
+    from .consolidate import same_term
+
+    ops = []
+    for fact in facts:
+        head, sep, rest = fact.partition(":")
+        head, rest = head.strip().strip('"'), rest.strip()
+        if not sep or not head or not rest:
+            continue
+        if head.lower() == "forget":
+            target = next((i["item_id"] for i in [*own, *applied]
+                           if i.get("term") and i.get("scope") != "unresolved" and same_term(i["term"], rest)), None)
+            if target:
+                ops.append(MemoryOp(op="withdraw", item_type="term", term=rest, meaning="", target_item_id=target,
+                                    evidence="stated"))
+            continue
+        kind = "term"
+        if head.lower().startswith("relation "):
+            kind, head = "relation", head[len("relation "):].strip()
+        ops.append(MemoryOp(op="add", item_type=kind, term=head, meaning=rest, evidence="stated"))
+    return ops
 
 
 def parse(args: dict) -> MemoryOps:

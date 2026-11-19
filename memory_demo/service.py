@@ -15,7 +15,7 @@ from dataclasses import asdict
 from langchain_core.language_models import BaseChatModel
 
 from . import consolidate, resolver, seeding
-from .extractor import MemoryOp, extract
+from .extractor import MemoryOp, extract, extract_structured
 from .models import MemoryItem, MemoryTrace, MemoryWrite, Signal, new_id, norm_term, today
 from .org import Person
 from .store import MemoryStore
@@ -49,10 +49,13 @@ class MemoryService:
     Memory holds shared vocabulary only (terms and relations); nothing about a user themself is saved."""
 
     def __init__(self, store: MemoryStore, org, llm: BaseChatModel | None = None, joke_filter: bool = True,
-                 term_index=None):
+                 term_index=None, extraction: str = "mem0"):
         """`joke_filter`: definitions the extractor marks as jokes are not saved.
-        `term_index`: a callable returning the Mem0 term index (built on first use, only if the switch is on)."""
+        `term_index`: a callable returning the Mem0 term index (built on first use, only if the switch is on).
+        `extraction`: "mem0" (Mem0's extraction phase with our rules, `extractor.extract`) or "structured" (the same
+        rules as one structured tool call, `extractor.extract_structured`, kept for comparison)."""
         self.store, self.org, self.llm, self.joke_filter = store, org, llm, joke_filter
+        self.extraction = extraction
         self.term_index = term_index
         self._writing = TermLocks()
 
@@ -115,21 +118,21 @@ class MemoryService:
         applied = [i for i in (trace or {}).get("items") or []
                    if isinstance(i, dict) and isinstance(i.get("item_id"), str) and isinstance(i.get("meaning"), str)]
         own = [asdict(i) for i in self.store.own_items(self.org.get(email).email)]
-        result = extract(self.llm, previous_answer, user_message, answer, applied, own, sql=sql, recent=recent)
+        decide = extract_structured if self.extraction == "structured" else extract
+        result = decide(self.llm, previous_answer, user_message, answer, applied, own, sql=sql, recent=recent)
         ids = {a["item_id"] for a in applied if a.get("term") and a.get("scope") != "unresolved"}
         relevance = {r.item_id: {"level": r.level, "reason": r.reason} for r in result.relevance if r.item_id in ids}
         # apply() saves nothing without consent
-        return self.apply(email, result.ops, applied, said=user_message), relevance
+        return self.apply(email, result.ops, applied), relevance
 
-    def apply(self, email: str, ops: list[MemoryOp], applied: list[dict] | None = None, said: str | None = None
-              ) -> list[MemoryWrite]:
+    def apply(self, email: str, ops: list[MemoryOp], applied: list[dict] | None = None) -> list[MemoryWrite]:
         """Only definitions are saved (terms and relations), never anything about the user themself, and never a
         definition marked as a joke. What a user teaches about an existing term is theirs first; a new term goes to
         their team at once.
         A term changes for the team only when enough teammates use the same other meaning (`_update_team`), and for
         the department when enough of its teams do (`_update_department`). Before anything is stored it is compared
-        with what memory already holds (`consolidate`, Mem0's update phase), so another wording or a typo never
-        becomes a second copy of the same thing. `said`: the user's message (for that comparison)."""
+        with what memory already holds, colleagues' meanings included (`consolidate`, Mem0's update phase), so another
+        wording or a typo never becomes a second copy of the same thing."""
         viewer = self.org.get(email)
         mates = self.teammates(viewer)
         consents = _consents(self.store.user_signals(viewer.email, mates))
@@ -138,7 +141,6 @@ class MemoryService:
             return []
         applied_by_term = {norm_term(a["term"]): a for a in (applied or [])
                            if a.get("term") and a.get("scope") != "unresolved"}
-        decided = {norm_term(a["term"]) for a in (applied or []) if a.get("term")}
         writes: list[MemoryWrite] = []
         for op in ops:
             if op.evidence == "inferred":  # only what the user said, never the model's own reading
@@ -156,12 +158,8 @@ class MemoryService:
                 continue
             # Mem0's update phase: the same term spelled differently, or a meaning memory already has?
             known = self._known_terms(viewer, mates, sharing)
-            res = consolidate.resolve(op.term, op.meaning, known, self.llm, decided, said)
+            res = consolidate.resolve(op.term, op.meaning, known, self.llm)
             term, same = res.term, res.same
-            hint = next((k for k in known if k.item_id == op.same_as_item_id), None) if op.same_as_item_id else None
-            if (same is None and hint is not None and hint.term == term and hint.item_id != op.target_item_id
-                    and consolidate.same_details(op.meaning, hint.meaning)):
-                same = hint  # the extractor saw it listed this turn and said it is the same meaning
             if target is None and term in applied_by_term:
                 target = self.store.get_item(applied_by_term[term]["item_id"])
             with self._writing(viewer.department, term):
