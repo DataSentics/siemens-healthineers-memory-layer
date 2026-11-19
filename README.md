@@ -9,6 +9,11 @@ a **casebook** of earlier good answers, an **ontology** built from the data, and
 meaning.
 Compare them with his code once it is handed over (K1).
 
+**Testing the memory?** [`RULES.md`](RULES.md) lists every rule it follows (which meaning each person gets, what is
+saved, when a team or department meaning changes, fading, consent), with the numbers, the code and the tests for each.
+How to plug it into AskFST: [`INTEGRATION.md`](INTEGRATION.md). Manual test script: [`TESTING.md`](TESTING.md).
+Results: [`evals/REPORT.md`](evals/REPORT.md).
+
 ## What is in here
 
 | Path | What |
