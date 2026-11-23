@@ -18,5 +18,5 @@ dist/
 # Databricks CLI sync state
 .databricks/
 
-# Raw output of scripts/eval_capture.py (the summary, evals/last_run.md, is kept)
-evals/last_run.json
+# Raw output of scripts/eval_capture.py (the summary, evals/capture_last_run.md, is kept)
+evals/capture_last_run.json

@@ -8,7 +8,7 @@ Mem0: its default fact extraction prompt (mem0 1.x, USER_MEMORY_EXTRACTION_PROMP
 which facts it would store, not who sees them.
 
     LLM_PROVIDER=databricks DATABRICKS_LLM_ENDPOINT=databricks-claude-sonnet-5-5 DATABRICKS_CONFIG_PROFILE=<profile> \\
-        python scripts/eval_capture.py [--runs 2] [--out evals/last_run.md]
+        python scripts/eval_capture.py [--runs 2] [--out evals/capture_last_run.md]
 """
 
 from __future__ import annotations
@@ -93,7 +93,7 @@ def correct(expect: str, outcome: str) -> bool:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--runs", type=int, default=2)
-    ap.add_argument("--out", default=str(ROOT / "evals" / "last_run.md"))
+    ap.add_argument("--out", default=str(ROOT / "evals" / "capture_last_run.md"))
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--extraction", choices=("mem0", "structured"), default="mem0",
                     help="structured: the same rules as one structured tool call (extractor.extract_structured)")

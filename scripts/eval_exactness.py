@@ -18,7 +18,7 @@ Questions:
 Every run starts from a fresh memory (demo step 2) in a temporary SQLite file; the BGL table is only read. The model
 comes from the repo's .env; Mem0 uses the Databricks embedding endpoint (`--embeddings`, needs a Databricks login).
 
-    python scripts/eval_exactness.py --mode mcp --runs 3 --out evals/exactness_mcp.md
+    python scripts/eval_exactness.py --mode mcp --runs 3   # writes evals/exactness_mcp_last_run.md
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ ap.add_argument("--code", default=str(HERE), help="checkout whose memory_demo pa
 ap.add_argument("--out", default=None)
 ap.add_argument("--embeddings", default="databricks-gte-large-en", help="Databricks embedding endpoint ('' = none)")
 args = ap.parse_args()
-OUT = Path(args.out or HERE / "evals" / f"exactness_{args.mode}.md")
+OUT = Path(args.out or HERE / "evals" / f"exactness_{args.mode}_last_run.md")
 
 DATA = HERE / "data" / "bgl.db"
 os.environ.update({"BACKEND": "sqlite", "SQLITE_DATA": str(DATA), "ORG_SEED": "1",

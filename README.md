@@ -191,7 +191,7 @@ weak spots and what the tests do not show.
 and one-off questions, hypotheticals, other people's views and plans, small talk, likes and opinions, secrets,
 patient data, jokes) through the real extractor and memory rules, several times each, and through Mem0's default
 extraction prompt for comparison (`--extraction structured` runs our rules as one structured tool call instead of
-Mem0's extraction phase). It writes `evals/last_run.md`. Results: `evals/REPORT.md`.
+Mem0's extraction phase). It writes `evals/capture_last_run.md`. Results: `evals/REPORT.md`.
 The messages were written by the same person who wrote the prompt, so a sample of real AskFST questions is the next
 test.
 

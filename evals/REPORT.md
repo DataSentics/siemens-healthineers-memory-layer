@@ -1,12 +1,80 @@
-# How well the memory layer works (18 Nov 2026)
+# How well the memory layer works
 
-With the memory, the SQL agent gave the exact count in **69 of 69** answers on Claude Sonnet 5.5 (66 of 69 on GPT),
-against **29 of 69** with today's AskFST approach (the official glossary in the prompt) and **20 of 69** with no
-memory. The memory saved the right things in 129 of 129 decisions on Claude, passed 92 of 93 behaviour checks, and
-153 unit tests cover 89% of its code. Its weak spots: it finds few synonyms (2 of 9), a term's words inside another
-phrase still trigger it ("uncorrectable memory errors"), and it can copy the agent's own SQL slip into a definition.
+Updated 19 Nov 2026. First where it stands now; then what changed since the first evaluation, and why; then that
+evaluation of 18 Nov in full. The rules the memory follows are in `RULES.md`.
 
-## Update (19 Nov, later): saving through Mem0's extraction phase; Mem0's search tried and not used
+## Where it stands (19 Nov 2026)
+
+The setup tested: AskFST's text-to-SQL agent uses the memory over MCP, through `MemoryClient`, `MemoryMiddleware` and
+the three tools (here the memory app runs in a thread, on SQLite, with Claude Sonnet 5.5 and the embedding endpoint
+`databricks-gte-large-en` on Databricks). Saving runs through Mem0's extraction phase and merging through Mem0's
+update phase, both with our rules as their prompts; terms are found by our lookup in Mem0's vector store; which
+meaning applies to whom is decided by fixed rules.
+
+| Check | Latest result | Details |
+| --- | --- | --- |
+| Exact answers on the BGL log: 23 questions, 2 runs | **44 / 46** | `evals/exactness_mcp_last_run.md` |
+| What gets saved: 43 labelled messages, 2 runs | **86 / 86**, nothing shared that should not be | `evals/capture_last_run.md` |
+| Merging: 37 labelled cases, 2 runs | **36 / 38** same meanings merged, **36 / 36** different ones kept apart | `evals/merge_last_run.md` |
+| Finding terms: 34 labelled questions | **26 / 34** | `evals/terms_last_run.md` |
+| Behaviour scenarios: 14, 2 runs | **64 / 64** | `evals/scenarios_last_run.md` |
+| Unit tests | **166 pass** | `tests/` |
+
+The two exact-answer misses: "login failures", taught as a correction, was saved narrower than taught (the old
+structured extractor did the same in 1 of 2 runs), and once the SQL agent ran the right SQL for "core dumps" but left
+the count out of its answer. For comparison, on 18 Nov (3 runs, 69 answers each) the memory gave 69 of 69 exact counts,
+against 29 of 69 with the official glossary in the prompt (today's AskFST approach) and 20 of 69 with no memory
+(`evals/2026-11-18/`).
+
+### Weak spots
+
+1. **Synonyms**: only close paraphrases are found (2 of 9 here). A teammate who says "kernel panics" instead of "rts
+   crashes" gets the model's own guess, not the memory.
+2. **A term inside another phrase** ("uncorrectable memory errors") gets the term's meaning.
+3. **The agent's own mistakes can become memory**: a definition takes exact values from the SQL that ran, including a
+   wrong "exactly equal". Fix to try: describe text matches the way the user put them. A correction can also be saved
+   narrower than taught ("login failures", 1 of 2 runs on 19 Nov).
+4. **Merging rests on one model answer**: nothing checks Mem0's "same" afterwards, so a wrong one would count a
+   user towards a meaning they do not hold (none in 36 runs with different meanings here), and borderline cases such
+   as "rack 37" for R37 can go either way between runs (a missed merge only keeps a second wording). The cases and the
+   prompt for definitions were written by the same person.
+5. **Model dependence**: on 18 Nov saving decisions were perfect on Claude Sonnet 5.5 and 96% on GPT; GPT was not
+   rerun after the changes since.
+6. **Time**: a lookup took a median of 0.8 s here (SQLite plus the embedding call), 7–10 s the first time after a
+   start while Mem0 builds its index; learning adds 1–4 s before the SQL agent returns. On the warehouse add about
+   0.4 s per lookup.
+
+### What this does not show
+
+- **Databricks**: the warehouse, the deployed memory app and sign-in from a serving endpoint were not run.
+- **AskFST itself**: its agent, data, users and real phrasing. Here the task the SQL agent got was the user's own
+  question, and `user_message` was always passed; with the main agent's rewording, learning will be weaker.
+- **Scale**: about 20 terms and 41 people. With hundreds of terms the Mem0 index takes longer to build and look-alikes
+  get more chances to match.
+- **Time**: fading over months and drift are covered by unit tests only.
+- **Independence**: we wrote these questions and scenarios alongside the system. The colleague's timeline benchmark
+  (`memory-benchmark-handoff`) is the stronger test once it exists. Every question here asks for a count, a strict but
+  narrow measure.
+
+### How to rerun
+
+```bash
+python scripts/eval_exactness.py --mode mcp --runs 2   # evals/exactness_mcp_last_run.md; also --mode none / glossary
+python scripts/eval_capture.py --runs 2                # evals/capture_last_run.md; --extraction structured: the old call
+python scripts/eval_merge.py --runs 2                  # evals/merge_last_run.md
+python scripts/eval_terms.py                           # evals/terms_last_run.md
+python scripts/eval_scenarios.py --runs 2              # evals/scenarios_last_run.md
+python scripts/eval_summary.py                         # every exactness run, the dated folders included
+```
+
+For Claude Sonnet 5.5 set `LLM_PROVIDER=databricks`, `DATABRICKS_LLM_ENDPOINT=databricks-claude-sonnet-5-5` and an
+empty `LLM_REASONING_EFFORT`. Mem0 and Claude need a Databricks login.
+
+## What changed since 18 Nov, and why
+
+Newest first. Raw results of the comparisons: `evals/2026-11-19-mem0/`.
+
+### 19 Nov, later: saving through Mem0's extraction phase; Mem0's search tried and not used
 
 Two more parts of the job were tried through Mem0 and compared with the current results on the same data (Claude
 Sonnet 5.5, 2 runs each), to keep only what does at least as well.
@@ -27,9 +95,9 @@ tool call stays available for comparison (`MEMORY_EXTRACTION=structured`).
 The exact-answer misses: "login failures", taught as a correction, was saved narrower than taught in 1 of 2 runs, with
 the structured call and with the final setup alike; and once the agent ran the right SQL for "core dumps" but left the
 count out of its answer, which is the SQL agent, not memory. For the 9 definitions in the capture cases, both wrote
-the same or nearly the same meaning. Results: `evals/capture_structured_run.md`, `evals/capture_mem0_run.md`,
-`evals/last_run.md`; `evals/scenarios_structured_run.md`, `evals/scenarios_mem0_run.md`,
-`evals/scenarios_last_run.md`; `evals/exactness_mcp_structured_run.md`, `evals/exactness_mcp_mem0_run.md`,
+the same or nearly the same meaning. Results: `evals/2026-11-19-mem0/capture_structured_run.md`, `evals/2026-11-19-mem0/capture_mem0_run.md`,
+`evals/capture_last_run.md`; `evals/2026-11-19-mem0/scenarios_structured_run.md`, `evals/2026-11-19-mem0/scenarios_mem0_run.md`,
+`evals/scenarios_last_run.md`; `evals/2026-11-19-mem0/exactness_mcp_structured_run.md`, `evals/2026-11-19-mem0/exactness_mcp_mem0_run.md`,
 `evals/exactness_mcp_last_run.md`.
 
 **Finding terms and storage: Mem0's `search()` tried, not used.** Every term was written with Mem0's `add()` and found
@@ -46,9 +114,9 @@ with the whole question, terms unrelated to it score 0.60 to 0.69 (for example "
 high as real synonyms, so no cutoff separates them; the 0.70 used was chosen on these same questions, so even 25 is
 optimistic. Moving storage to Mem0's own Databricks store (a Delta table with a Vector Search index) needs a Vector
 Search endpoint and was not tried; on its own it would change no result. The code for both was removed after the
-comparison. Results: `evals/terms_mem0_windows_run.md`, `evals/terms_mem0_question_run.md`.
+comparison. Results: `evals/2026-11-19-mem0/terms_mem0_windows_run.md`, `evals/2026-11-19-mem0/terms_mem0_question_run.md`.
 
-## Update (19 Nov): merging through Mem0's update phase
+### 19 Nov: merging through Mem0's update phase
 
 When the wording check cannot tell whether a user's meaning is one memory already has, Mem0's update phase now
 decides: its own prompt template and answer format (`get_update_memory_messages`), with a custom update prompt for
@@ -88,7 +156,7 @@ R37 in both runs. Results: `evals/merge_last_run.md`.
 only every few milliseconds, so runs of one message started together could share a memory and see each other's
 definitions. That can only have lowered earlier scores, since the runs of one message start far apart in a normal run.
 
-## Update (later on 18 Nov): shared vocabulary only, strict merging
+### 18 Nov, later: shared vocabulary only, strict merging
 
 Two changes after the runs below, rerun on Claude Sonnet 5.5 (GPT not rerun):
 
@@ -104,11 +172,18 @@ Two changes after the runs below, rerun on Claude Sonnet 5.5 (GPT not rerun):
 | Behaviour scenarios: 14, 2 runs (5, 7, 10 and 12 rewritten for the change) | **64 / 64** |
 | Unit tests | 165 pass (coverage not remeasured) |
 
-Mem0's default extraction prompt would store something for 30 of the 34 messages that need nothing. Sections 2 and 4
-below describe the runs before the change; their preference rows (scenarios 5 and 10) no longer apply. Results:
-`evals/last_run.md`, `evals/scenarios_last_run.md`.
+Mem0's default extraction prompt would store something for 30 of the 34 messages that need nothing. The 18 Nov
+evaluation below describes the runs before the change; its preference rows (scenarios 5 and 10) no longer apply.
 
-## How it was tested
+## The evaluation of 18 Nov
+
+With the memory, the SQL agent gave the exact count in **69 of 69** answers on Claude Sonnet 5.5 (66 of 69 on GPT),
+against **29 of 69** with today's AskFST approach (the official glossary in the prompt) and **20 of 69** with no
+memory. The memory saved the right things in 129 of 129 decisions on Claude, passed 92 of 93 behaviour checks, and
+153 unit tests cover 89% of its code. Its weak spots: it finds few synonyms (2 of 9), a term's words inside another
+phrase still trigger it ("uncorrectable memory errors"), and it can copy the agent's own SQL slip into a definition.
+
+### How it was tested
 
 - **The AskFST setup agreed on 18 Nov**: the memory runs as an MCP server (here in a thread, on SQLite), and a SQL agent
   uses it only through `MemoryClient`, `MemoryMiddleware` and the three tools. The user's own words come along as
@@ -118,9 +193,10 @@ below describe the runs before the change; their preference rows (scenarios 5 an
 - **Two models**, each running both the SQL agent and the memory: Claude Sonnet 5.5 on Databricks (what the memory app
   uses) and the GPT deployment in `.env`.
 - Scripts: `scripts/eval_exactness.py`, `eval_capture.py`, `eval_merge.py`, `eval_terms.py`, `eval_scenarios.py`,
-  `eval_summary.py`. Raw results: `evals/`.
+  `eval_summary.py`. Raw results of these exactness runs: `evals/2026-11-18/`; the other raw results were
+  replaced by later runs.
 
-## 1. Are the answers exact?
+### 1. Are the answers exact?
 
 23 questions, 3 runs each (69 answers per setup). An answer passes when it contains the exact count of the reference
 SQL condition for the meaning that should apply to the person asking.
@@ -146,7 +222,7 @@ SQL condition for the meaning that should apply to the person asking.
   events were missed. Once "alignment exceptions" were summed from the counts inside the messages instead of counting
   messages; the question allows both readings.
 
-## 2. Does it remember the right things?
+### 2. Does it remember the right things?
 
 43 labelled messages (definitions, standing wishes, facts about the user's work, and things that must not be saved:
 plain and one-off questions, hypotheticals, other people's views, small talk, likes, secrets, patient data, jokes),
@@ -161,7 +237,7 @@ On GPT the misses were "Hot racks are R30 to R37 for us" saved as a personal fac
 joke saved as a personal note (2 runs). For comparison, Mem0's own extraction prompt would have stored something for
 19 of the 24 messages that need nothing.
 
-## 3. Does it find the terms in a question?
+### 3. Does it find the terms in a question?
 
 34 labelled questions against the demo memory, real embeddings. Right = exactly the expected terms found.
 
@@ -182,7 +258,7 @@ joke saved as a personal note (2 runs). For comparison, Mem0's own extraction pr
 - **Trap left**: "uncorrectable memory errors" contains "memory errors", so the team's meaning (correctable errors) is
   applied to a question about the opposite.
 
-## 4. Does it behave as designed?
+### 4. Does it behave as designed?
 
 14 scripted scenarios through the MCP setup, real model (Claude Sonnet 5.5), 31 checks each run on what memory holds
 afterwards, what was applied and what the answer says. 3 runs: **92 of 93 checks passed.**
@@ -206,57 +282,15 @@ afterwards, what was applied and what the answer says. 3 runs: **92 of 93 checks
 The miss: after "answer me in one sentence", one of three answers had two sentences (the count, then how it read
 "fatal events"). The preference was applied; the model did not fully follow it.
 
-## 5. Unit tests
+### 5. Unit tests
 
 153 tests pass; they cover 89% of `memory_demo`, and 93–98% of the core: resolver, service, middleware, consolidation,
 term matching, client. Less is covered in the warehouse code (`store.py`, 83%), which cannot run locally.
 
-## Fixed while testing
+### Fixed while testing
 
 - Typos matched across a whole phrase: "card problems" (inside "node card problems") matched the alias "linkcard
   problems", and "non-fatal events" matched "fatal events". A typo must now hold word by word.
 - (Earlier on 18 Nov) Mem0 matched "quiet rack" to "noisy rack" (0.88); a phrase with the same head word and another
   modifier no longer counts as the term. "We call rack R12 the quiet rack" was saved as private in 1 of 6 tries; the
   extractor's instructions now say such names are not private (8 of 8 after).
-
-## Weak spots
-
-1. **Synonyms**: only close paraphrases are found (2 of 9 here). A teammate who says "kernel panics" instead of "rts
-   crashes" gets the model's own guess, not the memory.
-2. **A term inside another phrase** ("uncorrectable memory errors") gets the term's meaning.
-3. **The agent's own mistakes can become memory**: a definition takes exact values from the SQL that ran, including a
-   wrong "exactly equal". Fix to try: describe text matches the way the user put them.
-4. **Merging rests on one model answer**: nothing checks Mem0's "same" afterwards, so a wrong one would count a
-   user towards a meaning they do not hold (none in 36 runs with different meanings here), and borderline cases such
-   as "rack 37" for R37 can go either way between runs (a missed merge only keeps a second wording). The cases and the
-   prompt for definitions were written by the same person.
-5. **Model dependence**: saving decisions were perfect on Claude Sonnet 5.5 and 96% on GPT.
-6. **Time**: a lookup took a median of 0.8 s here (SQLite plus the embedding call), 7–10 s the first time after a
-   start while Mem0 builds its index; learning adds 1–4 s before the SQL agent returns. On the warehouse add about
-   0.4 s per lookup.
-
-## What this does not show
-
-- **Databricks**: the warehouse, the deployed memory app and sign-in from a serving endpoint were not run.
-- **AskFST itself**: its agent, data, users and real phrasing. Here the task the SQL agent got was the user's own
-  question, and `user_message` was always passed; with the main agent's rewording, learning will be weaker.
-- **Scale**: about 20 terms and 41 people. With hundreds of terms the Mem0 index takes longer to build and look-alikes
-  get more chances to match.
-- **Time**: fading over months and drift are covered by unit tests only.
-- **Independence**: we wrote these questions and scenarios alongside the system. The colleague's timeline benchmark
-  (`memory-benchmark-handoff`) is the stronger test once it exists. Every question here asks for a count, a strict but
-  narrow measure.
-
-## How to rerun
-
-```bash
-python scripts/eval_exactness.py --mode mcp --runs 3          # also: --mode none / glossary / memory
-python scripts/eval_capture.py --runs 3
-python scripts/eval_merge.py --runs 2
-python scripts/eval_terms.py
-python scripts/eval_scenarios.py --runs 3
-python scripts/eval_summary.py
-```
-
-For Claude Sonnet 5.5 set `LLM_PROVIDER=databricks`, `DATABRICKS_LLM_ENDPOINT=databricks-claude-sonnet-5-5` and an
-empty `LLM_REASONING_EFFORT`. Mem0 and Claude need a Databricks login.

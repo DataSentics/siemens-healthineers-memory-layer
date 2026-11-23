@@ -166,7 +166,7 @@ Memory tab and the other way round.
 | 2 | Which agent | **The text-to-SQL agent only.** The main agent belongs to a central team and stays untouched until the memory has proved itself. |
 | 3 | How the memory knows the user | **From the request** through `user_of`; the memory app trusts only the SQL agent's service principal to name a user. |
 | 4 | What the model may call | **Lookup and learning run from code every turn** (the middleware). The model gets three tools (show, explain, forget). |
-| 5 | SQL filters in memory | **No: definitions in words only.** The agent writes its own SQL; the words keep the exact details (on BGL, 69 of 69 answers exact on Claude Sonnet 5.5, 66 of 69 on GPT: `evals/REPORT.md`). |
+| 5 | SQL filters in memory | **No: definitions in words only.** The agent writes its own SQL; the words keep the exact details (on BGL, 69 of 69 answers exact on Claude Sonnet 5.5 and 66 of 69 on GPT on 18 Nov; 44 of 46 after the Mem0 changes of 19 Nov, both misses explained in `evals/REPORT.md`). |
 | 6 | Where memory lives | **In AskFST's catalog, in its own schema** (`shs_memory`). Never the demo's tables. |
 | 7 | Finding terms by meaning | **On by default (Mem0)**, in the memory app. A phrase with the same head word and another modifier ("quiet rack" vs "noisy rack") is never taken for a term. |
 | 8 | Showing memory to the user | **In the answer text** (`note_in_answer`), as Tomáš suggested: bold "Memory used" / "Remembered" lines. |
