@@ -9,7 +9,7 @@ app, no seed files.
 
 The folder is outside this repository (default: <temp>/mcp-shs-memory) because `databricks sync` skips whatever the
 surrounding git repository ignores, and `build/` is ignored here: synced from inside it, nothing would be uploaded.
-Fill in MEMORY_CATALOG (and, once known, MEMORY_TRUSTED_CALLERS) in deploy/mcp/app.yaml first; see INTEGRATION.md.
+Fill in MEMORY_CATALOG (and, once known, MEMORY_TRUSTED_CALLERS) in deploy/mcp/app.yaml first; see integration_shs.md.
 """
 
 import argparse

@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "shs-memory"
 version = "0.1.0"
 description = "Shared memory layer for data assistants (AskFST): an MCP service, and LangChain middleware and tools that use it"
-readme = "INTEGRATION.md"
+readme = "integration_shs.md"
 requires-python = ">=3.11"
 # The client: what an agent needs to use the memory MCP server (memory_demo.remote, .middleware, .api). It stays
 # light on purpose: no Mem0, no SQL connectors, so the agent's own dependencies barely change.

@@ -1,5 +1,5 @@
 # Databricks App definition of the memory MCP server (app name must start with "mcp-", e.g. mcp-shs-memory).
-# scripts/stage_memory_app.py puts the app's folder together with this file as its app.yaml (steps in INTEGRATION.md,
+# scripts/stage_memory_app.py puts the app's folder together with this file as its app.yaml (steps in integration_shs.md,
 # "Deploying it"). Resources: the SQL warehouse under the key `sql-warehouse` (Can use), the model endpoint and the
 # embedding endpoint (Can query).
 command: ["python", "-m", "memory_demo.mcp_server"]

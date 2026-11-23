@@ -11,7 +11,7 @@ Compare them with his code once it is handed over (K1).
 
 **Testing the memory?** [`RULES.md`](RULES.md) lists every rule it follows (which meaning each person gets, what is
 saved, when a team or department meaning changes, fading, consent), with the numbers, the code and the tests for each.
-How to plug it into AskFST: [`INTEGRATION.md`](INTEGRATION.md). Manual test script: [`TESTING.md`](TESTING.md).
+How to plug it into AskFST: [`integration_shs.md`](integration_shs.md). Manual test script: [`TESTING.md`](TESTING.md).
 Results: [`evals/REPORT.md`](evals/REPORT.md).
 
 ## What is in here
@@ -26,7 +26,7 @@ Results: [`evals/REPORT.md`](evals/REPORT.md).
 | `memory_demo/org.py` | The org directory: a table (Delta on Databricks, SQLite locally) re-read every few minutes; teams and departments are whatever it says today |
 | `memory_demo/service.py` | `MemoryService`: retrieve / learn / undo / forget / feedback / viewer |
 | `memory_demo/api.py` | The memory's calls (`memory_context`, `memory_learn`, `memory_undo`, `show_memory`, `explain_term`, `forget`, ...), `LocalMemory` to run them in-process (the demo, the MCP server), and `memory_tools`: show / explain / forget for the model |
-| `memory_demo/mcp_server.py` | The memory as an MCP server (its own Databricks App, `deploy/mcp/app.yaml`): the calls as tools, who may call for whom (`MEMORY_TRUSTED_CALLERS`), safe error messages. See `INTEGRATION.md` |
+| `memory_demo/mcp_server.py` | The memory as an MCP server (its own Databricks App, `deploy/mcp/app.yaml`): the calls as tools, who may call for whom (`MEMORY_TRUSTED_CALLERS`), safe error messages. See `integration_shs.md` |
 | `memory_demo/remote.py` | `MemoryClient`: what AskFST's text-to-SQL agent uses to reach the MCP server (one kept-open connection, OAuth from the Databricks SDK). With `middleware.py` and `api.py` it is the light client in the `shs-memory` wheel: no Mem0, no SQL connectors |
 | `memory_demo/middleware.py` | `MemoryMiddleware` for `create_agent` (AskFST: on the text-to-SQL agent, through `MemoryClient`): retrieve once per turn, inject into every model call, learn after the answer (from the user's own words when they come along), optionally note the memory used in the answer; answers without memory if memory fails (FR17) |
 | `memory_demo/agent.py` | `build_agent`: SQL agent (`SQLDatabaseToolkit` + `create_agent`, Hub SQL prompt inlined, answer-first rule). `build_supervisor`: supervisor → casebook search + SQL sub-agent; memory is looked up and learned once on the supervisor and passed to the sub-agent |
@@ -36,7 +36,7 @@ Results: [`evals/REPORT.md`](evals/REPORT.md).
 | `seed/` | Mocked org chart (41 fictional people, emails on `shs-demo.example`; loaded into the directory table once), gold glossary, the pilot month of teams and departments |
 | `app.py` | Streamlit demo: chat, memory drop-down, "I remembered" notice with undo, memory viewer, internal signals page |
 | `scripts/` | Local SQLite ingest, Parquet export, Databricks setup, org generator, ontology builder, evals; for the memory app: `stage_memory_app.py` (its deploy folder) and `pilot_admin.py` (people and consent for a pilot) |
-| `deploy/mcp/app.yaml` | The memory app's Databricks App definition (steps: `INTEGRATION.md`, "Deploying it") |
+| `deploy/mcp/app.yaml` | The memory app's Databricks App definition (steps: `integration_shs.md`, "Deploying it") |
 | `example.env` | Settings template: copy to `.env` |
 
 ## How memory levels work
@@ -202,7 +202,7 @@ with its default prompt. It writes `evals/merge_last_run.md`.
 
 ## Deploy to Databricks
 
-This deploys the demo app. The memory app on its own (for AskFST): `INTEGRATION.md`, "Deploying it".
+This deploys the demo app. The memory app on its own (for AskFST): `integration_shs.md`, "Deploying it".
 
 Deployed on 4 Nov 2026 to `adb-2052394040785539.19.azuredatabricks.net`:
 
